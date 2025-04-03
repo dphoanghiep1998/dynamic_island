@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/s300_2"
+    tools:context=".view.main.MainActivity">
+
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:fontFamily="@font/f500"
+        android:text="@string/show_bubble"
+        android:textColor="@color/b200"
+        android:textSize="@dimen/_20sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:foreground="@drawable/fg_ripple_effect_round"
+        android:src="@drawable/ic_back"
+        app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvTitle" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingBottom="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/containerShowBubble"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:background="@drawable/bg_12"
+                android:backgroundTint="@color/w200"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:paddingVertical="@dimen/_12sdp"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tvEnable"
+                    style="@style/text600"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/bubble_dynamic"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_14sdp" />
+
+                <Switch
+                    android:id="@+id/switchEnable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/bg_switch_thumb"
+                    android:track="@drawable/bg_switch_track" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/tvDisplay"
+                style="@style/text400_2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="@dimen/_24sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:background="@color/s400"
+                app:layout_constraintTop_toBottomOf="@id/containerShowBubble" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/containerFrequency"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:background="@drawable/bg_12"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:paddingVertical="@dimen/_12sdp"
+                app:layout_constraintTop_toBottomOf="@id/tvDisplay">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/f400"
+                    android:text="@string/frequency"
+                    android:textColor="@color/b100"
+                    android:textSize="@dimen/_14sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/containerShowWhenHasNotification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:foreground="@drawable/fg_ripple_effect"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/title">
+
+                    <ImageView
+                        android:id="@+id/tickShowWhenHasNotification"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/ic_tick_inactive"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/title" />
+
+
+                    <TextView
+                        android:id="@+id/tvShowWhenHavingNotification"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:fontFamily="@font/f400"
+                        android:text="@string/show_when_has_notification"
+                        android:textColor="@color/b100"
+                        android:textSize="@dimen/_12sdp"
+                        app:layout_constraintBottom_toBottomOf="@id/tickShowWhenHasNotification"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tickShowWhenHasNotification"
+                        app:layout_constraintTop_toTopOf="@id/tickShowWhenHasNotification" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/containerAlwaysShow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:foreground="@drawable/fg_ripple_effect"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/containerShowWhenHasNotification">
+
+                    <ImageView
+                        android:id="@+id/tickAlwaysShow"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/ic_tick_inactive"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tickShowWhenHasNotification" />
+
+                    <TextView
+                        android:id="@+id/tvAlwaysShow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:fontFamily="@font/f400"
+                        android:text="@string/always_show"
+                        android:textColor="@color/b100"
+                        android:textSize="@dimen/_12sdp"
+                        app:layout_constraintBottom_toBottomOf="@id/tickAlwaysShow"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tickAlwaysShow"
+                        app:layout_constraintTop_toTopOf="@id/tickAlwaysShow" />
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/line2"
+                style="@style/text400_2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="@dimen/_24sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:background="@color/s400"
+                app:layout_constraintTop_toBottomOf="@id/containerFrequency" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/containerDisplayTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:background="@drawable/bg_12"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:paddingVertical="@dimen/_12ssp"
+                app:layout_constraintTop_toBottomOf="@id/line2">
+
+                <TextView
+                    android:id="@+id/tvDisplayTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/f400"
+                    android:text="@string/display_time"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_14sdp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/containerFilter"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:clickable="true"
+                    android:foreground="@drawable/fg_ripple_effect_8"
+                    android:gravity="center"
+                    app:endIconTint="@color/n300"
+                    app:hintEnabled="false"
+                    app:layout_constraintBottom_toBottomOf="@id/tvDisplayTime"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tvDisplayTime">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/filterCondition"
+                        style="@style/AutoCompleteLayoutStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_s400_8"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:fontFamily="@font/f400"
+                        android:maxLines="4"
+                        android:textColor="@color/b100"
+                        android:textIsSelectable="true"
+                        android:textSize="@dimen/_14sdp"
+                        app:dropDownBackgroundTint="@color/white"
+                        app:simpleItemLayout="@layout/layout_autocomplete_custom" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/line3"
+                style="@style/text400_2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="@dimen/_24sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:background="@color/s400"
+                app:layout_constraintTop_toBottomOf="@id/containerDisplayTime" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/containerLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:background="@drawable/bg_12"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:paddingVertical="@dimen/_12sdp"
+                app:layout_constraintTop_toBottomOf="@id/line3">
+
+                <TextView
+                    android:id="@+id/tvLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/f400"
+                    android:text="@string/location"
+                    android:textColor="@color/b100"
+                    android:textSize="@dimen/_14sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/containerRight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:foreground="@drawable/fg_ripple_effect"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/tvLocation">
+
+                    <ImageView
+                        android:id="@+id/tickOnTheRight"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/ic_tick_inactive"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvLocation" />
+
+                    <TextView
+                        android:id="@+id/tvOnTheRight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:fontFamily="@font/f400"
+                        android:text="@string/on_the_right"
+                        android:textColor="@color/b100"
+                        android:textSize="@dimen/_12sdp"
+                        app:layout_constraintBottom_toBottomOf="@id/tickOnTheRight"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tickOnTheRight"
+                        app:layout_constraintTop_toTopOf="@id/tickOnTheRight" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/containerLeft"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:foreground="@drawable/fg_ripple_effect"
+                    android:orientation="horizontal"
+                    android:src="@drawable/ic_tick_inactive"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/containerRight">
+
+                    <ImageView
+                        android:id="@+id/tickOnTheLeft"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="@dimen/_20sdp"
+                        android:src="@drawable/ic_tick_inactive" />
+
+                    <TextView
+                        android:id="@+id/tvOnTheLeft"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:fontFamily="@font/f400"
+                        android:text="@string/on_the_left"
+                        android:textColor="@color/b100"
+                        android:textSize="@dimen/_12sdp" />
+
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/line4"
+                style="@style/text400_2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="@dimen/_24sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:background="@color/s400"
+                app:layout_constraintTop_toBottomOf="@id/containerLocation" />
+
+            <LinearLayout
+                android:id="@+id/containerBubbleColor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:background="@drawable/bg_12"
+                android:backgroundTint="@color/w200"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:paddingVertical="@dimen/_12sdp"
+                app:layout_constraintTop_toBottomOf="@id/line4">
+
+                <TextView
+                    android:id="@+id/tvBubbleColor"
+                    style="@style/text400_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/bubble_color"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_14sdp" />
+
+                <Switch
+                    android:id="@+id/switchBubbleColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/bg_switch_thumb"
+                    android:track="@drawable/bg_switch_track"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
+
+            <net.cachapa.expandablelayout.ExpandableLayout
+                android:id="@+id/containerBubbleBackgroundExpand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/containerBubbleColor">
+
+                <com.neko.hiepdph.dynamicislandvip.common.customview.itemmodule.ItemConfig2
+                    android:id="@+id/containerBubbleColorBG"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_56sdp"
+                    android:layout_marginHorizontal="@dimen/_12sdp"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    app:content="@string/neon"
+                    app:isColor="true"
+                    app:isShowContent="false"
+                    app:titleItemConfig2="@string/choose_bubble_color_background" />
+
+            </net.cachapa.expandablelayout.ExpandableLayout>
+
+
+            <View
+                android:id="@+id/line5"
+                style="@style/text400_2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="@dimen/_24sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:background="@color/s400"
+                app:layout_constraintTop_toBottomOf="@id/containerBubbleBackgroundExpand" />
+
+            <LinearLayout
+                android:id="@+id/containerBubbleColorBorder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:background="@drawable/bg_12"
+                android:backgroundTint="@color/w200"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:paddingVertical="@dimen/_12sdp"
+                app:layout_constraintTop_toBottomOf="@id/line5">
+
+                <TextView
+                    android:id="@+id/tvBubbleColorBorder"
+                    style="@style/text400_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/f400"
+                    android:text="@string/bubble_color_border"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_14sdp" />
+
+                <Switch
+                    android:id="@+id/switchBubbleColorBorder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/bg_switch_thumb"
+                    android:track="@drawable/bg_switch_track"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
+
+            <net.cachapa.expandablelayout.ExpandableLayout
+                android:id="@+id/containerExpandBorder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/containerBubbleColorBorder">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.neko.hiepdph.dynamicislandvip.common.customview.itemmodule.ItemConfig2
+                        android:id="@+id/containerChooseBubbleColorBorder"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_56sdp"
+                        android:layout_marginHorizontal="@dimen/_12sdp"
+                        android:layout_marginTop="@dimen/_12sdp"
+                        app:content="@string/neon"
+                        app:isColor="true"
+                        app:isShowContent="false"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:titleItemConfig2="@string/choose_bubble_color_border" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/containerChangeSizeBorder"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_12sdp"
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:background="@drawable/bg_12"
+                        android:backgroundTint="@color/w200"
+                        android:paddingVertical="@dimen/_16sdp"
+                        app:layout_constraintTop_toBottomOf="@id/containerChooseBubbleColorBorder">
+
+
+                        <TextView
+                            android:id="@+id/tvChangeSizeBorder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_12sdp"
+                            android:fontFamily="@font/f400"
+                            android:text="@string/change_size_border"
+                            android:textColor="@color/b100"
+                            android:textSize="@dimen/_14sdp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                        <com.neko.hiepdph.dynamicislandvip.common.customview.tickseekbar.TickSeekBar
+                            android:id="@+id/seekbarChangeSizeBorder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_12sdp"
+                            android:paddingHorizontal="@dimen/_16sdp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvChangeSizeBorder"
+                            app:tsb_clear_default_padding="true"
+                            app:tsb_thumb_color="@color/su100"
+                            app:tsb_track_background_color="@color/s400"
+                            app:tsb_track_background_size="@dimen/_2sdp"
+                            app:tsb_track_progress_color="@color/su100"
+                            app:tsb_track_progress_size="@dimen/_2sdp"
+                            app:tsb_track_rounded_corners="true" />
+
+                        <TextView
+                            android:id="@+id/tvSizeBorderValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/_12sdp"
+                            android:fontFamily="@font/f400"
+                            android:text="0"
+                            android:textColor="@color/n300"
+                            android:textSize="@dimen/_14sdp"
+                            app:layout_constraintBottom_toBottomOf="@id/tvChangeSizeBorder"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/tvChangeSizeBorder" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </net.cachapa.expandablelayout.ExpandableLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

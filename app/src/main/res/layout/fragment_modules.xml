@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/s300_2"
+    tools:context=".view.main.MainActivity">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        style="@style/text400"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:text="@string/modules"
+        android:textColor="@color/p300"
+        android:textSize="@dimen/_20sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingBottom="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.neko.hiepdph.dynamicislandvip.common.customview.itemmodule.ItemModule
+                android:id="@+id/containerNotification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                app:imageRes="@drawable/ic_module_noti"
+                app:isShowArrow="true"
+                app:isShowSwitch="false"
+                app:layout_constraintTop_toTopOf="parent"
+                app:titleItem="@string/notifications" />
+
+            <com.neko.hiepdph.dynamicislandvip.common.customview.itemmodule.ItemModule
+                android:id="@+id/containerCall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:imageRes="@drawable/ic_module_call"
+                app:isShowArrow="true"
+                app:isShowSwitch="false"
+                app:layout_constraintTop_toBottomOf="@id/containerNotification"
+                app:titleItem="@string/calls" />
+
+            <com.neko.hiepdph.dynamicislandvip.common.customview.itemmodule.ItemModule
+                android:id="@+id/containerMusic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:imageRes="@drawable/ic_module_music"
+                app:isShowArrow="false"
+                app:isShowSwitch="true"
+                app:layout_constraintTop_toBottomOf="@id/containerCall"
+                app:titleItem="@string/music" />
+
+            <com.neko.hiepdph.dynamicislandvip.common.customview.itemmodule.ItemModule
+                android:id="@+id/containerEarphone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:imageRes="@drawable/ic_module_earphone"
+                app:isShowArrow="false"
+                app:isShowSwitch="true"
+                app:layout_constraintTop_toBottomOf="@id/containerMusic"
+                app:titleItem="@string/ear_phone" />
+
+            <com.neko.hiepdph.dynamicislandvip.common.customview.itemmodule.ItemModule
+                android:id="@+id/containerBattery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:imageRes="@drawable/ic_module_battery"
+                app:isShowArrow="false"
+                app:isShowSwitch="true"
+                app:layout_constraintTop_toBottomOf="@id/containerEarphone"
+                app:titleItem="@string/battery_charge" />
+
+            <com.neko.hiepdph.dynamicislandvip.common.customview.itemmodule.ItemModule
+                android:id="@+id/containerRinging"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:imageRes="@drawable/ic_module_ringing"
+                app:isShowArrow="false"
+                app:isShowSwitch="true"
+                app:layout_constraintTop_toBottomOf="@id/containerBattery"
+                app:titleItem="@string/ringing_state" />
+
+            <com.neko.hiepdph.dynamicislandvip.common.customview.itemmodule.ItemModule
+                android:id="@+id/containerDirect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                app:imageRes="@drawable/ic_module_direct"
+                app:isShowArrow="false"
+                app:isShowSwitch="true"
+                app:layout_constraintTop_toBottomOf="@id/containerRinging"
+                app:titleItem="@string/direct" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

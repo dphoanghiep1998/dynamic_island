@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+
+    <color name="p20">#EBEAFF</color>
+    <color name="p50">#DBCDFD</color>
+    <color name="p100">#B99CFC</color>
+    <color name="p200">#9872E5</color>
+    <color name="p300">#9D52DE</color>
+
+    <color name="n100">#D1D1D6</color>
+    <color name="n200">#AEAEB2</color>
+    <color name="n300">#8E8E93</color>
+    <color name="s200">#66707A</color>
+    <color name="s300">#33383D</color>
+
+    <color name="s100">#EBEAFF</color>
+    <color name="s200_2">#CBC0CE</color>
+    <color name="s300_2">#F2F1F6</color>
+    <color name="s400">#E5E5EA</color>
+
+
+    <color name="w100">#F7F7FC</color>
+    <color name="w200">#FEFEFE</color>
+    <color name="w300">#E7E7E7</color>
+
+    <color name="b100">#3A3A3C</color>
+    <color name="b200">#1C1C1E</color>
+    <color name="b300">#101012</color>
+    <color name="b400">#070509</color>
+
+    <color name="su100">#329BF7</color>
+    <color name="su200">#007AFF</color>
+    <color name="secondary400">#114388</color>
+    <color name="g1">#6E348C</color>
+    <color name="g2">#E2A9FF</color>
+
+
+
+</resources>

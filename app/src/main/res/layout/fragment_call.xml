@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.call.CallActivity">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:fontFamily="@font/f500"
+        android:text="@string/call"
+        android:textColor="@color/b200"
+        android:textSize="@dimen/_20sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:foreground="@drawable/fg_ripple_effect_round"
+        android:src="@drawable/ic_back"
+        app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvTitle" />
+
+    <LinearLayout
+        android:id="@+id/containerIncomingCall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:background="@drawable/bg_12"
+        android:backgroundTint="@color/w200"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/_12sdp"
+        android:paddingVertical="@dimen/_12sdp"
+        app:layout_constraintTop_toBottomOf="@id/btnBack">
+
+        <TextView
+            android:id="@+id/tvIncomingCall"
+            style="@style/text600"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/incoming_call"
+            android:textColor="@color/b200"
+            android:textSize="16dp" />
+
+        <Switch
+            android:id="@+id/switchIncomingCall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumb="@drawable/bg_switch_thumb"
+            android:track="@drawable/bg_switch_track"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvShowIphone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_24sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:fontFamily="@font/f400"
+        android:textSize="14dp"
+        android:text="@string/show_iphone"
+        android:textColor="@color/n300"
+        app:layout_constraintTop_toBottomOf="@id/containerIncomingCall" />
+
+    <LinearLayout
+        android:id="@+id/containerShowDefault"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:background="@drawable/bg_12"
+        android:backgroundTint="@color/w200"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/_12sdp"
+        android:paddingVertical="@dimen/_12sdp"
+        app:layout_constraintTop_toBottomOf="@id/tvShowIphone">
+
+        <TextView
+            android:id="@+id/tvShowDefault"
+            style="@style/text600"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/show_default"
+            android:textColor="@color/b200"
+            android:textSize="16dp" />
+
+        <Switch
+            android:id="@+id/switchShowDefault"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumb="@drawable/bg_switch_thumb"
+            android:track="@drawable/bg_switch_track"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvMayNotWork"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_24sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:fontFamily="@font/f400"
+        android:textSize="14dp"
+        android:text="@string/may_not_work"
+        android:textColor="@color/n300"
+        app:layout_constraintTop_toBottomOf="@id/containerShowDefault" />
+
+    <LinearLayout
+        android:id="@+id/containerCallTimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:background="@drawable/bg_12"
+        android:backgroundTint="@color/w200"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/_12sdp"
+        android:paddingVertical="@dimen/_12sdp"
+        app:layout_constraintTop_toBottomOf="@id/tvMayNotWork">
+
+        <TextView
+            android:id="@+id/tvCallTimer"
+            style="@style/text600"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/call_timer"
+            android:textColor="@color/b200"
+            android:textSize="16dp" />
+
+        <Switch
+            android:id="@+id/switchCallTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumb="@drawable/bg_switch_thumb"
+            android:track="@drawable/bg_switch_track"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/tvDisplayTimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_24sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:fontFamily="@font/f400"
+        android:textSize="14dp"
+        android:text="@string/display_timer"
+        android:textColor="@color/n300"
+        app:layout_constraintTop_toBottomOf="@id/containerCallTimer" />
+</androidx.constraintlayout.widget.ConstraintLayout>

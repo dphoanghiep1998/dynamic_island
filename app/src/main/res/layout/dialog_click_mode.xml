@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="@dimen/_12sdp">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_18sdp"
+        android:fontFamily="@font/f500"
+        android:text="@string/click_mode"
+        android:textColor="#3A3A3C"
+        android:textSize="@dimen/_16sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/btnClose"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:layout_marginEnd="@dimen/_18sdp"
+        android:foreground="@drawable/fg_ripple_effect_round"
+        android:src="@drawable/ic_close"
+        app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvTitle" />
+
+    <LinearLayout
+        android:id="@+id/containerNormalClick"
+        android:layout_width="match_parent"
+        android:paddingHorizontal="@dimen/_12sdp"
+        android:paddingVertical="@dimen/_12sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_24sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_stroke_gradient_8"
+        android:foreground="@drawable/fg_ripple_effect_8"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+        <TextView
+            android:id="@+id/tvNormalClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/f400"
+            android:text="@string/normal_click"
+            android:textColor="#3A3A3C"
+            android:textSize="@dimen/_14sdp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/f400"
+            android:text="@string/n1"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:textColor="@color/n300"
+            android:textSize="@dimen/_12sdp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/f400"
+            android:text="@string/n2"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:textColor="@color/n300"
+            android:textSize="@dimen/_12sdp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/f400"
+            android:text="@string/n3"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:textColor="@color/n300"
+            android:textSize="@dimen/_12sdp" />
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/tickNormalClick"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:layout_marginTop="-10dp"
+        android:layout_marginEnd="-10dp"
+        android:src="@drawable/ic_check"
+        app:layout_constraintEnd_toEndOf="@id/containerNormalClick"
+        app:layout_constraintTop_toTopOf="@id/containerNormalClick" />
+    <LinearLayout
+        android:id="@+id/containerLongClick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_24sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:orientation="vertical"
+        android:paddingVertical="@dimen/_12sdp"
+        android:paddingHorizontal="@dimen/_12sdp"
+        android:background="@drawable/bg_s400_8"
+        android:foreground="@drawable/fg_ripple_effect_8"
+        app:layout_constraintTop_toBottomOf="@id/containerNormalClick">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/f400"
+            android:text="@string/long_click"
+            android:textColor="#3A3A3C"
+            android:textSize="@dimen/_14sdp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/f400"
+            android:text="@string/n1"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:textColor="@color/n300"
+            android:textSize="@dimen/_12sdp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/f400"
+            android:text="@string/n2"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:textColor="@color/n300"
+            android:textSize="@dimen/_12sdp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/f400"
+            android:text="@string/n4"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:textColor="@color/n300"
+            android:textSize="@dimen/_12sdp" />
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/tickLongClick"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:layout_marginTop="-10dp"
+        android:layout_marginEnd="-10dp"
+        android:src="@drawable/ic_check"
+        app:layout_constraintEnd_toEndOf="@id/containerLongClick"
+        app:layout_constraintTop_toTopOf="@id/containerLongClick" />
+
+    <TextView
+        android:id="@+id/btnOk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:background="@drawable/bg_button_gradient"
+        android:fontFamily="@font/f500"
+        android:gravity="center"
+        android:foreground="@drawable/fg_ripple_effect_20"
+        android:paddingVertical="@dimen/_10sdp"
+        android:text="@string/custom_ok"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14sdp"
+        app:layout_constraintTop_toBottomOf="@id/containerLongClick" />
+</androidx.constraintlayout.widget.ConstraintLayout>

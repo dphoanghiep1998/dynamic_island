@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/s300_2"
+    tools:context=".view.main.MainActivity">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        style="@style/text400"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:text="@string/app_name"
+        android:textColor="@color/p300"
+        android:textSize="@dimen/_20sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/btnSetting"
+        android:layout_width="@dimen/_26sdp"
+        android:layout_height="@dimen/_26sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:src="@drawable/ic_main_setting"
+        android:foreground="@drawable/fg_ripple_effect_round"
+        app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvTitle" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:paddingBottom="@dimen/_12sdp"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/containerEnableDynamicIsland"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:background="@drawable/bg_12"
+                android:backgroundTint="@color/w200"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:paddingVertical="@dimen/_12sdp"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tvEnable"
+                    style="@style/text600"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/enable_dynamic_island"
+                    android:textColor="@color/p300"
+                    android:textSize="16dp" />
+
+                <Switch
+                    android:id="@+id/switchEnable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/bg_switch_thumb"
+                    android:track="@drawable/bg_switch_track"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvShow"
+                style="@style/text400_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:text="@string/show_a_dynamic"
+                android:textColor="#8E8E93"
+                app:layout_constraintTop_toBottomOf="@id/containerEnableDynamicIsland" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/containerNotchStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:background="@drawable/bg_12"
+                android:backgroundTint="@color/w200"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_16sdp"
+                app:layout_constraintTop_toBottomOf="@id/tvShow">
+
+                <TextView
+                    android:id="@+id/tvNotchStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/f500"
+                    android:text="@string/notch_style"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_16sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/btnDynamicIsland"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/_16sdp"
+                    android:src="@drawable/ic_dynamic_active"
+                    app:layout_constraintDimensionRatio="135:52"
+                    app:layout_constraintEnd_toStartOf="@id/btnNotch"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvNotchStyle"
+                    app:layout_constraintWidth_percent="0.42" />
+
+                <ImageView
+                    android:id="@+id/btnTickDynamicIsland"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_16sdp"
+                    android:src="@drawable/ic_tick_active"
+                    app:layout_constraintEnd_toEndOf="@id/btnDynamicIsland"
+                    app:layout_constraintStart_toStartOf="@id/btnDynamicIsland"
+                    app:layout_constraintTop_toBottomOf="@id/btnDynamicIsland" />
+
+                <ImageView
+                    android:id="@+id/btnNotch"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/_16sdp"
+                    android:src="@drawable/ic_notch_inactive"
+                    app:layout_constraintDimensionRatio="135:52"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/btnDynamicIsland"
+                    app:layout_constraintTop_toBottomOf="@id/tvNotchStyle"
+                    app:layout_constraintWidth_percent="0.42" />
+
+                <ImageView
+                    android:id="@+id/btnTickNotch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_16sdp"
+                    android:src="@drawable/ic_tick_inactive"
+                    app:layout_constraintEnd_toEndOf="@id/btnNotch"
+                    app:layout_constraintStart_toStartOf="@id/btnNotch"
+                    app:layout_constraintTop_toBottomOf="@id/btnNotch" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/containerNotchPosition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:background="@drawable/bg_12"
+                android:backgroundTint="@color/w200"
+                android:paddingHorizontal="@dimen/_24sdp"
+                android:paddingVertical="@dimen/_16sdp"
+                app:layout_constraintTop_toBottomOf="@id/containerNotchStyle">
+
+                <TextView
+                    android:id="@+id/tvNotchPosition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/f500"
+                    android:text="@string/notch_pos"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_16sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvVertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/f400"
+                    android:text="@string/vertical"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_14sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvNotchPosition" />
+
+                <ImageView
+                    android:id="@+id/btnVerticalDown"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:src="@drawable/ic_down"
+                    android:foreground="@drawable/fg_ripple_effect_round"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvVertical" />
+
+                <com.neko.hiepdph.dynamicislandvip.common.customview.tickseekbar.TickSeekBar
+                    android:id="@+id/seekbarVertical"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_6sdp"
+                    app:layout_constraintBottom_toBottomOf="@id/btnVerticalUp"
+                    app:layout_constraintEnd_toStartOf="@id/btnVerticalUp"
+                    app:layout_constraintStart_toEndOf="@id/btnVerticalDown"
+                    app:layout_constraintTop_toTopOf="@id/btnVerticalUp"
+                    app:tsb_thumb_color="@color/su100"
+                    app:tsb_track_background_color="@color/s400"
+                    app:tsb_track_background_size="@dimen/_2sdp"
+                    app:tsb_track_progress_color="@color/su100"
+                    app:tsb_track_progress_size="@dimen/_2sdp"
+                    app:tsb_track_rounded_corners="true" />
+
+                <TextView
+                    android:id="@+id/tvVerticalValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/f400"
+                    android:text="0"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_14sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvNotchPosition" />
+
+                <ImageView
+                    android:id="@+id/btnVerticalUp"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:rotation="180"
+                    android:src="@drawable/ic_down"
+                    android:foreground="@drawable/fg_ripple_effect_round"
+                    app:layout_constraintBottom_toBottomOf="@id/btnVerticalDown"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/btnVerticalDown" />
+
+
+                <TextView
+                    android:id="@+id/tvHorizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:fontFamily="@font/f400"
+                    android:text="@string/horizontal"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_14sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btnVerticalDown" />
+
+                <ImageView
+                    android:id="@+id/btnHorizontalDown"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:rotation="90"
+                    android:src="@drawable/ic_down"
+                    android:foreground="@drawable/fg_ripple_effect_round"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvHorizontal" />
+
+                <com.neko.hiepdph.dynamicislandvip.common.customview.tickseekbar.TickSeekBar
+                    android:id="@+id/seekbarHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_6sdp"
+                    app:layout_constraintBottom_toBottomOf="@id/btnHorizontalDown"
+                    app:layout_constraintEnd_toStartOf="@id/btnHorizontalUp"
+                    app:layout_constraintStart_toEndOf="@id/btnHorizontalDown"
+                    app:layout_constraintTop_toTopOf="@id/btnHorizontalDown"
+                    app:tsb_thumb_color="@color/su100"
+                    app:tsb_track_background_color="@color/s400"
+                    app:tsb_track_background_size="@dimen/_2sdp"
+                    app:tsb_track_progress_color="@color/su100"
+                    app:tsb_track_progress_size="@dimen/_2sdp"
+                    app:tsb_track_rounded_corners="true" />
+
+                <TextView
+                    android:id="@+id/tvHorizontalValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/f400"
+                    android:text="0"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_14sdp"
+                    app:layout_constraintBottom_toBottomOf="@id/tvHorizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tvHorizontal" />
+
+                <ImageView
+                    android:id="@+id/btnHorizontalUp"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:rotation="270"
+                    android:src="@drawable/ic_down"
+                    android:foreground="@drawable/fg_ripple_effect_round"
+                    app:layout_constraintBottom_toBottomOf="@id/btnHorizontalDown"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/btnHorizontalDown" />
+
+                <View
+                    android:id="@+id/line"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@color/s400"
+                    app:layout_constraintTop_toBottomOf="@id/btnHorizontalDown" />
+
+                <TextView
+                    android:id="@+id/tvNotchSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:fontFamily="@font/f500"
+                    android:text="@string/note_size"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_16sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/line" />
+
+                <TextView
+                    android:id="@+id/tvWidth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/f400"
+                    android:text="@string/width"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_14sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvNotchSize" />
+
+                <ImageView
+                    android:id="@+id/btnWidthDown"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:src="@drawable/ic_minus"
+                    android:foreground="@drawable/fg_ripple_effect_round"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvWidth" />
+
+                <com.neko.hiepdph.dynamicislandvip.common.customview.tickseekbar.TickSeekBar
+                    android:id="@+id/seekbarWidth"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_6sdp"
+                    app:layout_constraintBottom_toBottomOf="@id/btnWidthUp"
+                    app:layout_constraintEnd_toStartOf="@id/btnWidthUp"
+                    app:layout_constraintStart_toEndOf="@id/btnWidthDown"
+                    app:layout_constraintTop_toTopOf="@id/btnWidthUp"
+                    app:tsb_thumb_color="@color/su100"
+                    app:tsb_track_background_color="@color/s400"
+                    app:tsb_track_background_size="@dimen/_2sdp"
+                    app:tsb_track_progress_color="@color/su100"
+                    app:tsb_track_progress_size="@dimen/_2sdp"
+                    app:tsb_track_rounded_corners="true" />
+
+                <TextView
+                    android:id="@+id/tvWidthValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/f400"
+                    android:text="0"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_14sdp"
+                    app:layout_constraintTop_toTopOf="@id/tvWidth"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/tvWidth" />
+
+                <ImageView
+                    android:id="@+id/btnWidthUp"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:rotation="180"
+                    android:src="@drawable/ic_plus"
+                    android:foreground="@drawable/fg_ripple_effect_round"
+                    app:layout_constraintBottom_toBottomOf="@id/btnWidthDown"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/btnWidthDown" />
+
+
+                <TextView
+                    android:id="@+id/tvHeight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:fontFamily="@font/f400"
+                    android:text="@string/horizontal"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_14sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btnWidthDown" />
+
+                <ImageView
+                    android:id="@+id/btnHeightDown"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:src="@drawable/ic_minus"
+                    android:foreground="@drawable/fg_ripple_effect_round"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvHeight" />
+
+                <com.neko.hiepdph.dynamicislandvip.common.customview.tickseekbar.TickSeekBar
+                    android:id="@+id/seekbarHeight"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_6sdp"
+                    app:layout_constraintBottom_toBottomOf="@id/btnHeightDown"
+                    app:layout_constraintEnd_toStartOf="@id/btnHeightUp"
+                    app:layout_constraintStart_toEndOf="@id/btnHeightDown"
+                    app:layout_constraintTop_toTopOf="@id/btnHeightDown"
+                    app:tsb_thumb_color="@color/su100"
+                    app:tsb_track_background_color="@color/s400"
+                    app:tsb_track_background_size="@dimen/_2sdp"
+                    app:tsb_track_progress_color="@color/su100"
+                    app:tsb_track_progress_size="@dimen/_2sdp"
+                    app:tsb_track_rounded_corners="true" />
+
+                <TextView
+                    android:id="@+id/tvHeightValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/f400"
+                    android:text="0"
+                    android:textColor="@color/b200"
+                    android:textSize="@dimen/_14sdp"
+                    app:layout_constraintBottom_toBottomOf="@id/tvHeight"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tvHeight" />
+
+                <ImageView
+                    android:id="@+id/btnHeightUp"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:rotation="270"
+                    android:src="@drawable/ic_plus"
+                    android:foreground="@drawable/fg_ripple_effect_round"
+                    app:layout_constraintBottom_toBottomOf="@id/btnHeightDown"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/btnHeightDown" />
+
+                <TextView
+                    android:id="@+id/btnReset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/bg_50"
+                    android:backgroundTint="@color/su200"
+                    android:foreground="@drawable/fg_ripple_effect_50"
+                    android:gravity="center"
+                    android:paddingVertical="@dimen/_10sdp"
+                    android:text="@string/reset"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/btnHeightDown"
+                    tools:layout_editor_absoluteX="31dp" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/homeFragment">
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.neko.hiepdph.dynamicislandvip.view.main.HomeFragment"
+        android:label="HomeFragment" />
+    <fragment
+        android:id="@+id/configFragment"
+        android:name="com.neko.hiepdph.dynamicislandvip.view.main.ConfigFragment"
+        android:label="fragment_config"
+        tools:layout="@layout/fragment_config" />
+    <fragment
+        android:id="@+id/modulesFragment"
+        android:name="com.neko.hiepdph.dynamicislandvip.view.main.ModulesFragment"
+        android:label="fragment_modules"
+        tools:layout="@layout/fragment_modules" />
+    <action
+        android:id="@+id/actionHome"
+        app:destination="@id/homeFragment" />
+    <action
+        android:id="@+id/actionConfig"
+        app:destination="@id/configFragment" />
+    <action
+        android:id="@+id/actionModule"
+        app:destination="@id/modulesFragment" />
+
+    <action
+        android:id="@+id/actionCall"
+        app:destination="@id/callFragment" />
+
+    <action android:id="@+id/actionNotification"
+        app:destination="@id/notificationFragment"/>
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.neko.hiepdph.dynamicislandvip.view.main.NotificationFragment"
+        android:label="NotificationFragment" />
+    <fragment
+        android:id="@+id/callFragment"
+        android:name="com.neko.hiepdph.dynamicislandvip.view.main.CallFragment"
+        android:label="CallFragment" />
+</navigation>
