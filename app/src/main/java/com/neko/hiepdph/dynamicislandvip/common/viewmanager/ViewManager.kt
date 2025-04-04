@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.PixelFormat
+import android.os.Handler
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import com.neko.hiepdph.dynamicislandvip.common.buildMinVersionP
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersionR
 import com.neko.hiepdph.dynamicislandvip.common.customview.CustomRecyclerView
 import com.neko.hiepdph.dynamicislandvip.common.customview.StatusBarParentView
+import com.neko.hiepdph.dynamicislandvip.common.notification.Notification
 import com.neko.hiepdph.dynamicislandvip.service.MyAccessService
 
 class ViewManager(
@@ -35,6 +37,8 @@ class ViewManager(
     private var dynamicIslandTopLayout: LinearLayout? = null
     private var actionListener: BroadcastReceiver? = null
     private var notificationListener: BroadcastReceiver? = null
+    private var listSmallDynamicIsland: ArrayList<Notification> = arrayListOf()
+    private var listBigDynamicIsland: ArrayList<Notification> = arrayListOf()
 
 
     init {
@@ -50,7 +54,8 @@ class ViewManager(
         windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         layoutParams = WindowManager.LayoutParams().apply {
             type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-            flags = 8913704
+            flags =
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
             format = PixelFormat.TRANSLUCENT
             height = 30 * context.resources.displayMetrics.scaledDensity.toInt()
             width = 140 * context.resources.displayMetrics.scaledDensity.toInt()
@@ -136,12 +141,14 @@ class ViewManager(
             .registerReceiver(notificationListener!!, intentFilter)
     }
 
-    private fun closeFullNotificationIsland() {
+    fun closeFullNotificationIsland() {
 
     }
 
     private fun showSmallIslandNotification() {
+        Handler().postDelayed({
 
+        }, 100)
     }
 
 

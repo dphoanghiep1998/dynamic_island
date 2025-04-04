@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:background="#000"
+    android:padding="10dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/civ_senderIcon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerVertical="true"
+        android:padding="@dimen/_5sdp"
+        android:src="@drawable/ic_apply_off" />
+
+    <TextView
+        android:id="@+id/tv_app_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/civ_senderIcon"
+        android:layout_margin="@dimen/_5sdp"
+        android:layout_toEndOf="@+id/civ_senderIcon"
+        android:layout_toRightOf="@+id/civ_senderIcon"
+        android:gravity="center_vertical"
+        android:maxLength="20"
+        android:fontFamily="@font/f400"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="wqeqweqwe"
+        android:textColor="#A4A4A9"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/tv_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_app_title"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:layout_toRightOf="@+id/civ_senderIcon"
+        android:maxLength="20"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="12312312321"
+        android:fontFamily="@font/f500"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+         />
+
+    <LinearLayout
+        android:id="@+id/notification_action_container2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:gravity="right|center_vertical|center_horizontal|center|end"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/action_cancel"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="@dimen/_12sdp"
+            android:src="@drawable/ic_phone_circle_red" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/action_accept"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_phone_circle_green" />
+    </LinearLayout>
+</RelativeLayout>

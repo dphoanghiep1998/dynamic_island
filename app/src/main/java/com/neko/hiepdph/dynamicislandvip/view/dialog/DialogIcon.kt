@@ -56,6 +56,10 @@ class DialogIcon(
             dismiss()
         }
 
+        binding.btnClose.clickWithDebounce {
+            dismiss()
+        }
+
 
     }
 }
