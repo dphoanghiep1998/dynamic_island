@@ -21,6 +21,9 @@ class MyAccessService : AccessibilityService() {
     }
 
     fun closeSmallIslandNotification() {
+        viewManager?.showSmallIslandNotification()
+    }
+    fun closeFullIsLandNotification() {
         viewManager?.closeFullNotificationIsland()
     }
     fun isCallPkgFound(str: String?): Boolean {

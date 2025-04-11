@@ -14,11 +14,10 @@ import android.os.Parcelable
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.WindowManager
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersion24
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersion28
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersion29
@@ -27,19 +26,26 @@ import java.io.ByteArrayOutputStream
 
 class NotificationListener : NotificationListenerService() {
     private var handler: Handler? = null
-
+    companion object{
+        lateinit var instance: NotificationListener
+    }
     override fun onCreate() {
         super.onCreate()
         handler = Handler()
+        instance = this
+    }
+    fun cancelNotificationById(str: String?) {
+        try {
+            cancelNotification(str)
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
     }
 
-
-    override fun onListenerConnected() {
-        super.onListenerConnected()
-    }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         super.onNotificationPosted(sbn)
+
         handler?.postDelayed({
             sbn?.let { sendNotification(it, true) }
         }, 100)
@@ -58,16 +64,13 @@ class NotificationListener : NotificationListenerService() {
         handler?.postDelayed({
             sbn?.let { sendNotification(it, false) }
         }, 100)
-
-
     }
 
     override fun onListenerDisconnected() {
         super.onListenerDisconnected()
         requestRebind(
             ComponentName(
-                this,
-                NotificationListenerService::class.java
+                this, NotificationListenerService::class.java
             )
         )
     }
@@ -96,13 +99,16 @@ class NotificationListener : NotificationListenerService() {
         try {
             appName = packageManager.getApplicationLabel(
                 packageManager.getApplicationInfo(
-                    sbn.packageName, PackageManager.GET_META_DATA
+                    sbn.packageName,
+                    PackageManager.GET_META_DATA
                 )
             ) as String
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
             appName = ""
         }
+        Log.d("TAG", "sendNotification: "+appName)
+
 
         if (sbn.notification != null) {
             val packageName = sbn.packageName
@@ -115,6 +121,7 @@ class NotificationListener : NotificationListenerService() {
                 sbn.notification.getLargeIcon().loadDrawable(applicationContext),
                 50
             )
+
 
             if (sbn.notification.extras != null) {
                 val extras = sbn.notification.extras
@@ -196,32 +203,37 @@ class NotificationListener : NotificationListenerService() {
                 notificationIntent.putExtra("bigText", bigText)
                 notificationIntent.putExtra("isAdded", isNotificationAdded)
                 notificationIntent.putExtra("picture", getByteArrayFromBitmap2(extraImageBitmap))
-                val drawable = ContextCompat.getDrawable(
-                    applicationContext, sbn.notification.icon
-                )
-                val bitmap2 = drawableToBmp(
-                    applicationContext, drawable, 20
-                )
-                if (bitmap2 != null) {
-                    notificationIntent.putExtra(
-                        "icon", getByteArrayFromBitmap(
-                            drawableToBmp(
-                                null as Context?, ContextCompat.getDrawable(
-                                    applicationContext, R.drawable.android_icon
-                                ), 20
-                            )
+                try {
+//                    val drawable = ContextCompat.getDrawable(
+//                        applicationContext, sbn.notification.smallIcon.resId
+//                    )
+//                    val bitmap2 = drawableToBmp(
+//                        applicationContext, drawable, 20
+//                    )
+//                    if (bitmap2 != null) {
+//                        notificationIntent.putExtra(
+//                            "icon", getByteArrayFromBitmap(
+//                                drawableToBmp(
+//                                    null as Context?, ContextCompat.getDrawable(
+//                                        applicationContext, R.drawable.android_icon
+//                                    ), 20
+//                                )
+//                            )
+//                        )
+//                    } else {
+//                        notificationIntent.putExtra("icon", getByteArrayFromBitmap(bitmap2))
+//                    }
+
+                    // Add image data (large icon or extra picture)
+                    if (drawableToBmp != null) {
+                        notificationIntent.putExtra(
+                            "largeIcon", getByteArrayFromBitmap(drawableToBmp)
                         )
-                    )
-                } else {
-                    notificationIntent.putExtra("icon", getByteArrayFromBitmap(bitmap2))
+                    }
+                }catch (e:Exception){
+                    e.printStackTrace()
                 }
 
-                // Add image data (large icon or extra picture)
-                if (drawableToBmp != null) {
-                    notificationIntent.putExtra(
-                        "largeIcon", getByteArrayFromBitmap(drawableToBmp)
-                    )
-                }
 
                 if (sbn.notification.actions != null && sbn.notification.actions.isNotEmpty()) {
                     notificationIntent.putExtra(
@@ -463,17 +475,16 @@ class NotificationListener : NotificationListenerService() {
                     )
                 )
             } else {
-                val actionParsable =
-                    ActionParsable(
-                        actionTitle,
-                        actionIntent,
-                        actionExtras,
-                        remoteInputs,
-                        allowGeneratedReplies,
-                        semanticAction,
-                        isContextualAction,
-                        actionIcon
-                    )
+                val actionParsable = ActionParsable(
+                    actionTitle,
+                    actionIntent,
+                    actionExtras,
+                    remoteInputs,
+                    allowGeneratedReplies,
+                    semanticAction,
+                    isContextualAction,
+                    actionIcon
+                )
                 parsableActions.add(actionParsable)
             }
         }

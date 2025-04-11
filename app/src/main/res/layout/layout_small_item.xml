@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="@dimen/_12sdp"
+    android:paddingVertical="@dimen/_6sdp">
+
+    <ImageView
+        android:id="@+id/iconLeft"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/profile_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iconLeft"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Chronometer
+        android:id="@+id/chronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textColor="@color/green_500"
+        android:textSize="12sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/containerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/right_lottie"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:padding="3dp"
+            android:visibility="gone"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/wave_call01" />
+
+        <TextView
+            android:id="@+id/textRight"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:maxLength="8"
+            android:textColor="@color/green"
+            android:textSize="12sp"
+            android:visibility="visible" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iconRight"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:padding="2dp"
+            app:shapeAppearanceOverlay="@style/roundedImageViewRounded" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/containerProgress"
+        app:layout_constraintEnd_toEndOf="@id/containerProgress"
+        app:layout_constraintStart_toStartOf="@id/containerProgress"
+        app:layout_constraintTop_toTopOf="@id/containerProgress" />
+
+    <FrameLayout
+        android:id="@+id/containerProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.neko.hiepdph.dynamicislandvip.common.customview.CircleProgressBar
+            android:id="@+id/progress_loading"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:progress="0"
+            app:progressBarThickness="4dp"
+            app:progressbarColor="@color/green" />
+
+<!--        <com.google.android.material.progressindicator.CircularProgressIndicator-->
+<!--            android:id="@+id/loading"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:indeterminate="true"-->
+<!--            android:visibility="gone"-->
+<!--            app:indicatorColor="@color/green_500"-->
+<!--            app:indicatorSize="90dp"-->
+<!--            app:progressbarColor="@color/green" />-->
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

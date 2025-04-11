@@ -20,6 +20,13 @@
         <attr name="isColor" format="boolean"/>
         <attr name="isShowContent" format="boolean"/>
     </declare-styleable>
+    <declare-styleable name="CircleProgressBar">
+        <attr name="min" format="integer" />
+        <attr name="max" format="integer" />
+        <attr name="progress" format="integer" />
+        <attr name="progressbarColor" format="color" />
+        <attr name="progressBarThickness" format="dimension" />
+    </declare-styleable>
     <declare-styleable name="TickSeekBar">
         //seekBar
         <attr name="tsb_max" format="float" /><!-- the max value of seekBar to seek, default 100-->

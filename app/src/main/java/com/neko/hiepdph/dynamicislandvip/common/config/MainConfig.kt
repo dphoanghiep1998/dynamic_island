@@ -200,5 +200,14 @@ class MainConfig(private val context: Context) {
         set(sizeBorder) = AppSharePreference.getInstance(context)
             .saveInt(Constant.KEY_SIZE_BORDER, sizeBorder)
 
+    var dynamicHeight :Int
+        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_HEIGHT, 50)
+        set(dynamicHeight) = AppSharePreference.getInstance(context)
+            .saveInt(Constant.KEY_HEIGHT, dynamicHeight)
+
+    var dynamicWidth :Int
+        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_WIDTH, 150)
+        set(dynamicWidth) = AppSharePreference.getInstance(context)
+            .saveInt(Constant.KEY_WIDTH, dynamicWidth)
 
 }

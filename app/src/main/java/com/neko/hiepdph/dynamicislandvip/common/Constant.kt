@@ -3,6 +3,8 @@ package com.neko.hiepdph.dynamicislandvip.common
 import com.neko.hiepdph.dynamicislandvip.BuildConfig
 
 object Constant {
+    const val KEY_WIDTH ="KEY_WIDTH"
+    const val KEY_HEIGHT ="KEY_HEIGHT"
     const val APP_DB ="APP_DB_DYNAMIC"
     const val KEY_BACKGROUND_DYNAMIC_ALPHA = "KEY_BACKGROUND_DYNAMIC_ALPHA"
     const val KEY_BACKGROUND_DYNAMIC_COLOR = "KEY_BACKGROUND_DYNAMIC_COLOR"
@@ -43,5 +45,18 @@ object Constant {
         "https://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}"
 
     const val URL_PRIVACY = "https://sites.google.com/view/cheerupprivacy/home"
+
+
+    const val TYPE_AIRBUDS: String = "TYPE_AIRBUDS"
+
+    const val TYPE_CHARGING: String = "CAT_CHARGING"
+
+    const val TYPE_SILENT: String = "CAT_SILENT"
+
+    const val USE_MATERIAL_COLOR: String = "USE_MATERIAL_COLOR"
+
+    const val WALLPAPER_COLOR: String = "WALLPAPER_COLOR"
+
+    const val WALLPAPER_UPDATED: String = "WALLPAPER_UPDATED"
 
 }

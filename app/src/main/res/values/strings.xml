@@ -117,4 +117,6 @@
     <string name="change_size_border">Change size border</string>
     <string name="select_all">Select All</string>
     <string name="select_app">Select Apps</string>
+    <string name="reply">Reply</string>
+    <string name="airpods">Airpod</string>
 </resources>

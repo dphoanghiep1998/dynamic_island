@@ -1,6 +1,5 @@
 package com.neko.hiepdph.dynamicislandvip.common
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -19,6 +18,7 @@ import com.neko.hiepdph.dynamicislandvip.common.config.MainConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 import java.util.Locale
 
 val Context.config: MainConfig get() = MainConfig.newInstance(this)
@@ -71,7 +71,21 @@ fun View.hide() {
 fun View.show() {
     this.visibility = View.VISIBLE
 }
+fun getFormattedTime(j: Long): String {
+    val j2 = j / 1000
+    val decimalFormat = DecimalFormat("00")
+    val format = decimalFormat.format(j2 / 60)
+    return format + ":" + decimalFormat.format(j2 % 60)
+}
 
+fun convertDpToPixel(f: Float, context: Context?): Float {
+    val resources = if (context == null) {
+        Resources.getSystem()
+    } else {
+        context.resources
+    }
+    return f * ((resources.displayMetrics.densityDpi.toFloat()) / 160.0f)
+}
 fun isInternetAvailable(context: Context): Boolean {
     val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
