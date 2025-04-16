@@ -15,13 +15,41 @@ object Utils {
         }
         return null
     }
-    fun getAirpodsBattery(context: Context): Float {
-        val airPodLevel: Int = getAirPodLevel(context)
+    fun getAirpodsBattery(context: Context): Int {
+        val airPodLevel = getAirPodLevel(context)
         if (airPodLevel == -1) {
-            return -1f
+            return -1
         }
-        return airPodLevel / 10 * 100f
-
+        val i = airPodLevel / 10
+        var i2: Int = R.drawable.airbug_00
+        if (i == 1) {
+            i2 = R.drawable.airbug_01
+        }
+        if (i == 2) {
+            i2 = R.drawable.airbug_02
+        }
+        if (i == 3) {
+            i2 = R.drawable.airbug_03
+        }
+        if (i == 4) {
+            i2 = R.drawable.airbug_04
+        }
+        if (i == 5) {
+            i2 = R.drawable.airbug_05
+        }
+        if (i == 6) {
+            i2 = R.drawable.airbug_06
+        }
+        if (i == 7) {
+            i2 = R.drawable.airbug_07
+        }
+        if (i == 8) {
+            i2 = R.drawable.airbug_08
+        }
+        if (i == 9) {
+            i2 = R.drawable.airbug_09
+        }
+        return if (i == 10) R.drawable.airbug_10 else i2
     }
 
     fun getBatteryImage(context: Context): Int {

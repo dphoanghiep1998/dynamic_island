@@ -25,13 +25,12 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
 
-    buildFeatures{
+    buildFeatures {
         buildConfig = true
         viewBinding = true
     }
@@ -84,5 +83,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     kapt("com.github.bumptech.glide:compiler:4.13.2")
     //lotie
-    implementation ("com.airbnb.android:lottie:6.6.4")
+    implementation("com.airbnb.android:lottie:6.6.4")
+    //circleView
+    implementation("de.hdodenhof:circleimageview:3.1.0")
 }

@@ -10,6 +10,7 @@ class MainConfig(private val context: Context) {
         fun newInstance(context: Context) = MainConfig(context)
     }
 
+
     var isUserRated: Boolean
         get() = AppSharePreference.getInstance(context).getBoolean(Constant.KEY_USER_RATED, false)
         set(isUserRated) = AppSharePreference.getInstance(context)
@@ -201,13 +202,28 @@ class MainConfig(private val context: Context) {
             .saveInt(Constant.KEY_SIZE_BORDER, sizeBorder)
 
     var dynamicHeight :Int
-        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_HEIGHT, 50)
+        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_HEIGHT, 30)
         set(dynamicHeight) = AppSharePreference.getInstance(context)
             .saveInt(Constant.KEY_HEIGHT, dynamicHeight)
 
     var dynamicWidth :Int
-        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_WIDTH, 150)
+        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_WIDTH, 100)
         set(dynamicWidth) = AppSharePreference.getInstance(context)
             .saveInt(Constant.KEY_WIDTH, dynamicWidth)
+
+    var notchStyle:Int
+        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_NOTCH_STYLE, 0)
+        set(notchStyle) = AppSharePreference.getInstance(context)
+            .saveInt(Constant.KEY_NOTCH_STYLE, notchStyle)
+
+    var dynamicMarginVertical:Int
+        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_MARGIN_VERTICAL, 0)
+        set(dynamicMarginVertical) = AppSharePreference.getInstance(context)
+            .saveInt(Constant.KEY_MARGIN_VERTICAL, dynamicMarginVertical)
+
+    var dynamicMarginHorizontal:Int
+        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_MARGIN_HORIZONTAL, 0)
+        set(dynamicMarginHorizontal) = AppSharePreference.getInstance(context)
+            .saveInt(Constant.KEY_MARGIN_HORIZONTAL, dynamicMarginHorizontal)
 
 }

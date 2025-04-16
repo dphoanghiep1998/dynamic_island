@@ -4,11 +4,13 @@ import android.app.Notification
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Handler
 import android.os.Parcelable
 import android.service.notification.NotificationListenerService
@@ -17,7 +19,9 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.WindowManager
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersion24
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersion28
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersion29
@@ -26,14 +30,17 @@ import java.io.ByteArrayOutputStream
 
 class NotificationListener : NotificationListenerService() {
     private var handler: Handler? = null
-    companion object{
+
+    companion object {
         lateinit var instance: NotificationListener
     }
+
     override fun onCreate() {
         super.onCreate()
         handler = Handler()
         instance = this
     }
+
     fun cancelNotificationById(str: String?) {
         try {
             cancelNotification(str)
@@ -99,15 +106,14 @@ class NotificationListener : NotificationListenerService() {
         try {
             appName = packageManager.getApplicationLabel(
                 packageManager.getApplicationInfo(
-                    sbn.packageName,
-                    PackageManager.GET_META_DATA
+                    sbn.packageName, PackageManager.GET_META_DATA
                 )
             ) as String
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
             appName = ""
         }
-        Log.d("TAG", "sendNotification: "+appName)
+        Log.d("TAG", "sendNotification: " + appName)
 
 
         if (sbn.notification != null) {
@@ -203,26 +209,56 @@ class NotificationListener : NotificationListenerService() {
                 notificationIntent.putExtra("bigText", bigText)
                 notificationIntent.putExtra("isAdded", isNotificationAdded)
                 notificationIntent.putExtra("picture", getByteArrayFromBitmap2(extraImageBitmap))
+                var bitmap2: Bitmap? = null
                 try {
-//                    val drawable = ContextCompat.getDrawable(
-//                        applicationContext, sbn.notification.smallIcon.resId
-//                    )
-//                    val bitmap2 = drawableToBmp(
-//                        applicationContext, drawable, 20
-//                    )
-//                    if (bitmap2 != null) {
-//                        notificationIntent.putExtra(
-//                            "icon", getByteArrayFromBitmap(
-//                                drawableToBmp(
-//                                    null as Context?, ContextCompat.getDrawable(
-//                                        applicationContext, R.drawable.android_icon
-//                                    ), 20
-//                                )
-//                            )
-//                        )
-//                    } else {
-//                        notificationIntent.putExtra("icon", getByteArrayFromBitmap(bitmap2))
-//                    }
+                    var drawable: Drawable? = null
+                    if (Build.VERSION.SDK_INT >= 26) {
+                        val launcherApps =
+                            applicationContext.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+                        for (userHandle in launcherApps.profiles) {
+                            for (launcherActivityInfo in launcherApps.getActivityList(
+                                null, userHandle
+                            )) {
+                                val pkg = launcherActivityInfo.componentName.packageName
+                                if (pkg == packageName) {
+                                    drawable = launcherActivityInfo.getIcon(0)
+                                }
+                            }
+                        }
+                    } else {
+                        val intent = Intent("android.intent.action.MAIN")
+                        intent.addCategory("android.intent.category.LAUNCHER")
+                        for (resolveInfo in applicationContext.packageManager.queryIntentActivities(
+                            intent, 0
+                        )) {
+                            val str3 = resolveInfo.activityInfo.packageName
+                            if (str3 == packageName) {
+                                drawable = resolveInfo.loadIcon(applicationContext.packageManager)
+                            }
+                        }
+                    }
+
+                    if (drawable != null) {
+                        try {
+                            bitmap2 = drawableToBmp(applicationContext, drawable, 20);
+                        } catch (e: Exception) {
+
+                        }
+                    }
+
+                    if (bitmap2 == null) {
+                        notificationIntent.putExtra(
+                            "icon", getByteArrayFromBitmap(
+                                drawableToBmp(
+                                    null as Context?, ContextCompat.getDrawable(
+                                        applicationContext, R.drawable.android_icon
+                                    ), 20
+                                )
+                            )
+                        )
+                    } else {
+                        notificationIntent.putExtra("icon", getByteArrayFromBitmap(bitmap2))
+                    }
 
                     // Add image data (large icon or extra picture)
                     if (drawableToBmp != null) {
@@ -230,7 +266,7 @@ class NotificationListener : NotificationListenerService() {
                             "largeIcon", getByteArrayFromBitmap(drawableToBmp)
                         )
                     }
-                }catch (e:Exception){
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
 

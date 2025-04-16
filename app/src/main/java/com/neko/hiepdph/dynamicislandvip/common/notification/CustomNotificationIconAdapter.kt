@@ -67,8 +67,8 @@ class CustomNotificationIconAdapter(
                     binding.textLeft.setTextColor(notification.color)
 
                     val airpodsBattery = Utils.getAirpodsBattery(context)
-                    if (airpodsBattery != -1f) {
-                        binding.textProgress.text = "${Utils.getAirPodLevel(context)}%"
+                    if (airpodsBattery != -1) {
+                        binding.textRight.text = "${Utils.getAirPodLevel(context)}%"
                     } else {
                         binding.textRight.setText(R.string.airpods)
                     }

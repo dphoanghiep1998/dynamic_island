@@ -3,9 +3,12 @@ package com.neko.hiepdph.dynamicislandvip.common
 import com.neko.hiepdph.dynamicislandvip.BuildConfig
 
 object Constant {
-    const val KEY_WIDTH ="KEY_WIDTH"
-    const val KEY_HEIGHT ="KEY_HEIGHT"
-    const val APP_DB ="APP_DB_DYNAMIC"
+    const val KEY_MARGIN_HORIZONTAL = "KEY_MARGIN_HORIZONTAL"
+    const val KEY_MARGIN_VERTICAL = "KEY_MARGIN_VERTICAL"
+    const val KEY_NOTCH_STYLE = "KEY_NOTCH_STYLE"
+    const val KEY_WIDTH = "KEY_WIDTH"
+    const val KEY_HEIGHT = "KEY_HEIGHT"
+    const val APP_DB = "APP_DB_DYNAMIC"
     const val KEY_BACKGROUND_DYNAMIC_ALPHA = "KEY_BACKGROUND_DYNAMIC_ALPHA"
     const val KEY_BACKGROUND_DYNAMIC_COLOR = "KEY_BACKGROUND_DYNAMIC_COLOR"
     const val KEY_SIZE_BORDER = "KEY_SIZE_BORDER"

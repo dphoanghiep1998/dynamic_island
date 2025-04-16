@@ -395,7 +395,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_12sdp"
                     android:fontFamily="@font/f400"
-                    android:text="@string/horizontal"
+                    android:text="@string/height"
                     android:textColor="@color/b200"
                     android:textSize="@dimen/_14sdp"
                     app:layout_constraintStart_toStartOf="parent"

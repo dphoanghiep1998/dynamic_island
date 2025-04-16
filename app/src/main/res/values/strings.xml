@@ -119,4 +119,8 @@
     <string name="select_app">Select Apps</string>
     <string name="reply">Reply</string>
     <string name="airpods">Airpod</string>
+    <string name="percent">%%</string>
+    <string name="height">Height</string>
+    <string name="battery_full">Battery charged full!</string>
+    <string name="battery_charging">Charging</string>
 </resources>
