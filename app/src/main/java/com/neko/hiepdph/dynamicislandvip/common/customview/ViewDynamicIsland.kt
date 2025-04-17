@@ -10,11 +10,13 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import androidx.core.app.NotificationCompat
 import com.neko.hiepdph.dynamicislandvip.R
+import com.neko.hiepdph.dynamicislandvip.common.config
 import com.neko.hiepdph.dynamicislandvip.common.hide
 import com.neko.hiepdph.dynamicislandvip.common.notification.Notification
 import com.neko.hiepdph.dynamicislandvip.common.show
@@ -47,7 +49,8 @@ class ViewDynamicIsland(
         }
 
         binding = LayoutViewDynamicIslandBinding.inflate(LayoutInflater.from(context), this, false)
-        addView(binding.root)
+        addView(binding.root,ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT)
+        setBackgroundResource(R.drawable.bg_8)
     }
 
     @SuppressLint("SetTextI18n")
@@ -130,19 +133,19 @@ class ViewDynamicIsland(
     fun onGone() {
         show = false
         isAnimRunning = true
-        animate().alpha(0f).scaleX(.8f).scaleY(.8f).setDuration(500).withEndAction {
+        animate().alpha(0f).setDuration(300).withEndAction {
             isAnimRunning = false
         }.start()
     }
 
     fun onShow() {
+        pivotX = (context.resources.displayMetrics.widthPixels / 2).toFloat()
+        pivotY = (context.config.dynamicHeight / 2 + context.config.dynamicMarginVertical).toFloat()
         show = true
-        pivotX = width / 2f
-        pivotY = height / 2f
         scaleX = .8f
         scaleY = .8f
         isAnimRunning = true
-        animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(500).withEndAction {
+        animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(300).withEndAction {
             isAnimRunning = false
         }.start()
     }

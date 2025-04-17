@@ -131,5 +131,15 @@ object Utils {
         }
     }
 
+    fun getWidthScreen(context: Context): Int {
+        return context.resources.displayMetrics.widthPixels.coerceAtMost(context.resources.displayMetrics.heightPixels)
+    }
+
+
+    fun getHeightScreen(context: Context): Int {
+        return context.resources.displayMetrics.widthPixels.coerceAtLeast(context.resources.displayMetrics.heightPixels)
+
+    }
+
 
 }

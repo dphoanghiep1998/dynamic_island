@@ -1,5 +1,6 @@
 package com.neko.hiepdph.dynamicislandvip.common.customview
 
+import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
@@ -7,15 +8,14 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
-import androidx.core.app.NotificationCompat
 import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.Constant
 import com.neko.hiepdph.dynamicislandvip.common.Utils
+import com.neko.hiepdph.dynamicislandvip.common.config
 import com.neko.hiepdph.dynamicislandvip.common.convertDpToPixel
 import com.neko.hiepdph.dynamicislandvip.common.hide
 import com.neko.hiepdph.dynamicislandvip.common.notification.Notification
@@ -23,11 +23,11 @@ import com.neko.hiepdph.dynamicislandvip.common.show
 import com.neko.hiepdph.dynamicislandvip.databinding.LayoutViewDynamicIslandSmallBinding
 
 class ViewDynamicIslandSmall(
-    context: Context, attrs: AttributeSet?=null, defStyleAttr: Int=0, defStyleRes: Int=0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
     private var animRing: AnimatorSet? = null
     private var show = false
-    private var isAnimRunning = false
+    var isAnimRunning = false
     private var binding: LayoutViewDynamicIslandSmallBinding
 
     init {
@@ -127,23 +127,53 @@ class ViewDynamicIslandSmall(
         }
     }
 
-    fun onGone() {
-        show = false
-        isAnimRunning = true
-        animate().alpha(0f).scaleX(.8f).scaleY(.8f).setDuration(500).withEndAction {
-            isAnimRunning = false
-        }.start()
-    }
 
-    fun onShow() {
-        show = true
-        pivotX = width / 2f
-        pivotY = height / 2f
-        scaleX = .8f
-        scaleY = .8f
+    fun onShow(action:()->Unit) {
+        pivotX = (context.resources.displayMetrics.widthPixels / 2).toFloat()
+        pivotY = (context.config.dynamicHeight / 2 + context.config.dynamicMarginVertical).toFloat()
         isAnimRunning = true
-        animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(500).withEndAction {
-            isAnimRunning = false
-        }.start()
+        show = true
+        val scaleUpX = ObjectAnimator.ofFloat(this, View.SCALE_X, 0f, 1f)
+        val scaleUpY = ObjectAnimator.ofFloat(this, View.SCALE_Y, 0f, 1f)
+        val alpha1 = ObjectAnimator.ofFloat(this, View.ALPHA, 0f, 1f)
+
+
+        val scaleUpSet = AnimatorSet().apply {
+            play(alpha1)
+            playTogether(scaleUpX, scaleUpY)
+            duration = 300 // Scale-up duration
+        }
+        val waitAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = 4000 // Wait duration
+        }
+        val scaleDownX = ObjectAnimator.ofFloat(this, View.SCALE_X, 1f, 0.3f)
+        val scaleDownY = ObjectAnimator.ofFloat(this, View.SCALE_Y, 1f, 0.3f)
+        val alpha = ObjectAnimator.ofFloat(this, View.ALPHA, 1f, 0f)
+        val scaleDownSet = AnimatorSet().apply {
+            playTogether(scaleDownX, scaleDownY,alpha)
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    isAnimRunning = false
+                    show = false
+                    action.invoke()
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+                }
+
+            })
+            duration = 300 // Scale-down duration
+        }
+        AnimatorSet().apply {
+            playSequentially(scaleUpSet, waitAnimator, scaleDownSet)
+            start()
+        }
     }
 }

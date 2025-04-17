@@ -3,6 +3,7 @@ package com.neko.hiepdph.dynamicislandvip.common
 import com.neko.hiepdph.dynamicislandvip.BuildConfig
 
 object Constant {
+    const val UPDATE_LAYOUT_SIZE = "UPDATE_LAYOUT_SIZE"
     const val KEY_MARGIN_HORIZONTAL = "KEY_MARGIN_HORIZONTAL"
     const val KEY_MARGIN_VERTICAL = "KEY_MARGIN_VERTICAL"
     const val KEY_NOTCH_STYLE = "KEY_NOTCH_STYLE"

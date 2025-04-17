@@ -25,7 +25,8 @@
         android:layout_centerVertical="true"
         android:gravity="center_vertical"
         android:textColor="@color/white"
-        android:textSize="12sp"
+        android:textSize="@dimen/_14sdp"
+        android:fontFamily="@font/f500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/iconLeft"
         app:layout_constraintTop_toTopOf="parent" />
@@ -66,16 +67,17 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:maxLength="8"
+            android:fontFamily="@font/f500"
             android:textColor="@color/green"
             android:textSize="@dimen/_12sdp"
             android:visibility="visible" />
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iconRight"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center_vertical"
-            app:shapeAppearanceOverlay="@style/roundedImageViewRounded" />
+         />
     </LinearLayout>
 
 

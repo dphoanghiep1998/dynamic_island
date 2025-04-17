@@ -3,6 +3,7 @@ package com.neko.hiepdph.dynamicislandvip.common.config
 import android.content.Context
 import com.neko.hiepdph.dynamicislandvip.common.AppSharePreference
 import com.neko.hiepdph.dynamicislandvip.common.Constant
+import com.neko.hiepdph.dynamicislandvip.common.config
 import java.util.Locale
 
 class MainConfig(private val context: Context) {
@@ -186,7 +187,8 @@ class MainConfig(private val context: Context) {
             .saveString(Constant.KEY_BACKGROUND_DYNAMIC_COLOR, backgroundDynamicColor)
 
     var backgroundDynamicAlpha: Float
-        get() = AppSharePreference.getInstance(context).getFloat(Constant.KEY_BACKGROUND_DYNAMIC_ALPHA, 1f)
+        get() = AppSharePreference.getInstance(context)
+            .getFloat(Constant.KEY_BACKGROUND_DYNAMIC_ALPHA, 1f)
         set(backgroundDynamicAlpha) = AppSharePreference.getInstance(context)
             .saveFloat(Constant.KEY_BACKGROUND_DYNAMIC_ALPHA, backgroundDynamicAlpha)
 
@@ -201,28 +203,31 @@ class MainConfig(private val context: Context) {
         set(sizeBorder) = AppSharePreference.getInstance(context)
             .saveInt(Constant.KEY_SIZE_BORDER, sizeBorder)
 
-    var dynamicHeight :Int
-        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_HEIGHT, 30)
+    var dynamicHeight: Int
+        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_HEIGHT, 20)
         set(dynamicHeight) = AppSharePreference.getInstance(context)
             .saveInt(Constant.KEY_HEIGHT, dynamicHeight)
 
-    var dynamicWidth :Int
+    var dynamicWidth: Int
         get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_WIDTH, 100)
         set(dynamicWidth) = AppSharePreference.getInstance(context)
             .saveInt(Constant.KEY_WIDTH, dynamicWidth)
 
-    var notchStyle:Int
+    var notchStyle: Int
         get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_NOTCH_STYLE, 0)
         set(notchStyle) = AppSharePreference.getInstance(context)
             .saveInt(Constant.KEY_NOTCH_STYLE, notchStyle)
 
-    var dynamicMarginVertical:Int
+    var dynamicMarginVertical: Int
         get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_MARGIN_VERTICAL, 0)
         set(dynamicMarginVertical) = AppSharePreference.getInstance(context)
             .saveInt(Constant.KEY_MARGIN_VERTICAL, dynamicMarginVertical)
 
-    var dynamicMarginHorizontal:Int
-        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_MARGIN_HORIZONTAL, 0)
+    var dynamicMarginHorizontal: Int
+        get() = AppSharePreference.getInstance(context).getInt(
+            Constant.KEY_MARGIN_HORIZONTAL,
+            context.resources.displayMetrics.widthPixels / 2 - context.config.dynamicWidth / 2
+        )
         set(dynamicMarginHorizontal) = AppSharePreference.getInstance(context)
             .saveInt(Constant.KEY_MARGIN_HORIZONTAL, dynamicMarginHorizontal)
 
