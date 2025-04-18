@@ -25,6 +25,7 @@ import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersion24
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersion28
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersion29
+import com.neko.hiepdph.dynamicislandvip.common.config
 import java.io.ByteArrayOutputStream
 
 
@@ -113,12 +114,15 @@ class NotificationListener : NotificationListenerService() {
             e.printStackTrace()
             appName = ""
         }
-        Log.d("TAG", "sendNotification: " + appName)
 
 
         if (sbn.notification != null) {
+
             val packageName = sbn.packageName
             category = if ((sbn.notification.category != null)) sbn.notification.category else ""
+            if(!config.directEnable && category == "navigation"){
+                return
+            }
             tickerText =
                 if ((sbn.notification.tickerText != null)) sbn.notification.tickerText.toString() else null
             val drawableToBmp: Bitmap? = if ((sbn.notification.getLargeIcon() == null)) null
@@ -178,12 +182,17 @@ class NotificationListener : NotificationListenerService() {
                 notificationIntent.putExtra("isOngoing", sbn.isOngoing)
                 notificationIntent.putExtra("tag", sbn.tag)
                 notificationIntent.putExtra("category", category)
+                val template = if ((extras.containsKey(NotificationCompat.EXTRA_TEMPLATE))) extras.getString(
+                    NotificationCompat.EXTRA_TEMPLATE, ""
+                ) else ""
                 notificationIntent.putExtra(
                     "template",
-                    if ((extras.containsKey(NotificationCompat.EXTRA_TEMPLATE))) extras.getString(
-                        NotificationCompat.EXTRA_TEMPLATE, ""
-                    ) else ""
+                   template
                 )
+                if(!config.musicEnable && template.contains("MediaStyle")){
+                    return
+                }
+
                 notificationIntent.putExtra("group_key", sbn.groupKey)
                 notificationIntent.putExtra("key", sbn.key)
                 notificationIntent.putExtra("package", packageName)
@@ -276,6 +285,20 @@ class NotificationListener : NotificationListenerService() {
                         "actions", getParsableActions(sbn.notification.actions)
                     )
                 }
+                Log.d("TAG", "appName: $appName")
+                Log.d("TAG", "getPackageName: " + sbn.getPackageName())
+                Log.d("TAG", "title: " + title)
+                Log.d("TAG", "titleBig: " + titleBig)
+                Log.d("TAG", "text: " + text)
+                Log.d("TAG", "bigText: " + bigText)
+                Log.d("TAG", "subTitle: " + subTitle)
+                Log.d("TAG", "subText: " + subText)
+                Log.d("TAG", "category: " + category)
+                Log.d("TAG", "summaryText: " + summaryText)
+                Log.d("TAG", "extraInfoText: " + extraInfoText)
+                Log.d("TAG", "chrono: " + showChronometer)
+                Log.d("TAG", "progress: " + currentProgress)
+                Log.d("TAG", "action: " + currentProgress)
 
                 // Send the intent as a broadcast
                 LocalBroadcastManager.getInstance(applicationContext)

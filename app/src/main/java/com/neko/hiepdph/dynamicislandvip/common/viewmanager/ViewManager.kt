@@ -20,6 +20,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -54,6 +55,7 @@ class ViewManager(
     private var notificationListener: BroadcastReceiver? = null
     private var listSmallDynamicIsland: ArrayList<Notification> = arrayListOf()
     private var listBigDynamicIsland: ArrayList<Notification> = arrayListOf()
+    private var rlBig: RelativeLayout? = null
     private var currentIndex: Int = 0
     private var filterPKG = arrayListOf<AppDetail>()
     private var firstInit = true
@@ -96,11 +98,21 @@ class ViewManager(
 
 
     init {
+        rlBig = RelativeLayout(context).apply {
+            alpha = 0f
+            setOnClickListener {
+                hideBigView()
+            }
+        }
         addDynamicView()
         initDynamicSmall()
         initDynamicExtend()
         initActionListener()
         initNotificationListener()
+
+    }
+
+    private fun hideBigView() {
 
     }
 
@@ -135,6 +147,7 @@ class ViewManager(
             height = ViewGroup.LayoutParams.WRAP_CONTENT
             width =
                 (context.resources.displayMetrics.widthPixels - 40 * context.resources.displayMetrics.scaledDensity).toInt()
+            y = context.config.dynamicMarginVertical
             gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
             softInputMode = WindowManager.LayoutParams.SOFT_INPUT_IS_FORWARD_NAVIGATION
             if (buildMinVersionP()) {
@@ -151,9 +164,25 @@ class ViewManager(
         }
     }
 
+    private fun addExtendView() {
+        try {
+            windowManager?.addView(
+                rlBig, ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+                )
+            )
+            rlBig?.removeAllViews()
+            rlBig?.addView(viewDynamicIslandBig,ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+            ))
+
+        } catch (e: Exception) {
+
+        }
+    }
+
 
     private fun addDynamicView() {
-        Log.d("TAG", "addDynamicView: " + context.config.dynamicHeight)
         windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         layoutParams = WindowManager.LayoutParams().apply {
             type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
@@ -161,14 +190,10 @@ class ViewManager(
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
             format = PixelFormat.TRANSLUCENT
             gravity = Gravity.TOP or Gravity.START
-            height =
-                context.config.dynamicHeight
-            width =
-                context.config.dynamicWidth
-            y =
-                context.config.dynamicMarginVertical
-            x =
-                context.config.dynamicMarginHorizontal
+            height = context.config.dynamicHeight
+            width = context.config.dynamicWidth
+            y = context.config.dynamicMarginVertical
+            x = context.config.dynamicMarginHorizontal
             softInputMode = WindowManager.LayoutParams.SOFT_INPUT_IS_FORWARD_NAVIGATION
             if (buildMinVersionP()) {
                 layoutInDisplayCutoutMode =
@@ -231,42 +256,85 @@ class ViewManager(
         actionListener = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent?) {
                 if (intent != null) {
-                    if (intent.action == "android.intent.action.BATTERY_CHANGED") {
-                        val status = intent.getIntExtra(NotificationCompat.CATEGORY_STATUS, -1)
-                        if (status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL) {
-                            var notification: Notification? = null
-                            for ((i, n) in listSmallDynamicIsland.withIndex()) {
-                                if (n.type == Constant.TYPE_CHARGING) {
-                                    notification = n
+                    when (intent.action) {
+                        "android.intent.action.BATTERY_CHANGED" -> {
+                            if (!context.config.batteryChargeEnable) {
+                                return
+                            }
+                            val status = intent.getIntExtra(NotificationCompat.CATEGORY_STATUS, -1)
+                            if (status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL) {
+                                var notification: Notification? = null
+                                for ((i, n) in listSmallDynamicIsland.withIndex()) {
+                                    if (n.type == Constant.TYPE_CHARGING) {
+                                        notification = n
+                                        break
+                                    }
+                                }
+                                if (notification == null) {
+                                    notification = Notification(Constant.TYPE_CHARGING, 0, 0)
+                                }
+                                val batteryLevel = Utils.getBatteryLevel(context)
+                                notification.text = "$batteryLevel%"
+                                notification.color = context.getColor(R.color.green_500)
+                                notification.title = if (batteryLevel < 100) {
+                                    context.getString(R.string.battery_charging)
+                                } else {
+                                    context.getString(R.string.battery_full)
+                                }
+
+                                if (!firstInit) {
+                                    showSmallIsland(notification)
+                                }
+                                firstInit = false
+                            } else {
+                                val iterator = listSmallDynamicIsland.iterator()
+                                while (iterator.hasNext()) {
+                                    val n = iterator.next()
+                                    if (n.type == Constant.TYPE_CHARGING) {
+                                        iterator.remove()
+                                        break
+                                    }
+                                }
+                            }
+                        }
+
+                        "android.media.RINGER_MODE_CHANGED" -> {
+                            if (!context.config.ringingStateEnable) {
+                                return
+                            }
+                            val dndState: Int = Utils.getDndState(context)
+                            val iterator = listSmallDynamicIsland.iterator()
+                            while (iterator.hasNext()) {
+                                val notification = iterator.next()
+                                if (notification.type == Constant.TYPE_SILENT) {
+                                    iterator.remove()
                                     break
                                 }
                             }
-                            if (notification == null) {
-                                notification = Notification(Constant.TYPE_CHARGING, 0, 0)
-                            }
-                            val batteryLevel = Utils.getBatteryLevel(context)
-                            notification.text = "$batteryLevel%"
-                            notification.color = context.getColor(R.color.green_500)
-                            notification.title = if (batteryLevel < 100) {
-                                context.getString(R.string.battery_charging)
-                            } else {
-                                context.getString(R.string.battery_full)
-                            }
 
-                            if (!firstInit) {
-                                showSmallIsland(notification)
+                            when (dndState) {
+                                0 -> {
+                                    val silentNotification = Notification(
+                                        Constant.TYPE_SILENT, R.drawable.silent, 0
+                                    ).apply {
+                                        title = context.getString(R.string.silent_txt)
+                                        color = context.getColor(R.color.red_500)
+                                    }
+                                    showSmallIsland(silentNotification)
+                                }
+
+                                1 -> {
+                                    val vibrateNotification = Notification(
+                                        Constant.TYPE_SILENT, R.drawable.vibration_icon, 0
+                                    ).apply {
+                                        title = context.getString(R.string.vibrate)
+                                        color = context.getColor(R.color.purple_400)
+                                    }
+                                    showSmallIsland(vibrateNotification)
+                                }
                             }
-                            firstInit = false
                         }
-                    } else {
-                        val iterator = listSmallDynamicIsland.iterator()
-                        while (iterator.hasNext()) {
-                            val n = iterator.next()
-                            if (n.type == Constant.TYPE_CHARGING) {
-                                iterator.remove()
-                                break
-                            }
-                        }
+
                     }
 
 
@@ -274,6 +342,7 @@ class ViewManager(
             }
 
         }
+
         val intentFilter = IntentFilter()
         intentFilter.addAction("android.intent.action.SCREEN_ON")
         intentFilter.addAction("android.intent.action.SCREEN_OFF")
@@ -486,10 +555,8 @@ class ViewManager(
     fun updateLayout() {
         Log.d("TAG", "updateLayout: ")
         layoutParams?.apply {
-            height =
-                context.config.dynamicHeight
-            width =
-                context.config.dynamicWidth
+            height = context.config.dynamicHeight
+            width = context.config.dynamicWidth
             y = context.config.dynamicMarginVertical
             x = context.config.dynamicMarginHorizontal
         }

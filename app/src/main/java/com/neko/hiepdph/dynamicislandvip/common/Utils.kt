@@ -2,8 +2,10 @@ package com.neko.hiepdph.dynamicislandvip.common
 
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.AudioManager
 import android.os.BatteryManager
 import androidx.core.app.ActivityCompat
 import com.neko.hiepdph.dynamicislandvip.R
@@ -134,7 +136,22 @@ object Utils {
     fun getWidthScreen(context: Context): Int {
         return context.resources.displayMetrics.widthPixels.coerceAtMost(context.resources.displayMetrics.heightPixels)
     }
-
+    fun getDndState(context: Context): Int {
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        return audioManager.ringerMode
+    }
+    fun formatDistance(meters: Int): String {
+        return if (meters >= 1000) {
+            val km = meters / 1000.0
+            "%.1f km".format(km) // one decimal point
+        } else {
+            "$meters m"
+        }
+    }
+    fun convertDpToPixel(f: Float, context: Context): Float {
+        val resources = context.resources
+        return f * ((resources.displayMetrics.densityDpi.toFloat()) / 160.0f)
+    }
 
     fun getHeightScreen(context: Context): Int {
         return context.resources.displayMetrics.widthPixels.coerceAtLeast(context.resources.displayMetrics.heightPixels)

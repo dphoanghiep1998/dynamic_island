@@ -1,8 +1,11 @@
 package com.neko.hiepdph.dynamicislandvip.view.main
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.Point
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.WindowManager
 import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.Constant
 import com.neko.hiepdph.dynamicislandvip.common.base_component.BaseFragment
@@ -30,13 +33,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private fun setupView() {
         changeNotchStyle()
+        val point = Point()
+        val windowManager = requireActivity().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager.defaultDisplay?.getRealSize(point)
         binding.seekbarVertical.apply {
             max =
-                requireActivity().resources.displayMetrics.heightPixels / context.resources.displayMetrics.scaledDensity - context.config.dynamicHeight * context.resources.displayMetrics.scaledDensity
+                (point.y - context.config.dynamicHeight).toFloat()
             setProgress(requireActivity().config.dynamicMarginVertical.toFloat())
             onSeekChangeListener = object : OnSeekChangeListener {
                 override fun onSeeking(seekParams: SeekParams?) {
-
+                    binding.tvVerticalValue.text = seekParams?.progress.toString()
+                    requireActivity().config.dynamicMarginVertical =
+                        binding.seekbarVertical.progress
+                    updateDynamicView()
                 }
 
                 override fun onStartTrackingTouch(seekBar: TickSeekBar?) {
@@ -44,10 +53,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 }
 
                 override fun onStopTrackingTouch(seekBar: TickSeekBar?) {
-                    binding.tvVerticalValue.text = seekBar?.progress.toString()
-                    requireActivity().config.dynamicMarginVertical =
-                        binding.seekbarVertical.progress
-                    updateDynamicView()
+
 
                 }
 
@@ -64,7 +70,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             setProgress(requireActivity().config.dynamicMarginHorizontal.toFloat())
             onSeekChangeListener = object : OnSeekChangeListener {
                 override fun onSeeking(seekParams: SeekParams?) {
-
+                    binding.tvHorizontalValue.text = seekParams?.progress.toString()
+                    requireActivity().config.dynamicMarginHorizontal =
+                        binding.seekbarHorizontal.progress
+                    updateDynamicView()
                 }
 
                 override fun onStartTrackingTouch(seekBar: TickSeekBar?) {
@@ -72,10 +81,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 }
 
                 override fun onStopTrackingTouch(seekBar: TickSeekBar?) {
-                    binding.tvHorizontalValue.text = seekBar?.progress.toString()
-                    requireActivity().config.dynamicMarginHorizontal =
-                        binding.seekbarHorizontal.progress
-                    updateDynamicView()
+
 
                 }
 
@@ -90,7 +96,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             setProgress(requireActivity().config.dynamicWidth.toFloat())
             onSeekChangeListener = object : OnSeekChangeListener {
                 override fun onSeeking(seekParams: SeekParams?) {
-
+                    binding.tvWidthValue.text = seekParams?.progress.toString()
+                    requireActivity().config.dynamicWidth = binding.seekbarWidth.progress
+                    updateDynamicView()
                 }
 
                 override fun onStartTrackingTouch(seekBar: TickSeekBar?) {
@@ -98,9 +106,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 }
 
                 override fun onStopTrackingTouch(seekBar: TickSeekBar?) {
-                    binding.tvWidthValue.text = seekBar?.progress.toString()
-                    requireActivity().config.dynamicWidth = binding.seekbarWidth.progress
-                    updateDynamicView()
+
 
                 }
 
@@ -110,12 +116,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         binding.tvWidthValue.text = requireActivity().config.dynamicWidth.toString()
 
         binding.seekbarHeight.apply {
-            max = 40f
-            min = 0f
+            max = 160f
+            min = 50f
             setProgress(requireActivity().config.dynamicHeight.toFloat())
             onSeekChangeListener = object : OnSeekChangeListener {
                 override fun onSeeking(seekParams: SeekParams?) {
-
+                    binding.tvHeightValue.text = seekParams?.progress.toString()
+                    requireActivity().config.dynamicHeight = binding.seekbarHeight.progress
+                    updateDynamicView()
                 }
 
                 override fun onStartTrackingTouch(seekBar: TickSeekBar?) {
@@ -123,9 +131,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 }
 
                 override fun onStopTrackingTouch(seekBar: TickSeekBar?) {
-                    binding.tvHeightValue.text = seekBar?.progress.toString()
-                    requireActivity().config.dynamicHeight = binding.seekbarHeight.progress
-                    updateDynamicView()
+
 
                 }
 

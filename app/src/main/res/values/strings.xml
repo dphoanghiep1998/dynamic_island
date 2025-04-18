@@ -123,4 +123,6 @@
     <string name="height">Height</string>
     <string name="battery_full">Battery charged full!</string>
     <string name="battery_charging">Charging</string>
+    <string name="silent_txt">Silent</string>
+    <string name="vibrate">Vibrate</string>
 </resources>

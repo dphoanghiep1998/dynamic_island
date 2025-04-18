@@ -76,6 +76,7 @@ class ViewDynamicIslandSmall(
 
         when (notification.type.lowercase()) {
             Constant.TYPE_AIRBUDS.lowercase() -> {
+
                 binding.iconLeft.setImageResource(R.drawable.ic_ear_bud)
                 binding.textLeft.setTextColor(notification.color)
 
@@ -92,7 +93,6 @@ class ViewDynamicIslandSmall(
 
             Constant.TYPE_CHARGING.lowercase() -> {
                 binding.iconLeft.visibility = View.GONE
-
                 binding.textRight.apply {
                     setTextColor(notification.color)
                     text = notification.text
@@ -119,6 +119,7 @@ class ViewDynamicIslandSmall(
                 binding.textRight.apply {
                     text = notification.title
                     setTextColor(notification.color)
+                    setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
                 }
 
                 binding.iconRight.setImageResource(0)

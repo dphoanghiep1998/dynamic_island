@@ -16,6 +16,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import androidx.core.app.NotificationCompat
 import com.neko.hiepdph.dynamicislandvip.R
+import com.neko.hiepdph.dynamicislandvip.common.Utils
 import com.neko.hiepdph.dynamicislandvip.common.config
 import com.neko.hiepdph.dynamicislandvip.common.hide
 import com.neko.hiepdph.dynamicislandvip.common.notification.Notification
@@ -49,8 +50,11 @@ class ViewDynamicIsland(
         }
 
         binding = LayoutViewDynamicIslandBinding.inflate(LayoutInflater.from(context), this, false)
-        addView(binding.root,ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT)
-        setBackgroundResource(R.drawable.bg_8)
+        addView(
+            binding.root,
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
     }
 
     @SuppressLint("SetTextI18n")
@@ -86,14 +90,14 @@ class ViewDynamicIsland(
         }
 
         if (notification.senderIcon == null) {
-            if(notification.icon != null){
+            if (notification.icon != null) {
                 binding.iconLeft.setImageBitmap(notification.icon)
                 binding.iconLeft.show()
-            }else{
+            } else {
                 binding.iconLeft.setImageResource(0)
                 binding.iconLeft.hide()
             }
-        }else{
+        } else {
             notification.icon?.let {
                 binding.iconRight.setImageBitmap(it)
             } ?: run {
@@ -107,7 +111,7 @@ class ViewDynamicIsland(
             ) && notification.isOngoing
         ) {
             //do when call
-        }else if (!notification.template.contains("MediaStyle") || notification.isClearable) {
+        } else if (!notification.template.contains("MediaStyle") || notification.isClearable) {
             binding.textRight.hide()
             binding.iconLeft.setImageBitmap(notification.senderIcon)
         } else {
@@ -122,9 +126,18 @@ class ViewDynamicIsland(
             binding.iconRight.hide()
             binding.textRight.hide()
         }
+        if (notification.category == "navigation") {
+            binding.textRight.show()
+            binding.textRight.text = Utils.formatDistance(notification.progress)
+            binding.iconRight.hide()
+        }
 
         binding.root.setOnClickListener {
 //                    onItemClicked.invoke(notification)
+        }
+
+        binding.root.setOnLongClickListener {
+            return@setOnLongClickListener true
         }
 
 

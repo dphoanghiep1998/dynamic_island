@@ -11,7 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center">
 
         <ImageView
@@ -24,7 +24,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHeight_max="@dimen/_30sdp" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iconAlbum"
@@ -34,9 +35,11 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/_2sdp"
             app:layout_constraintBottom_toBottomOf="parent"
+
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHeight_max="@dimen/_30sdp" />
 
         <TextView
             android:id="@+id/textLeft"
@@ -56,8 +59,9 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_centerVertical="true"
-            android:visibility="gone"
             android:layout_marginEnd="@dimen/_2sdp"
+            android:visibility="gone"
+            app:layout_constraintHeight_max="@dimen/_20sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
@@ -70,9 +74,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/_2sdp"
-            android:gravity="right|center_vertical|center_horizontal|center|end"
+            android:layout_marginEnd="@dimen/_4sdp"
             android:textSize="@dimen/_12sdp"
+            android:includeFontPadding="false"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
@@ -88,7 +92,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHeight_max="@dimen/_30sdp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
