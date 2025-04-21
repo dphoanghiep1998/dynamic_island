@@ -3,6 +3,7 @@ package com.neko.hiepdph.dynamicislandvip.common.notification
 import android.content.Context
 import android.graphics.Color
 import android.os.SystemClock
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -179,6 +180,7 @@ class CustomNotificationIconAdapter(
                     if (adapterPosition in listNotification.indices) {
                         onItemClicked.invoke(notification)
                         onItemClickedPos.invoke(notification, adapterPosition)
+                        Log.d("TAG", "assign: ")
                     }
                 }
 

@@ -17,25 +17,31 @@ import android.os.Looper
 import android.os.Parcelable
 import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.RelativeLayout
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.Constant
 import com.neko.hiepdph.dynamicislandvip.common.Utils
+import com.neko.hiepdph.dynamicislandvip.common.Utils.convertDpToPixel
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersionP
 import com.neko.hiepdph.dynamicislandvip.common.config
-import com.neko.hiepdph.dynamicislandvip.common.customview.ViewDynamicIsland
-import com.neko.hiepdph.dynamicislandvip.common.customview.ViewDynamicIslandExtend
-import com.neko.hiepdph.dynamicislandvip.common.customview.ViewDynamicIslandSmall
+import com.neko.hiepdph.dynamicislandvip.common.customview.ItemOffsetDecoration2
 import com.neko.hiepdph.dynamicislandvip.common.notification.ActionParsable
+import com.neko.hiepdph.dynamicislandvip.common.notification.CustomNotificationAdapter
+import com.neko.hiepdph.dynamicislandvip.common.notification.CustomNotificationIconAdapter
 import com.neko.hiepdph.dynamicislandvip.common.notification.Notification
 import com.neko.hiepdph.dynamicislandvip.common.notification.NotificationListener
+import com.neko.hiepdph.dynamicislandvip.common.show
 import com.neko.hiepdph.dynamicislandvip.data.model.AppDetail
+import com.neko.hiepdph.dynamicislandvip.databinding.LayoutViewDynamicIslandBinding
 import com.neko.hiepdph.dynamicislandvip.service.MyAccessService
 import java.util.Calendar
 import java.util.Locale
@@ -45,24 +51,23 @@ class ViewManager(
 ) {
     private var windowManager: WindowManager? = null
     private var layoutParams: WindowManager.LayoutParams? = null
-    private var layoutParamsSmall: WindowManager.LayoutParams? = null
-    private var layoutParamsBig: WindowManager.LayoutParams? = null
     private var isInFullScreen = false
-    private var viewDynamicIsland: ViewDynamicIsland? = null
-    private var viewDynamicIslandSmall: ViewDynamicIslandSmall? = null
-    private var viewDynamicIslandBig: ViewDynamicIslandExtend? = null
     private var actionListener: BroadcastReceiver? = null
     private var notificationListener: BroadcastReceiver? = null
     private var listSmallDynamicIsland: ArrayList<Notification> = arrayListOf()
     private var listBigDynamicIsland: ArrayList<Notification> = arrayListOf()
-    private var rlBig: RelativeLayout? = null
     private var currentIndex: Int = 0
     private var filterPKG = arrayListOf<AppDetail>()
     private var firstInit = true
+    private lateinit var binding: LayoutViewDynamicIslandBinding
+    var margin: Int = 25
+    var adapter_island_big: CustomNotificationAdapter? = null
+    var isPhoneLocked: Boolean = false
+
+    var adapter_island_small: CustomNotificationIconAdapter? = null
 
     var isControlEnabled: Boolean = true
     var tempMargin = 0
-    var margin = 25
     var pos = 2
     var flagKeyBoard: Int = 8913696
     var flagNormal: Int = 8913704
@@ -98,96 +103,19 @@ class ViewManager(
 
 
     init {
-        rlBig = RelativeLayout(context).apply {
-            alpha = 0f
-            setOnClickListener {
-                hideBigView()
-            }
-        }
         addDynamicView()
-        initDynamicSmall()
-        initDynamicExtend()
         initActionListener()
         initNotificationListener()
+        initNotifications()
 
     }
-
-    private fun hideBigView() {
-
-    }
-
-    private fun initDynamicExtend() {
-        viewDynamicIslandBig = ViewDynamicIslandExtend(context)
-        layoutParamsBig = WindowManager.LayoutParams().apply {
-            type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-            flags =
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-            format = PixelFormat.TRANSLUCENT
-            height = ViewGroup.LayoutParams.WRAP_CONTENT
-            width =
-                (context.resources.displayMetrics.widthPixels - 40 * context.resources.displayMetrics.scaledDensity).toInt()
-            context.config.dynamicWidth * context.resources.displayMetrics.scaledDensity.toInt()
-            gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-            softInputMode = WindowManager.LayoutParams.SOFT_INPUT_IS_FORWARD_NAVIGATION
-            if (buildMinVersionP()) {
-                layoutInDisplayCutoutMode =
-                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-            }
-
-        }
-    }
-
-    private fun initDynamicSmall() {
-        viewDynamicIslandSmall = ViewDynamicIslandSmall(context)
-        layoutParamsSmall = WindowManager.LayoutParams().apply {
-            type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-            flags =
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-            format = PixelFormat.TRANSLUCENT
-            height = ViewGroup.LayoutParams.WRAP_CONTENT
-            width =
-                (context.resources.displayMetrics.widthPixels - 40 * context.resources.displayMetrics.scaledDensity).toInt()
-            y = context.config.dynamicMarginVertical
-            gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-            softInputMode = WindowManager.LayoutParams.SOFT_INPUT_IS_FORWARD_NAVIGATION
-            if (buildMinVersionP()) {
-                layoutInDisplayCutoutMode =
-                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-            }
-
-        }
-        viewDynamicIslandSmall?.animate()?.alpha(0f)?.setDuration(0)?.start()
-        try {
-            windowManager?.addView(viewDynamicIslandSmall, layoutParamsSmall)
-        } catch (e: Exception) {
-
-        }
-    }
-
-    private fun addExtendView() {
-        try {
-            windowManager?.addView(
-                rlBig, ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-                )
-            )
-            rlBig?.removeAllViews()
-            rlBig?.addView(viewDynamicIslandBig,ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-            ))
-
-        } catch (e: Exception) {
-
-        }
-    }
-
 
     private fun addDynamicView() {
+        binding = LayoutViewDynamicIslandBinding.inflate(LayoutInflater.from(context), null, false)
         windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         layoutParams = WindowManager.LayoutParams().apply {
             type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-            flags =
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+            flags = 8913704
             format = PixelFormat.TRANSLUCENT
             gravity = Gravity.TOP or Gravity.START
             height = context.config.dynamicHeight
@@ -200,55 +128,50 @@ class ViewManager(
                     WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
             }
         }
-        viewDynamicIsland = ViewDynamicIsland(context)
-
         try {
-            windowManager?.addView(viewDynamicIsland, layoutParams)
+            windowManager?.addView(binding.root, layoutParams)
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(context, "LMAOOO loi~ roi", Toast.LENGTH_SHORT).show()
         }
     }
 
-    fun showSmallIsland(notification: Notification? = null) {
-        try {
-            if (viewDynamicIslandSmall?.isAnimRunning == false) {
-                viewDynamicIslandSmall?.animate()?.alpha(1f)?.setDuration(0)?.start()
-                if (notification != null) {
-                    viewDynamicIslandSmall?.setNotification(notification)
-                }
 
-                if (isShowingSmall()) {
-                    viewDynamicIsland?.onGone()
-                    viewDynamicIslandSmall?.onShow {
-                        viewDynamicIsland?.onShow()
-                        viewDynamicIslandSmall?.animate()?.alpha(0f)?.setDuration(0)?.start()
-                    }
-                }
-            }
+    private fun initNotifications() {
+        val customNotificationIconAdapter = CustomNotificationIconAdapter(context,
+            listSmallDynamicIsland,
+            onItemClicked = {},
+            onItemClickedPos = { notification, i ->
+                showFullIslandNotification(notification)
+                currentIndex = i
+            })
 
 
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    fun hideSmallIsland() {
-        try {
-            windowManager?.removeView(viewDynamicIslandSmall)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    fun showBigIsland() {
-        try {
-            windowManager?.addView(viewDynamicIslandBig, layoutParamsBig)
-            viewDynamicIslandBig?.animate()?.alpha(1f)?.setDuration(500)?.start()
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        adapter_island_small = customNotificationIconAdapter
+        binding.rvIslandSmall.setAdapter(customNotificationIconAdapter)
+        binding.rvIslandSmall.setHasFixedSize(true)
+        binding.rvIslandSmall.addItemDecoration(
+            ItemOffsetDecoration2(
+                context, 5
+            )
+        )
+        val linearLayoutManager = LinearLayoutManager(context)
+        linearLayoutManager.orientation = RecyclerView.HORIZONTAL
+        binding.rvIslandSmall.setLayoutManager(linearLayoutManager)
+        adapter_island_big = CustomNotificationAdapter(
+            context,
+            this.listBigDynamicIsland,
+            onItemClicked = { notification, i ->
+                showFullIslandNotification(notification);
+//                i
+                i?.let { index -> currentIndex = index }
+            })
+        val linearLayoutManager2 = LinearLayoutManager(context)
+        linearLayoutManager2.orientation = RecyclerView.VERTICAL
+        binding.rvIslandBig.setAdapter(this.adapter_island_big)
+        binding.rvIslandBig.setHasFixedSize(true)
+        binding.rvIslandBig.addItemDecoration(ItemOffsetDecoration2(context, 5))
+        binding.rvIslandBig.setLayoutManager(linearLayoutManager2)
     }
 
     private fun initActionListener() {
@@ -282,10 +205,6 @@ class ViewManager(
                                     context.getString(R.string.battery_full)
                                 }
 
-                                if (!firstInit) {
-                                    showSmallIsland(notification)
-                                }
-                                firstInit = false
                             } else {
                                 val iterator = listSmallDynamicIsland.iterator()
                                 while (iterator.hasNext()) {
@@ -320,7 +239,6 @@ class ViewManager(
                                         title = context.getString(R.string.silent_txt)
                                         color = context.getColor(R.color.red_500)
                                     }
-                                    showSmallIsland(silentNotification)
                                 }
 
                                 1 -> {
@@ -330,7 +248,6 @@ class ViewManager(
                                         title = context.getString(R.string.vibrate)
                                         color = context.getColor(R.color.purple_400)
                                     }
-                                    showSmallIsland(vibrateNotification)
                                 }
                             }
                         }
@@ -379,6 +296,50 @@ class ViewManager(
         setFullIslandMargin(false)
         setKeyboardFlag(false)
         layoutParams?.height = (context.resources.displayMetrics.scaledDensity * 170f).toInt()
+
+        windowManager?.updateViewLayout(binding.root, layoutParams)
+        val layoutParams = binding.islandParentLayout.layoutParams
+        layoutParams.width = (context.resources.displayMetrics.scaledDensity * 0.0f).toInt()
+        layoutParams.height =
+            ((30.toFloat()) * context.resources.displayMetrics.scaledDensity).toInt()
+        binding.islandParentLayout.setLayoutParams(layoutParams)
+        binding.rvIslandSmall.visibility = View.VISIBLE
+        this.binding.rvIslandBig.visibility = View.GONE
+        Handler().postDelayed(object : Runnable {
+            override fun run() {
+                if (listSmallDynamicIsland.size == 0) {
+                    closeSmallIslandNotification()
+                    return
+                }
+                layoutParams.height =
+                    ((30.toFloat()) * context.resources.displayMetrics.scaledDensity).toInt()
+                layoutParams.width = 150
+                windowManager?.updateViewLayout(
+                    binding.root, layoutParams
+                )
+                Handler().postDelayed(
+                    {
+                        val layoutParams =
+                            binding.islandParentLayout.layoutParams as LinearLayout.LayoutParams
+                        layoutParams.width = -1
+                        layoutParams.height = -1
+                        binding.islandParentLayout.setLayoutParams(layoutParams)
+                        if (adapter_island_small!!.itemCount > currentIndex) {
+                            binding.rvIslandSmall.scrollToPosition(currentIndex)
+                        }
+                    }, 100
+                )
+            }
+
+            fun `comlockservicesMAccessibilityService$10`() {/*LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) MAccessibilityService.this.island_parent_layout.getLayoutParams();
+                layoutParams.width = -1;
+                layoutParams.height = -1;
+                MAccessibilityService.this.island_parent_layout.setLayoutParams(layoutParams);
+                if (MAccessibilityService.this.adapter_island_small.getItemCount() > MAccessibilityService.this.currentIndex) {
+                    MAccessibilityService.this.rv_island_small.scrollToPosition(MAccessibilityService.this.currentIndex);
+                }*/
+            }
+        }, 500)
     }
 
     fun showSmallIslandNotification() {
@@ -390,33 +351,72 @@ class ViewManager(
                 if (isShowingSmall()) {
                     closeSmallIslandNotification()
                 }
+            }
+            if (adapter_island_small!!.itemCount >= 1) {
+                binding.rvIslandSmall.scrollToPosition(adapter_island_small!!.itemCount - 1)
+            }
+
+            if (isShowingSmall()) {
+                binding.islandTopLayout.show()
+                binding.rvIslandSmall.show()
+            } else if (!isControlEnabled) {
+
             } else {
-                when (listSmallDynamicIsland[0].type.lowercase()) {
-                    Constant.TYPE_AIRBUDS.lowercase(), Constant.TYPE_CHARGING.lowercase(), Constant.TYPE_SILENT.lowercase() -> {
-                        viewDynamicIslandSmall?.setNotification(listSmallDynamicIsland[0])
-
-                    }
-
-                    else -> {
-                        viewDynamicIsland?.setNotification(listSmallDynamicIsland[0])
-                    }
-
-                }
-//            viewDynamicIsland?.onShow()
-
-                if (isShowingSmall()) {
-
-                } else if (!isControlEnabled) {
-                } else {
-                    if (isShowingFullIsland()) {
+//                if ((isPhoneLocked && !Constant.getShowOnLock(mContext)) || isShowingFullIsland()) {
+//                    return
+//                }
+                if (!isInFullScreen) {
+                    binding.islandTopLayout.visibility = View.VISIBLE
+                    binding.rvIslandSmall.visibility = View.VISIBLE
+                    binding.rvIslandBig.visibility = View.GONE
+                    if (listSmallDynamicIsland.size == 0) {
+                        val layoutParams =
+                            binding.islandParentLayout.layoutParams as LinearLayout.LayoutParams
+                        layoutParams.width =
+                            (context.resources.displayMetrics.scaledDensity * 0.0f).toInt()
+                        binding.islandParentLayout.setLayoutParams(layoutParams)
                         return@postDelayed
                     }
-
+                    layoutParams?.height = context.resources.displayMetrics.heightPixels
+                    layoutParams?.width = context.resources.displayMetrics.widthPixels
+                    windowManager?.updateViewLayout(
+                        binding.root, layoutParams
+                    )
+                    val layoutParams2 =
+                        binding.islandParentLayout.layoutParams as LinearLayout.LayoutParams
+                    layoutParams2.width = -1
+                    layoutParams2.height = -1
+                    binding.islandParentLayout.setLayoutParams(layoutParams2)
+                    if (adapter_island_small!!.getItemCount() >= 1) {
+                        binding.rvIslandSmall.scrollToPosition(adapter_island_small!!.itemCount - 1)
+                    }
                 }
             }
 
-
         }, 100)
+    }
+
+    private fun setFullIslandMargin(z: Boolean) {
+        if (z) {
+            this.tempMargin = this.margin
+            this.margin = (context.resources.displayMetrics.scaledDensity * 25.0f).toInt()
+        } else {
+            this.margin = this.tempMargin
+        }
+        val layoutParams = binding.islandTopLayout.layoutParams as FrameLayout.LayoutParams
+        if (pos == 1) {
+            layoutParams.leftMargin = this.margin
+            layoutParams.rightMargin = 0
+        }
+        if (pos == 2) {
+            layoutParams.leftMargin = 0
+            layoutParams.rightMargin = 0
+        }
+        if (pos == 3) {
+            layoutParams.leftMargin = 0
+            layoutParams.rightMargin = this.margin
+        }
+        binding.islandTopLayout.setLayoutParams(layoutParams)
     }
 
     fun updateNotificationList(intent: Intent) {
@@ -560,7 +560,7 @@ class ViewManager(
             y = context.config.dynamicMarginVertical
             x = context.config.dynamicMarginHorizontal
         }
-        windowManager?.updateViewLayout(viewDynamicIsland, layoutParams)
+        windowManager?.updateViewLayout(binding.root, layoutParams)
 
     }
 
@@ -579,11 +579,13 @@ class ViewManager(
     fun showFullIslandNotification(notification: Notification) {
         currentNotification = notification
         if (!notification.isLocal) {
-//            dynamicIslandTopLayout?.show()
-//            rcvDynamicIslandSmall?.visibility = View.GONE
+            binding.islandTopLayout.show()
+            binding.rvIslandSmall.visibility = View.GONE
             if (isShowingFullIsland()) {
                 listBigDynamicIsland.clear()
+                adapter_island_big?.notifyItemChanged(0)
                 listBigDynamicIsland.add(notification)
+                adapter_island_big?.notifyItemChanged(0)
                 return
             }
             if (notification.template.equals("MediaStyle")) {
@@ -592,8 +594,31 @@ class ViewManager(
             setFullIslandMargin(true)
             setKeyboardFlag(true)
 
+            layoutParams?.height = -1
+            layoutParams?.width = (context.resources.displayMetrics.scaledDensity * 350).toInt()
+
+            windowManager?.updateViewLayout(binding.statusbarParent, layoutParams)
+            val layoutParams = binding.islandParentLayout.layoutParams as LinearLayout.LayoutParams
+            layoutParams.width = -1
+
+            if (notification.category.contains(NotificationCompat.CATEGORY_CALL) && notification.isOngoing && notification.useIphoneCallDesign) {
+                layoutParams.height =
+                    (context.resources.displayMetrics.scaledDensity * 90.0f).toInt()
+            } else if (notification.actions == null || notification.actions.size <= 0) {
+                layoutParams.height =
+                    (context.resources.displayMetrics.scaledDensity * 110.0f).toInt()
+            } else {
+                layoutParams.height =
+                    (context.resources.displayMetrics.scaledDensity * 170.0f).toInt()
+            }
+
+            binding.islandParentLayout.layoutParams = layoutParams
+            binding.rvIslandBig.show()
             listBigDynamicIsland.clear()
+            adapter_island_big?.notifyItemChanged(0)
             listBigDynamicIsland.add(notification)
+            adapter_island_big?.notifyItemChanged(0)
+
         }
     }
 
@@ -638,7 +663,7 @@ class ViewManager(
     }
 
     fun isShowingSmall(): Boolean {
-        return viewDynamicIsland?.visibility == View.VISIBLE
+        return binding.rvIslandSmall.visibility == View.VISIBLE
 
 
     }
@@ -699,7 +724,7 @@ class ViewManager(
             }
             try {
                 windowManager?.updateViewLayout(
-                    viewDynamicIsland, layoutParams
+                    binding.root, layoutParams
                 )
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
@@ -719,51 +744,29 @@ class ViewManager(
         }
     }
 
-    private fun setFullIslandMargin(z: Boolean) {
-        if (z) {
-            tempMargin = margin
-            margin = (context.resources.displayMetrics.scaledDensity * 25.0f).toInt()
-        } else {
-            margin = this.tempMargin
-        }
-//        val layoutParams = dynamicIslandTopLayout?.layoutParams as FrameLayout.LayoutParams
-//        if (pos == 1) {
-//            layoutParams.leftMargin = margin
-//            layoutParams.rightMargin = 0
-//        }
-//        if (pos == 2) {
-//            layoutParams.leftMargin = 0
-//            layoutParams.rightMargin = 0
-//        }
-//        if (pos == 3) {
-//            layoutParams.leftMargin = 0
-//            layoutParams.rightMargin = margin
-//        }
-//        dynamicIslandTopLayout?.setLayoutParams(layoutParams)
-    }
 
     fun closeSmallIslandNotification() {
-//        val layoutParams = dynamicIslandParentLayout?.getLayoutParams()
-//        layoutParams?.width = (convertDpToPixel(
-//            1.0f, context
-//        ) * context.resources.displayMetrics.scaledDensity).toInt()
-//        layoutParams?.height = (convertDpToPixel(
-//            1.0f, context
-//        ) * context.resources.displayMetrics.scaledDensity).toInt()
-//        dynamicIslandParentLayout?.setLayoutParams(layoutParams)
-//        setKeyboardFlag(false)
-//        Handler().postDelayed(
-//            {
-//                layoutParams?.height = (convertDpToPixel(
-//                    1.0f, context
-//                ) * context.resources.displayMetrics.scaledDensity).toInt()
-//                layoutParams?.width = (convertDpToPixel(
-//                    1.0f, context
-//                ) * context.resources.displayMetrics.scaledDensity).toInt()
-//                windowManager?.updateViewLayout(this.statusBarParentView, layoutParams)
-//                dynamicIslandTopLayout?.visibility = View.GONE
-//            }, 500
-//        )
+        val layoutParams = binding.islandParentLayout.layoutParams
+        layoutParams?.width = (convertDpToPixel(
+            1.0f, context
+        ) * context.resources.displayMetrics.scaledDensity).toInt()
+        layoutParams?.height = (convertDpToPixel(
+            1.0f, context
+        ) * context.resources.displayMetrics.scaledDensity).toInt()
+        binding.islandParentLayout.setLayoutParams(layoutParams)
+        setKeyboardFlag(false)
+        Handler().postDelayed(
+            {
+                layoutParams?.height = (convertDpToPixel(
+                    1.0f, context
+                ) * context.resources.displayMetrics.scaledDensity).toInt()
+                layoutParams?.width = (convertDpToPixel(
+                    1.0f, context
+                ) * context.resources.displayMetrics.scaledDensity).toInt()
+                windowManager?.updateViewLayout(binding.statusbarParent, layoutParams)
+                binding.islandTopLayout.visibility = View.GONE
+            }, 500
+        )
     }
 
     private fun setMediaUpdateHandler() {
