@@ -120,7 +120,7 @@ class NotificationListener : NotificationListenerService() {
 
             val packageName = sbn.packageName
             category = if ((sbn.notification.category != null)) sbn.notification.category else ""
-            if(!config.directEnable && category == "navigation"){
+            if (!config.directEnable && category == "navigation") {
                 return
             }
             tickerText =
@@ -161,7 +161,9 @@ class NotificationListener : NotificationListenerService() {
                     extras.getBoolean(NotificationCompat.EXTRA_PROGRESS_INDETERMINATE, false)
 
                 val text = extras.getCharSequence(NotificationCompat.EXTRA_TEXT, "").toString()
-
+                val extraTitle = extras.getCharSequence(
+                    NotificationCompat.EXTRA_TITLE, ""
+                ).toString()
                 // Set group conversation details if SDK version supports it
                 appName = "$appName . " + extras.getCharSequence(
                     NotificationCompat.EXTRA_CONVERSATION_TITLE, ""
@@ -182,14 +184,14 @@ class NotificationListener : NotificationListenerService() {
                 notificationIntent.putExtra("isOngoing", sbn.isOngoing)
                 notificationIntent.putExtra("tag", sbn.tag)
                 notificationIntent.putExtra("category", category)
-                val template = if ((extras.containsKey(NotificationCompat.EXTRA_TEMPLATE))) extras.getString(
-                    NotificationCompat.EXTRA_TEMPLATE, ""
-                ) else ""
+                val template =
+                    if ((extras.containsKey(NotificationCompat.EXTRA_TEMPLATE))) extras.getString(
+                        NotificationCompat.EXTRA_TEMPLATE, ""
+                    ) else ""
                 notificationIntent.putExtra(
-                    "template",
-                   template
+                    "template", template
                 )
-                if(!config.musicEnable && template.contains("MediaStyle")){
+                if (!config.musicEnable && template.contains("MediaStyle")) {
                     return
                 }
 
@@ -218,6 +220,8 @@ class NotificationListener : NotificationListenerService() {
                 notificationIntent.putExtra("bigText", bigText)
                 notificationIntent.putExtra("isAdded", isNotificationAdded)
                 notificationIntent.putExtra("picture", getByteArrayFromBitmap2(extraImageBitmap))
+                notificationIntent.putExtra("extraTitle", extraTitle)
+
                 var bitmap2: Bitmap? = null
                 try {
                     var drawable: Drawable? = null
@@ -299,6 +303,7 @@ class NotificationListener : NotificationListenerService() {
                 Log.d("TAG", "chrono: " + showChronometer)
                 Log.d("TAG", "progress: " + currentProgress)
                 Log.d("TAG", "action: " + currentProgress)
+                Log.d("TAG", "extraTitle: " + extraTitle)
 
                 // Send the intent as a broadcast
                 LocalBroadcastManager.getInstance(applicationContext)

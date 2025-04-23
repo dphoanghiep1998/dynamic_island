@@ -43,7 +43,7 @@ class ConfigFragment : BaseFragment<FragmentConfigBinding>() {
                 else -> ""
             }
         )
-        binding.containerDisplay.setContent(
+        binding.containerClickMode.setContent(
             when (requireActivity().config.clickMode) {
                 0 -> requireActivity().getString(R.string.normal_click)
                 1 -> requireActivity().getString(R.string.long_click)

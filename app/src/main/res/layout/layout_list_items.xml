@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_100sdp"
-    android:background="@drawable/rounded_rectangle_notification"
+    android:layout_height="wrap_content"
     android:padding="10dp">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -11,103 +10,91 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:padding="5dp"
-       />
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/civ_senderIcon2"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
-        android:visibility="invisible" />
-
-    <ImageView
-        android:id="@+id/arrow_iv"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_below="@+id/iv_app_icon"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
-        android:src="@drawable/arrow_down" />
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/civ_senderIcon"
+        app:layout_constraintEnd_toEndOf="@id/civ_senderIcon"
+        app:layout_constraintStart_toStartOf="@id/civ_senderIcon"
+        app:layout_constraintTop_toTopOf="@id/civ_senderIcon" />
 
     <Chronometer
         android:id="@+id/chronometer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/tv_app_title"
-        android:layout_alignBottom="@+id/tv_app_title"
-        android:layout_toStartOf="@+id/arrow_iv"
-        android:layout_toLeftOf="@+id/arrow_iv"
+        android:layout_marginEnd="@dimen/_6sdp"
+        android:fontFamily="@font/f400"
         android:gravity="center_vertical"
-        android:textColor="@color/white" />
+        android:includeFontPadding="false"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/iv_app_icon"
+        app:layout_constraintEnd_toStartOf="@id/iv_app_icon"
+        app:layout_constraintTop_toTopOf="@id/iv_app_icon" />
 
     <TextView
         android:id="@+id/tv_app_title"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/civ_senderIcon"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_toStartOf="@+id/chronometer"
-        android:layout_toLeftOf="@+id/chronometer"
-        android:layout_toEndOf="@+id/civ_senderIcon"
-        android:layout_toRightOf="@+id/civ_senderIcon"
+        android:layout_marginHorizontal="@dimen/_6sdp"
         android:gravity="center_vertical"
         android:maxLines="1"
         android:singleLine="true"
         android:textColor="@color/on_text"
-        android:textSize="15sp" />
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@id/chronometer"
+        app:layout_constraintStart_toEndOf="@id/civ_senderIcon"
+        app:layout_constraintTop_toTopOf="@id/civ_senderIcon" />
 
     <TextView
         android:id="@+id/tv_text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_app_title"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_toLeftOf="@+id/iv_app_icon"
-        android:layout_toRightOf="@+id/civ_senderIcon"
+        android:layout_marginHorizontal="@dimen/_6sdp"
+        android:fontFamily="@font/f600"
         android:maxLines="1"
+        android:layout_marginTop="@dimen/_6sdp"
         android:singleLine="true"
         android:textColor="@color/on_text"
         android:textSize="14sp"
-        android:textStyle="bold" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/civ_senderIcon"
+        app:layout_constraintTop_toBottomOf="@id/tv_app_title" />
 
     <TextView
         android:id="@+id/sub_tv_text"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_text"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_toLeftOf="@+id/arrow_iv"
-        android:layout_toRightOf="@+id/civ_senderIcon"
+        android:layout_marginHorizontal="@dimen/_6sdp"
+        android:fontFamily="@font/f400"
         android:maxLines="1"
+        android:layout_marginTop="@dimen/_6sdp"
         android:textColor="@color/on_text"
-        android:textSize="14sp" />
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/civ_senderIcon"
+        app:layout_constraintTop_toBottomOf="@id/tv_text" />
 
     <RelativeLayout
         android:id="@+id/ll_progressbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/sub_tv_text"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/sub_tv_text">
 
         <TextView
             android:id="@+id/mediaPosText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="12dp"
             android:layout_alignParentStart="true"
-            android:text="2.05"
             android:visibility="gone" />
 
         <ProgressBar
@@ -123,11 +110,12 @@
             android:visibility="visible" />
 
         <TextView
+            android:textColor="@color/white"
+            android:textSize="12dp"
             android:id="@+id/mediaDurationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="2.05"
+            android:layout_alignParentEnd="true"
             android:visibility="gone" />
     </RelativeLayout>
 
@@ -135,12 +123,10 @@
         android:id="@+id/group_message_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_progressbar"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="8dp"
-        android:orientation="vertical" />
+        android:layout_marginHorizontal="@dimen/_6sdp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/ll_progressbar" />
 
     <ImageView
         android:id="@+id/iv_app_icon"
@@ -148,24 +134,24 @@
         android:layout_height="25dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="10dp"
-        android:src="@drawable/profile_icon" />
+        android:layout_marginEnd="@dimen/_6sdp"
+        android:src="@drawable/profile_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/notification_picture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/group_message_parent"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toBottomOf="@id/group_message_parent" />
 
     <LinearLayout
         android:id="@+id/notification_top_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/notification_picture"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/notification_picture">
 
         <RelativeLayout
             android:id="@+id/notification_material_reply_container"
@@ -178,13 +164,13 @@
             <EditText
                 android:id="@+id/ed_reply"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/_50sdp"
                 android:background="@drawable/reply_bg"
                 android:hint="@string/reply"
                 android:imeOptions="actionSend"
                 android:padding="10dp"
                 android:singleLine="true"
-                android:textColor="@android:color/black"
+                android:textColor="@color/white"
                 android:textColorHint="@color/gray_transparent"
                 android:textSize="15sp" />
 
@@ -202,12 +188,12 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:layout_marginTop="@dimen/_8sdp"
             android:id="@+id/notification_action_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="end|center_vertical"
             android:orientation="horizontal"
-            android:paddingBottom="5dp"
             android:visibility="gone" />
     </LinearLayout>
 
@@ -215,7 +201,7 @@
         android:id="@+id/divider_line"
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:layout_below="@+id/notification_top_container"
+        app:layout_constraintTop_toBottomOf="@id/notification_top_container"
         android:background="@color/gray_transparent"
         android:visibility="gone" />
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

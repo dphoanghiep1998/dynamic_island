@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -32,6 +33,7 @@ import com.neko.hiepdph.dynamicislandvip.common.Constant
 import com.neko.hiepdph.dynamicislandvip.common.Utils
 import com.neko.hiepdph.dynamicislandvip.common.Utils.convertDpToPixel
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersionP
+import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
 import com.neko.hiepdph.dynamicislandvip.common.config
 import com.neko.hiepdph.dynamicislandvip.common.customview.ItemOffsetDecoration2
 import com.neko.hiepdph.dynamicislandvip.common.notification.ActionParsable
@@ -84,7 +86,7 @@ class ViewManager(
                     currentNotification.progress =
                         (((currentNotification.position.toFloat()) / (currentNotification.duration.toFloat())) * 100.0f).toInt()
                     currentNotification.progressIndeterminate = false
-//                    adapterDynamicIslandBig?.updateMediaProgress()
+                    adapter_island_big?.updateMediaProgress(currentNotification)
                 }
             }
 
@@ -112,6 +114,9 @@ class ViewManager(
 
     private fun addDynamicView() {
         binding = LayoutViewDynamicIslandBinding.inflate(LayoutInflater.from(context), null, false)
+        binding.statusbarParent.clickWithDebounce {
+            closeFullNotificationIsland()
+        }
         windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         layoutParams = WindowManager.LayoutParams().apply {
             type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
@@ -158,13 +163,10 @@ class ViewManager(
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = RecyclerView.HORIZONTAL
         binding.rvIslandSmall.setLayoutManager(linearLayoutManager)
-        adapter_island_big = CustomNotificationAdapter(
-            context,
+        adapter_island_big = CustomNotificationAdapter(context,
             this.listBigDynamicIsland,
             onItemClicked = { notification, i ->
-                showFullIslandNotification(notification);
-//                i
-                i?.let { index -> currentIndex = index }
+
             })
         val linearLayoutManager2 = LinearLayoutManager(context)
         linearLayoutManager2.orientation = RecyclerView.VERTICAL
@@ -296,48 +298,38 @@ class ViewManager(
         setFullIslandMargin(false)
         setKeyboardFlag(false)
         layoutParams?.height = (context.resources.displayMetrics.scaledDensity * 170f).toInt()
-
         windowManager?.updateViewLayout(binding.root, layoutParams)
-        val layoutParams = binding.islandParentLayout.layoutParams
-        layoutParams.width = (context.resources.displayMetrics.scaledDensity * 0.0f).toInt()
-        layoutParams.height =
+        val layoutParamsParent = binding.islandParentLayout.layoutParams
+        layoutParamsParent.width = (context.resources.displayMetrics.scaledDensity * 0.0f).toInt()
+        layoutParamsParent.height =
             ((30.toFloat()) * context.resources.displayMetrics.scaledDensity).toInt()
-        binding.islandParentLayout.setLayoutParams(layoutParams)
+        binding.islandParentLayout.setLayoutParams(layoutParamsParent)
         binding.rvIslandSmall.visibility = View.VISIBLE
-        this.binding.rvIslandBig.visibility = View.GONE
+        binding.rvIslandBig.visibility = View.GONE
         Handler().postDelayed(object : Runnable {
             override fun run() {
                 if (listSmallDynamicIsland.size == 0) {
                     closeSmallIslandNotification()
                     return
                 }
-                layoutParams.height =
-                    ((30.toFloat()) * context.resources.displayMetrics.scaledDensity).toInt()
-                layoutParams.width = 150
+                layoutParams?.x = context.config.dynamicMarginHorizontal
+                layoutParams?.height = context.config.dynamicHeight
+                layoutParams?.width = context.config.dynamicWidth
                 windowManager?.updateViewLayout(
                     binding.root, layoutParams
                 )
                 Handler().postDelayed(
-                    {
-                        val layoutParams =
+                    Runnable {
+                        val layoutParams1 =
                             binding.islandParentLayout.layoutParams as LinearLayout.LayoutParams
-                        layoutParams.width = -1
-                        layoutParams.height = -1
-                        binding.islandParentLayout.setLayoutParams(layoutParams)
+                        layoutParams1.width = -1
+                        layoutParams1.height = -1
+                        binding.islandParentLayout.setLayoutParams(layoutParams1)
                         if (adapter_island_small!!.itemCount > currentIndex) {
                             binding.rvIslandSmall.scrollToPosition(currentIndex)
                         }
                     }, 100
                 )
-            }
-
-            fun `comlockservicesMAccessibilityService$10`() {/*LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) MAccessibilityService.this.island_parent_layout.getLayoutParams();
-                layoutParams.width = -1;
-                layoutParams.height = -1;
-                MAccessibilityService.this.island_parent_layout.setLayoutParams(layoutParams);
-                if (MAccessibilityService.this.adapter_island_small.getItemCount() > MAccessibilityService.this.currentIndex) {
-                    MAccessibilityService.this.rv_island_small.scrollToPosition(MAccessibilityService.this.currentIndex);
-                }*/
             }
         }, 500)
     }
@@ -387,7 +379,7 @@ class ViewManager(
                     layoutParams2.width = -1
                     layoutParams2.height = -1
                     binding.islandParentLayout.setLayoutParams(layoutParams2)
-                    if (adapter_island_small!!.getItemCount() >= 1) {
+                    if (adapter_island_small!!.itemCount >= 1) {
                         binding.rvIslandSmall.scrollToPosition(adapter_island_small!!.itemCount - 1)
                     }
                 }
@@ -460,6 +452,7 @@ class ViewManager(
         val icon = Utils.getBitmapFromByteArray(intent.getByteArrayExtra("icon"))
         val largeIcon = Utils.getBitmapFromByteArray(intent.getByteArrayExtra("largeIcon"))
         val picture = Utils.getBitmapFromByteArray(intent.getByteArrayExtra("picture"))
+        val extraTitle = intent.getCharSequenceExtra("extraTitle")
         val pendingIntent = intent.getParcelableExtra<Parcelable>("") as PendingIntent?
         var notification: Notification? = null
 
@@ -503,7 +496,8 @@ class ViewManager(
                 progressIndeterminate,
                 summaryText,
                 showChronometer,
-                category
+                category,
+                extraTitle.toString()
             )
             var existingIndex = -1
             for (i in 0 until listSmallDynamicIsland.size) {
@@ -588,36 +582,29 @@ class ViewManager(
                 adapter_island_big?.notifyItemChanged(0)
                 return
             }
-            if (notification.template.equals("MediaStyle")) {
+            Log.d("TAG", "showFullIslandNotification: "+notification.template)
+
+            if (notification.template.contains("MediaStyle")) {
                 setMediaUpdateHandler()
             }
             setFullIslandMargin(true)
             setKeyboardFlag(true)
 
             layoutParams?.height = -1
-            layoutParams?.width = (context.resources.displayMetrics.scaledDensity * 350).toInt()
+            layoutParams?.width = -1
+            layoutParams?.x = 0
+            windowManager?.updateViewLayout(binding.root, layoutParams)
+            val layoutParams1 = binding.islandParentLayout.layoutParams as LinearLayout.LayoutParams
+            layoutParams1.width = ViewGroup.LayoutParams.MATCH_PARENT
+            layoutParams1.height = -2
 
-            windowManager?.updateViewLayout(binding.statusbarParent, layoutParams)
-            val layoutParams = binding.islandParentLayout.layoutParams as LinearLayout.LayoutParams
-            layoutParams.width = -1
-
-            if (notification.category.contains(NotificationCompat.CATEGORY_CALL) && notification.isOngoing && notification.useIphoneCallDesign) {
-                layoutParams.height =
-                    (context.resources.displayMetrics.scaledDensity * 90.0f).toInt()
-            } else if (notification.actions == null || notification.actions.size <= 0) {
-                layoutParams.height =
-                    (context.resources.displayMetrics.scaledDensity * 110.0f).toInt()
-            } else {
-                layoutParams.height =
-                    (context.resources.displayMetrics.scaledDensity * 170.0f).toInt()
-            }
-
-            binding.islandParentLayout.layoutParams = layoutParams
+            binding.islandParentLayout.layoutParams = layoutParams1
             binding.rvIslandBig.show()
             listBigDynamicIsland.clear()
             adapter_island_big?.notifyItemChanged(0)
             listBigDynamicIsland.add(notification)
             adapter_island_big?.notifyItemChanged(0)
+            adapter_island_big?.setListNotification(listBigDynamicIsland)
 
         }
     }
@@ -706,10 +693,10 @@ class ViewManager(
     }
 
     private fun isSameItem(notification: Notification): Boolean {
-        if (notification.pack.equals("com.whatsapp") && notification.template.equals("")) {
+        if (notification.pack.contains("com.whatsapp") && notification.template.equals("")) {
             return true
         }
-        if (!notification.pack.equals("com.google.android.gm")) {
+        if (!notification.pack.contains("com.google.android.gm")) {
             return false
         }
         return true
@@ -746,14 +733,14 @@ class ViewManager(
 
 
     fun closeSmallIslandNotification() {
-        val layoutParams = binding.islandParentLayout.layoutParams
-        layoutParams?.width = (convertDpToPixel(
+        val layoutParams1 = binding.islandParentLayout.layoutParams
+        layoutParams1?.width = (convertDpToPixel(
             1.0f, context
         ) * context.resources.displayMetrics.scaledDensity).toInt()
-        layoutParams?.height = (convertDpToPixel(
+        layoutParams1?.height = (convertDpToPixel(
             1.0f, context
         ) * context.resources.displayMetrics.scaledDensity).toInt()
-        binding.islandParentLayout.setLayoutParams(layoutParams)
+        binding.islandParentLayout.setLayoutParams(layoutParams1)
         setKeyboardFlag(false)
         Handler().postDelayed(
             {

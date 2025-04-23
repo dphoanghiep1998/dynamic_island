@@ -42,12 +42,10 @@ class CustomNotificationIconAdapter(
             binding.rightLottie.pauseAnimation()
 
             binding.iconLeft.apply {
-                clearColorFilter()
                 setImageResource(0)
                 show()
             }
             binding.iconRight.apply {
-                clearColorFilter()
                 setImageResource(0)
                 show()
             }
@@ -121,7 +119,6 @@ class CustomNotificationIconAdapter(
             if (useDefaultLayout) {
                 notification.icon?.let {
                     binding.iconLeft.setImageBitmap(it)
-                    binding.iconLeft.setColorFilter(Color.WHITE)
 
                     if (notification.showChronometer) {
                         binding.chronometer.visibility = View.VISIBLE

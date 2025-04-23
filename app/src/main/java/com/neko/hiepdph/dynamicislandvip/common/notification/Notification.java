@@ -10,6 +10,7 @@ import java.util.HashMap;
 public class Notification {
 
     // Core details
+    public String key;
     public String tag;
     public String category;
     public String app_name;
@@ -55,6 +56,7 @@ public class Notification {
     public boolean isChronometerRunning;
     public boolean showChronometer;
     public boolean useIphoneCallDesign;
+    public CharSequence extraTitle;
 
     // Misc
     public int count;
@@ -68,7 +70,7 @@ public class Notification {
     public HashMap<String, Notification> keyMap = new HashMap<>();
 
     // Full constructor
-    public Notification(Bitmap icon, Bitmap senderIcon, CharSequence title, CharSequence text, int count,String pack, long postTime, PendingIntent pendingIntent, ArrayList<ActionParsable> actions, CharSequence bigText, String app_name, boolean isClearAble, int color, Bitmap picture, String groupKey, String key, boolean isGroupConversation, boolean isAppGroup, boolean isGroup, boolean isOngoing, String tag, int uId, String template, CharSequence substName, CharSequence subText, CharSequence titleBig, CharSequence info_text, int progressMax, int progress, boolean progressIndeterminate, CharSequence summaryText, boolean showChronometer, String category) {
+    public Notification(Bitmap icon, Bitmap senderIcon, CharSequence title, CharSequence text, int count,String pack, long postTime, PendingIntent pendingIntent, ArrayList<ActionParsable> actions, CharSequence bigText, String app_name, boolean isClearAble, int color, Bitmap picture, String groupKey, String key, boolean isGroupConversation, boolean isAppGroup, boolean isGroup, boolean isOngoing, String tag, int uId, String template, CharSequence substName, CharSequence subText, CharSequence titleBig, CharSequence info_text, int progressMax, int progress, boolean progressIndeterminate, CharSequence summaryText, boolean showChronometer, String category, String extraTitle) {
         this.icon = icon;
         this.senderIcon = senderIcon;
         this.title = title;
@@ -106,6 +108,7 @@ public class Notification {
         this.useIphoneCallDesign = false;
         this.isChronometerRunning = false;
         this.keyMap = new HashMap<>();
+        this.extraTitle = extraTitle;
     }
 
     // Local notification constructor
