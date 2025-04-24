@@ -35,9 +35,7 @@ class MyAccessService : AccessibilityService() {
         viewManager = ViewManager(this)
     }
 
-    fun closeSmallIslandNotification() {
-        viewManager?.showSmallIslandNotification()
-    }
+
     fun closeFullIsLandNotification() {
         viewManager?.closeFullNotificationIsland()
     }

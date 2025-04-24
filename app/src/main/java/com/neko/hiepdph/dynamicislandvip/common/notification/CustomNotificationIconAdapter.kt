@@ -103,7 +103,6 @@ class CustomNotificationIconAdapter(
                         clearColorFilter()
                         setImageResource(notification.local_left_icon)
                     }
-
                     binding.textLeft.text = ""
                     binding.textRight.apply {
                         text = notification.title

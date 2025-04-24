@@ -1,10 +1,10 @@
 package com.neko.hiepdph.dynamicislandvip.common.customview
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Color
 import android.os.SystemClock
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -17,20 +17,55 @@ import com.neko.hiepdph.dynamicislandvip.common.hide
 import com.neko.hiepdph.dynamicislandvip.common.notification.Notification
 import com.neko.hiepdph.dynamicislandvip.common.show
 import com.neko.hiepdph.dynamicislandvip.databinding.LayoutSmallItemBinding
-import com.neko.hiepdph.dynamicislandvip.databinding.LayoutViewDynamicIslandBinding
 
 class ViewDynamicIslandSmall @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet?=null,
-    defStyleAttr: Int=0,
-    defStyleRes: Int=0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
-    private var binding:LayoutSmallItemBinding
-    private var callBinding:LayoutViewDynamicIslandBinding
+    private var binding: LayoutSmallItemBinding
+    private var listener: IClickListener? = null
+    private var listNotification: MutableList<Notification> = mutableListOf()
+    private var currentNotification: Notification? = null
+
     init {
-        binding = LayoutSmallItemBinding.inflate(LayoutInflater.from(context),this,false)
+        binding = LayoutSmallItemBinding.inflate(LayoutInflater.from(context), this, false)
+        addView(binding.root)
+    }
+
+    fun setListener(mListener: IClickListener) {
+        listener = mListener
+    }
+
+    fun setNotification(lst: ArrayList<Notification>) {
+        listNotification.clear()
+        listNotification.addAll(lst)
+
+        if (listNotification.isNotEmpty()) {
+            currentNotification = listNotification[0]
+            currentNotification?.let { assign(it) }
+
+        } else {
+            currentNotification = null
+            reset()
+
+        }
 
     }
+
+    fun reset() {
+        binding.rightLottie.hide()
+        binding.rightLottie.pauseAnimation()
+        binding.iconLeft.apply {
+            setImageResource(0)
+            show()
+        }
+        binding.iconRight.apply {
+            setImageResource(0)
+            show()
+        }
+        binding.textLeft.text = ""
+        binding.textRight.text = ""
+    }
+
     fun assign(notification: Notification) {
         binding.chronometer.hide()
         if (!notification.isChronometerRunning) {
@@ -102,6 +137,7 @@ class ViewDynamicIslandSmall @JvmOverloads constructor(
             }
 
             Constant.TYPE_SILENT.lowercase() -> {
+
                 binding.iconLeft.apply {
                     clearColorFilter()
                     setImageResource(notification.local_left_icon)
@@ -131,8 +167,7 @@ class ViewDynamicIslandSmall @JvmOverloads constructor(
                     binding.textLeft.text = ""
                     binding.iconLeft.setColorFilter(context.getColor(R.color.green_500))
                 } else {
-                    binding.textLeft.text =
-                        Utils.getFormattedDate(notification.postTime)
+                    binding.textLeft.text = Utils.getFormattedDate(notification.postTime)
                 }
             } ?: run {
                 binding.iconLeft.setImageBitmap(null)
@@ -146,8 +181,7 @@ class ViewDynamicIslandSmall @JvmOverloads constructor(
                     binding.textRight.visibility = View.GONE
                 } else {
                     binding.textRight.visibility = View.VISIBLE
-                    binding.textRight.text =
-                        notification.title.split(" ").firstOrNull().orEmpty()
+                    binding.textRight.text = notification.title.split(" ").firstOrNull().orEmpty()
                 }
             } else if (notification.showChronometer && notification.category.equals(
                     NotificationCompat.CATEGORY_CALL, ignoreCase = true
@@ -162,7 +196,7 @@ class ViewDynamicIslandSmall @JvmOverloads constructor(
                 if (!binding.rightLottie.isAnimating) {
                     binding.rightLottie.playAnimation()
                 }
-            } else if (notification.template != "MediaStyle" || notification.isClearable) {
+            } else if (!notification.template.contains("MediaStyle") || notification.isClearable) {
                 binding.textRight.visibility = View.GONE
                 binding.iconRight.setImageBitmap(notification.senderIcon)
             } else {
@@ -171,21 +205,25 @@ class ViewDynamicIslandSmall @JvmOverloads constructor(
                 if (!binding.rightLottie.isAnimating) {
                     binding.rightLottie.playAnimation()
                 }
-
                 binding.textRight.visibility = View.GONE
                 binding.iconRight.visibility = View.GONE
             }
 
             binding.root.setOnClickListener {
-                if (adapterPosition in listNotification.indices) {
-                    onItemClicked.invoke(notification)
-                    onItemClickedPos.invoke(notification, adapterPosition)
-                    Log.d("TAG", "assign: ")
-                }
+                listener?.onClick(notification)
+            }
+            binding.root.setOnLongClickListener {
+                listener?.onLongClick(notification)
+                true
             }
 
 
         }
     }
 
+}
+
+interface IClickListener {
+    fun onClick(notification: Notification, position: Int? = null)
+    fun onLongClick(notification: Notification, position: Int? = null)
 }

@@ -2,6 +2,8 @@ package com.neko.hiepdph.dynamicislandvip.common.viewmanager
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
+import android.animation.ObjectAnimator
+import android.app.KeyguardManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.ComponentName
@@ -26,8 +28,6 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.Constant
 import com.neko.hiepdph.dynamicislandvip.common.Utils
@@ -35,10 +35,8 @@ import com.neko.hiepdph.dynamicislandvip.common.Utils.convertDpToPixel
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersionP
 import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
 import com.neko.hiepdph.dynamicislandvip.common.config
-import com.neko.hiepdph.dynamicislandvip.common.customview.ItemOffsetDecoration2
+import com.neko.hiepdph.dynamicislandvip.common.customview.IClickListener
 import com.neko.hiepdph.dynamicislandvip.common.notification.ActionParsable
-import com.neko.hiepdph.dynamicislandvip.common.notification.CustomNotificationAdapter
-import com.neko.hiepdph.dynamicislandvip.common.notification.CustomNotificationIconAdapter
 import com.neko.hiepdph.dynamicislandvip.common.notification.Notification
 import com.neko.hiepdph.dynamicislandvip.common.notification.NotificationListener
 import com.neko.hiepdph.dynamicislandvip.common.show
@@ -60,13 +58,14 @@ class ViewManager(
     private var listBigDynamicIsland: ArrayList<Notification> = arrayListOf()
     private var currentIndex: Int = 0
     private var filterPKG = arrayListOf<AppDetail>()
-    private var firstInit = true
     private lateinit var binding: LayoutViewDynamicIslandBinding
     var margin: Int = 25
-    var adapter_island_big: CustomNotificationAdapter? = null
     var isPhoneLocked: Boolean = false
 
-    var adapter_island_small: CustomNotificationIconAdapter? = null
+    private var handlerClear = Handler()
+    private var runnableClear: Runnable? = null
+    var shakeAnimation: ObjectAnimator? = null
+
 
     var isControlEnabled: Boolean = true
     var tempMargin = 0
@@ -86,7 +85,7 @@ class ViewManager(
                     currentNotification.progress =
                         (((currentNotification.position.toFloat()) / (currentNotification.duration.toFloat())) * 100.0f).toInt()
                     currentNotification.progressIndeterminate = false
-                    adapter_island_big?.updateMediaProgress(currentNotification)
+                    binding.rvIslandBig.updateMediaProgress(currentNotification)
                 }
             }
 
@@ -117,6 +116,10 @@ class ViewManager(
         binding.statusbarParent.clickWithDebounce {
             closeFullNotificationIsland()
         }
+        binding.rvIslandBig.setAccessService(context)
+        shakeAnimation = ObjectAnimator.ofFloat(
+            binding.root, "translationX", 0f, 25f, -25f, 25f, -25f, 6f, -6f, 0f
+        )
         windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         layoutParams = WindowManager.LayoutParams().apply {
             type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
@@ -143,37 +146,20 @@ class ViewManager(
 
 
     private fun initNotifications() {
-        val customNotificationIconAdapter = CustomNotificationIconAdapter(context,
-            listSmallDynamicIsland,
-            onItemClicked = {},
-            onItemClickedPos = { notification, i ->
-                showFullIslandNotification(notification)
-                currentIndex = i
-            })
 
 
-        adapter_island_small = customNotificationIconAdapter
-        binding.rvIslandSmall.setAdapter(customNotificationIconAdapter)
-        binding.rvIslandSmall.setHasFixedSize(true)
-        binding.rvIslandSmall.addItemDecoration(
-            ItemOffsetDecoration2(
-                context, 5
-            )
-        )
-        val linearLayoutManager = LinearLayoutManager(context)
-        linearLayoutManager.orientation = RecyclerView.HORIZONTAL
-        binding.rvIslandSmall.setLayoutManager(linearLayoutManager)
-        adapter_island_big = CustomNotificationAdapter(context,
-            this.listBigDynamicIsland,
-            onItemClicked = { notification, i ->
+        binding.rvIslandSmall.setListener(object : IClickListener {
+            override fun onClick(notification: Notification, position: Int?) {
+                if (context.config.notificationDisplay) {
+                    showFullIslandNotification(notification)
+                }
+//                currentIndex = position
+            }
 
-            })
-        val linearLayoutManager2 = LinearLayoutManager(context)
-        linearLayoutManager2.orientation = RecyclerView.VERTICAL
-        binding.rvIslandBig.setAdapter(this.adapter_island_big)
-        binding.rvIslandBig.setHasFixedSize(true)
-        binding.rvIslandBig.addItemDecoration(ItemOffsetDecoration2(context, 5))
-        binding.rvIslandBig.setLayoutManager(linearLayoutManager2)
+            override fun onLongClick(notification: Notification, position: Int?) {
+            }
+
+        })
     }
 
     private fun initActionListener() {
@@ -225,12 +211,17 @@ class ViewManager(
                             }
                             val dndState: Int = Utils.getDndState(context)
                             val iterator = listSmallDynamicIsland.iterator()
+                            runnableClear?.let { handlerClear.removeCallbacks(it) }
                             while (iterator.hasNext()) {
                                 val notification = iterator.next()
                                 if (notification.type == Constant.TYPE_SILENT) {
                                     iterator.remove()
                                     break
                                 }
+                            }
+                            if (shakeAnimation?.isRunning == false) {
+                                shakeAnimation?.duration = 200
+                                shakeAnimation?.start()
                             }
 
                             when (dndState) {
@@ -241,6 +232,17 @@ class ViewManager(
                                         title = context.getString(R.string.silent_txt)
                                         color = context.getColor(R.color.red_500)
                                     }
+                                    listSmallDynamicIsland.add(0, silentNotification)
+
+                                    runnableClear = Runnable {
+                                        listSmallDynamicIsland.remove(silentNotification)
+                                        binding.rvIslandSmall.setNotification(listSmallDynamicIsland)
+
+                                    }
+                                    runnableClear?.let {
+                                        handlerClear.postDelayed(it, 3000)
+                                        binding.rvIslandSmall.setNotification(listSmallDynamicIsland)
+                                    }
                                 }
 
                                 1 -> {
@@ -250,10 +252,57 @@ class ViewManager(
                                         title = context.getString(R.string.vibrate)
                                         color = context.getColor(R.color.purple_400)
                                     }
+                                    listSmallDynamicIsland.add(0, vibrateNotification)
+                                    runnableClear = Runnable {
+                                        listSmallDynamicIsland.remove(vibrateNotification)
+                                        binding.rvIslandSmall.setNotification(listSmallDynamicIsland)
+
+                                    }
+                                    runnableClear?.let {
+                                        handlerClear.postDelayed(it, 3000)
+                                    }
+
+                                }
+
+                                2 -> {
+                                    val ringNotification = Notification(
+                                        Constant.TYPE_SILENT, R.drawable.ic_adjust_volume, 0
+                                    ).apply {
+                                        title = context.getString(R.string.ring)
+                                        color = context.getColor(R.color.green_500)
+                                    }
+                                    listSmallDynamicIsland.add(0, ringNotification)
+                                    runnableClear = Runnable {
+                                        listSmallDynamicIsland.remove(ringNotification)
+                                        binding.rvIslandSmall.setNotification(listSmallDynamicIsland)
+                                    }
+                                    runnableClear?.let {
+                                        handlerClear.postDelayed(it, 3000)
+                                    }
+
                                 }
                             }
+                            binding.rvIslandSmall.setNotification(listSmallDynamicIsland)
+
                         }
 
+
+                    }
+                    val keyguardManager = context.getSystemService("keyguard") as KeyguardManager
+
+                    if (intent.action != "android.intent.action.USER_PRESENT" && intent.action != "android.intent.action.SCREEN_OFF" && intent.action != "android.intent.action.SCREEN_ON") {
+                        return
+                    }
+                    if (keyguardManager.inKeyguardRestrictedInputMode()) {
+                        isPhoneLocked = true
+                        if (context.config.notificationHideOnLockScreen) {
+                            closeSmallIslandNotification()
+                            closeFullNotificationIsland()
+                            return
+                        }
+                        return
+                    } else {
+                        isPhoneLocked = false
                     }
 
 
@@ -309,8 +358,8 @@ class ViewManager(
         Handler().postDelayed(object : Runnable {
             override fun run() {
                 if (listSmallDynamicIsland.size == 0) {
-                    closeSmallIslandNotification()
-                    return
+//                    closeSmallIslandNotification()
+//                    return
                 }
                 layoutParams?.x = context.config.dynamicMarginHorizontal
                 layoutParams?.height = context.config.dynamicHeight
@@ -325,9 +374,9 @@ class ViewManager(
                         layoutParams1.width = -1
                         layoutParams1.height = -1
                         binding.islandParentLayout.setLayoutParams(layoutParams1)
-                        if (adapter_island_small!!.itemCount > currentIndex) {
-                            binding.rvIslandSmall.scrollToPosition(currentIndex)
-                        }
+//                        if (adapter_island_small!!.itemCount > currentIndex) {
+//                            binding.rvIslandSmall.scrollToPosition(currentIndex)
+//                        }
                     }, 100
                 )
             }
@@ -337,15 +386,12 @@ class ViewManager(
     fun showSmallIslandNotification() {
         Handler().postDelayed({
             if (listSmallDynamicIsland.size == 0) {
-                if (isShowingFullIsland()) {
-                    closeFullNotificationIsland()
-                }
-                if (isShowingSmall()) {
-                    closeSmallIslandNotification()
-                }
-            }
-            if (adapter_island_small!!.itemCount >= 1) {
-                binding.rvIslandSmall.scrollToPosition(adapter_island_small!!.itemCount - 1)
+//                if (isShowingFullIsland()) {
+//                    closeFullNotificationIsland()
+//                }
+//                if (isShowingSmall()) {
+//                    closeSmallIslandNotification()
+//                }
             }
 
             if (isShowingSmall()) {
@@ -354,21 +400,21 @@ class ViewManager(
             } else if (!isControlEnabled) {
 
             } else {
-//                if ((isPhoneLocked && !Constant.getShowOnLock(mContext)) || isShowingFullIsland()) {
-//                    return
-//                }
+                if (isPhoneLocked || isShowingFullIsland()) {
+                    return@postDelayed
+                }
                 if (!isInFullScreen) {
                     binding.islandTopLayout.visibility = View.VISIBLE
                     binding.rvIslandSmall.visibility = View.VISIBLE
                     binding.rvIslandBig.visibility = View.GONE
-                    if (listSmallDynamicIsland.size == 0) {
-                        val layoutParams =
-                            binding.islandParentLayout.layoutParams as LinearLayout.LayoutParams
-                        layoutParams.width =
-                            (context.resources.displayMetrics.scaledDensity * 0.0f).toInt()
-                        binding.islandParentLayout.setLayoutParams(layoutParams)
-                        return@postDelayed
-                    }
+//                    if (listSmallDynamicIsland.size == 0) {
+//                        val layoutParams =
+//                            binding.islandParentLayout.layoutParams as LinearLayout.LayoutParams
+//                        layoutParams.width =
+//                            (context.resources.displayMetrics.scaledDensity * 0.0f).toInt()
+//                        binding.islandParentLayout.setLayoutParams(layoutParams)
+//                        return@postDelayed
+//                    }
                     layoutParams?.height = context.resources.displayMetrics.heightPixels
                     layoutParams?.width = context.resources.displayMetrics.widthPixels
                     windowManager?.updateViewLayout(
@@ -379,10 +425,9 @@ class ViewManager(
                     layoutParams2.width = -1
                     layoutParams2.height = -1
                     binding.islandParentLayout.setLayoutParams(layoutParams2)
-                    if (adapter_island_small!!.itemCount >= 1) {
-                        binding.rvIslandSmall.scrollToPosition(adapter_island_small!!.itemCount - 1)
-                    }
+
                 }
+                binding.rvIslandSmall.setNotification(listSmallDynamicIsland)
             }
 
         }, 100)
@@ -429,8 +474,6 @@ class ViewManager(
         val isOngoing = intent.getBooleanExtra("isOngoing", false)
         val groupKey = intent.getStringExtra("group_key")
         val key = intent.getStringExtra("key")
-
-
         var tag = intent.getStringExtra("tag")
         if (tag == null) {
             tag = ""
@@ -510,13 +553,13 @@ class ViewManager(
             val sameGroup = groupKey == key
 
             if (existingIndex != -1) {
-                val existing: Notification = listSmallDynamicIsland.get(existingIndex)
+                val existing: Notification = listSmallDynamicIsland[existingIndex]
                 existing.isClearable = isClearable
                 existing.progress = progress
                 existing.progressMax = progressMax
                 existing.progressIndeterminate = progressIndeterminate
 
-                if (sameGroup || notification.template == "InboxStyle" || notification.tag.lowercase(
+                if (sameGroup || notification.template.contains("InboxStyle") || notification.tag.lowercase(
                         Locale.getDefault()
                     ).contains("summary")
                 ) {
@@ -527,22 +570,31 @@ class ViewManager(
             } else {
                 listSmallDynamicIsland.add(0, notification)
             }
+        } else {
+            for (i in 0 until listSmallDynamicIsland.size) {
+                val n = listSmallDynamicIsland[i]
+                if (n.key == key) {
+                    listSmallDynamicIsland.remove(n)
+                    break
+                }
+            }
         }
         if (!isFilterPkgFound(packageName)) {
-//            else if (Constants.getAutoCloseNoti(context) && notification.isOngoing) {
-//                closeHeadsUpNotification(notification)
-//            }
             if (notification == null || notification.category != (NotificationCompat.CATEGORY_CALL)) {
                 showSmallIslandNotification()
+                Log.d("TAG", "updateNotificationList: 1")
             } else if (!notification.isOngoing || notification.actions == null || notification.actions.size != 2) {
                 this.currentIndex = this.listSmallDynamicIsland.size - 1
                 closeFullNotificationIsland()
+                Log.d("TAG", "updateNotificationList: 2")
+
             } else {
+                Log.d("TAG", "updateNotificationList: 3")
+
                 showFullIslandNotification(notification)
             }
         }
-//        adapterDynamicIslandSmall?.notifyDataSetChanged()
-//        adapterDynamicIslandBig?.notifyDataSetChanged()
+        binding.rvIslandSmall.setNotification(listSmallDynamicIsland)
 
     }
 
@@ -577,12 +629,11 @@ class ViewManager(
             binding.rvIslandSmall.visibility = View.GONE
             if (isShowingFullIsland()) {
                 listBigDynamicIsland.clear()
-                adapter_island_big?.notifyItemChanged(0)
                 listBigDynamicIsland.add(notification)
-                adapter_island_big?.notifyItemChanged(0)
+                binding.rvIslandBig.setNotification(listBigDynamicIsland)
                 return
             }
-            Log.d("TAG", "showFullIslandNotification: "+notification.template)
+            Log.d("TAG", "showFullIslandNotification: " + notification.template)
 
             if (notification.template.contains("MediaStyle")) {
                 setMediaUpdateHandler()
@@ -601,10 +652,8 @@ class ViewManager(
             binding.islandParentLayout.layoutParams = layoutParams1
             binding.rvIslandBig.show()
             listBigDynamicIsland.clear()
-            adapter_island_big?.notifyItemChanged(0)
             listBigDynamicIsland.add(notification)
-            adapter_island_big?.notifyItemChanged(0)
-            adapter_island_big?.setListNotification(listBigDynamicIsland)
+            binding.rvIslandBig.setNotification(listBigDynamicIsland)
 
         }
     }
@@ -645,8 +694,7 @@ class ViewManager(
     }
 
     fun isShowingFullIsland(): Boolean {
-//        return layoutParams?.height == -1 && dynamicIslandTopLayout?.visibility == View.VISIBLE
-        return false
+        return layoutParams?.height == -1 && binding.rvIslandBig.visibility == View.VISIBLE
     }
 
     fun isShowingSmall(): Boolean {

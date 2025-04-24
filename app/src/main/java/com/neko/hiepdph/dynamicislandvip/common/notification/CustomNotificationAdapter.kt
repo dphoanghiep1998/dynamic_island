@@ -26,6 +26,7 @@ import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.Utils
 import com.neko.hiepdph.dynamicislandvip.common.Utils.convertDpToPixel
 import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
+import com.neko.hiepdph.dynamicislandvip.common.config
 import com.neko.hiepdph.dynamicislandvip.common.getFormattedTime
 import com.neko.hiepdph.dynamicislandvip.databinding.LayoutCallItemBinding
 import com.neko.hiepdph.dynamicislandvip.databinding.LayoutListItemsBinding
@@ -236,9 +237,12 @@ class CustomNotificationAdapter(
             } else {
                 binding.notificationActionContainer.visibility = View.VISIBLE
                 binding.notificationActionContainer.removeAllViews()
-                addViewToActionContainer(
-                    notification, binding.notificationActionContainer
-                )
+                if(context.config.notificationShowAction){
+                    addViewToActionContainer(
+                        notification, binding.notificationActionContainer
+                    )
+                }
+
                 if (notification.template.contains("MediaStyle")) {
                     binding.mediaDurationText.visibility = View.VISIBLE
                     binding.mediaPosText.visibility = View.VISIBLE
@@ -259,9 +263,12 @@ class CustomNotificationAdapter(
             binding.notificationActionContainer.removeAllViews()
             binding.groupMessageParent.removeAllViews()
             if (notification.actions != null) {
-                addViewToActionContainer(
-                    notification, binding.notificationActionContainer
-                )
+                if(context.config.notificationShowAction){
+                    addViewToActionContainer(
+                        notification, binding.notificationActionContainer
+                    )
+                }
+
                 binding.notificationActionContainer.setPadding(
                     0, convertDpToPixel(
                         10.0f, context
@@ -608,6 +615,8 @@ class CustomNotificationAdapter(
             }
             if (!notification.template.contains("MediaStyle")) {
 //                linearLayout.visibility = View.GONE
+                context.closeFullIsLandNotification()
+
             }
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
@@ -643,7 +652,7 @@ class CustomNotificationAdapter(
                     if (i != 4) {
                         return@OnEditorActionListener false
                     }
-                    this@CustomNotificationAdapter.sendRemoteInput(
+                    sendRemoteInput(
                         arrayList2[i2].pendingIntent,
                         arrayList2[i2].remoteInputs,
                         arrayList2[i2].remoteInputs[0],

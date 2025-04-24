@@ -125,4 +125,5 @@
     <string name="battery_charging">Charging</string>
     <string name="silent_txt">Silent</string>
     <string name="vibrate">Vibrate</string>
+    <string name="ring">Ring</string>
 </resources>

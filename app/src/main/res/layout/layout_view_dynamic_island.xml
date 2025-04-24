@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.neko.hiepdph.dynamicislandvip.common.customview.StatusBarParentView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/statusbar_parent"
     android:layout_width="match_parent"
     android:layout_height="40dp"
@@ -23,26 +22,17 @@
             android:clipToPadding="true"
             android:orientation="vertical">
 
-            <androidx.recyclerview.widget.RecyclerView
+            <com.neko.hiepdph.dynamicislandvip.common.customview.ViewDynamicIslandSmall
                 android:id="@+id/rv_island_small"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="true"
-                android:orientation="horizontal"
-                android:scrollbars="none"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                android:clipToPadding="true" />
 
-            <com.neko.hiepdph.dynamicislandvip.common.customview.CustomRecyclerView
+            <com.neko.hiepdph.dynamicislandvip.common.customview.ViewDynamicIslandBig
                 android:id="@+id/rv_island_big"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clipToPadding="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:orientation="vertical"
-                android:overScrollMode="ifContentScrolls"
-                android:scrollbars="none"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                android:clipToPadding="true" />
         </LinearLayout>
     </LinearLayout>
 </com.neko.hiepdph.dynamicislandvip.common.customview.StatusBarParentView>

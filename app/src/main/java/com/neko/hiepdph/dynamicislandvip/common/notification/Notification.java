@@ -109,6 +109,7 @@ public class Notification {
         this.isChronometerRunning = false;
         this.keyMap = new HashMap<>();
         this.extraTitle = extraTitle;
+        this.key = key;
     }
 
     // Local notification constructor
