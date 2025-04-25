@@ -68,7 +68,9 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
         if (listNotification.isNotEmpty()) {
             currentNotification = listNotification[0]
             currentNotification?.let {
-                if (!it.useIphoneCallDesign || it.category != NotificationCompat.CATEGORY_CALL || !it.isOngoing) {
+                Log.d("TAG", "setNotification: "+it.category)
+                Log.d("TAG", "setNotification: "+it.isOngoing)
+                if (it.category != NotificationCompat.CATEGORY_CALL || !it.isOngoing) {
                     removeAllViews()
                     addView(itemBinding.root)
                     bind(it)
@@ -220,7 +222,6 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
             itemBinding.civSenderIcon.colorFilter = null
         } else {
             itemBinding.civSenderIcon2.setImageBitmap(notification.icon)
-            itemBinding.civSenderIcon2.setColorFilter(-1)
             itemBinding.civSenderIcon2.visibility = View.VISIBLE
             itemBinding.civSenderIcon.visibility = View.INVISIBLE
             itemBinding.ivAppIcon.visibility = View.INVISIBLE
@@ -525,8 +526,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
             val notification2 = notification.keyMap[str]
             if (notification.keyMap.size != 1) {
                 notification2?.let {
-                    Log.d("TAG", "title:qưeqweqwe " + notification2.title)
-                    Log.d("TAG", "text: qưeqweqweqwe" + notification2.text)
+
                     linearLayout.addView(
                         getTitleAndTextViewForSubItems(
                             notification2.title, notification2.text
@@ -549,8 +549,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
     private fun getTitleAndTextViewForSubItems(
         charSequence: CharSequence, charSequence2: CharSequence
     ): View {
-        Log.d("TAG", "getTitleAndTextViewForSubItems: " + charSequence)
-        Log.d("TAG", "getTitleAndTextViewForSubItems: " + charSequence2)
+
         val linearLayout = LayoutInflater.from(context)
             .inflate(R.layout.notification_min_row_item, null as ViewGroup?) as LinearLayout
         val convertDpToPixel = convertDpToPixel(5.0f, context)

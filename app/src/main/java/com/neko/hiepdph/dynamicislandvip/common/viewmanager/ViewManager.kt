@@ -1,7 +1,5 @@
 package com.neko.hiepdph.dynamicislandvip.common.viewmanager
 
-import android.accessibilityservice.AccessibilityService
-import android.accessibilityservice.GestureDescription
 import android.animation.ObjectAnimator
 import android.app.KeyguardManager
 import android.app.PendingIntent
@@ -10,12 +8,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Path
 import android.graphics.PixelFormat
 import android.media.session.MediaSessionManager
 import android.os.BatteryManager
 import android.os.Handler
-import android.os.Looper
 import android.os.Parcelable
 import android.util.Log
 import android.view.Gravity
@@ -44,7 +40,6 @@ import com.neko.hiepdph.dynamicislandvip.data.model.AppDetail
 import com.neko.hiepdph.dynamicislandvip.databinding.LayoutViewDynamicIslandBinding
 import com.neko.hiepdph.dynamicislandvip.service.MyAccessService
 import java.util.Calendar
-import java.util.Locale
 
 class ViewManager(
     private val context: MyAccessService
@@ -153,17 +148,18 @@ class ViewManager(
                 if (context.config.notificationDisplay) {
                     showFullIslandNotification(notification)
                 }
-//                currentIndex = position
             }
 
-            override fun onLongClick(notification: Notification, position: Int?) {
+            override fun onLongClick(notification: Notification?, position: Int?) {
+                if (notification != null) {
+                    notification.contentIntent?.send()
+                } else {
+                }
             }
-
         })
     }
 
     private fun initActionListener() {
-        Log.d("TAG", "initActionListener: ")
         actionListener = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent?) {
                 if (intent != null) {
@@ -368,15 +364,12 @@ class ViewManager(
                     binding.root, layoutParams
                 )
                 Handler().postDelayed(
-                    Runnable {
+                    {
                         val layoutParams1 =
                             binding.islandParentLayout.layoutParams as LinearLayout.LayoutParams
                         layoutParams1.width = -1
                         layoutParams1.height = -1
                         binding.islandParentLayout.setLayoutParams(layoutParams1)
-//                        if (adapter_island_small!!.itemCount > currentIndex) {
-//                            binding.rvIslandSmall.scrollToPosition(currentIndex)
-//                        }
                     }, 100
                 )
             }
@@ -386,9 +379,9 @@ class ViewManager(
     fun showSmallIslandNotification() {
         Handler().postDelayed({
             if (listSmallDynamicIsland.size == 0) {
-//                if (isShowingFullIsland()) {
-//                    closeFullNotificationIsland()
-//                }
+                if (isShowingFullIsland()) {
+                    closeFullNotificationIsland()
+                }
 //                if (isShowingSmall()) {
 //                    closeSmallIslandNotification()
 //                }
@@ -497,6 +490,7 @@ class ViewManager(
         val picture = Utils.getBitmapFromByteArray(intent.getByteArrayExtra("picture"))
         val extraTitle = intent.getCharSequenceExtra("extraTitle")
         val pendingIntent = intent.getParcelableExtra<Parcelable>("") as PendingIntent?
+        val contentIntent = intent.getParcelableExtra<Parcelable>("contentIntent") as PendingIntent?
         var notification: Notification? = null
 
         arrayList = try {
@@ -540,7 +534,9 @@ class ViewManager(
                 summaryText,
                 showChronometer,
                 category,
-                extraTitle.toString()
+                extraTitle.toString(),
+                contentIntent
+
             )
             var existingIndex = -1
             for (i in 0 until listSmallDynamicIsland.size) {
@@ -559,18 +555,22 @@ class ViewManager(
                 existing.progressMax = progressMax
                 existing.progressIndeterminate = progressIndeterminate
 
-                if (sameGroup || notification.template.contains("InboxStyle") || notification.tag.lowercase(
-                        Locale.getDefault()
-                    ).contains("summary")
-                ) {
-                    updateNotificationItem(notification, existingIndex)
-                } else if (!isSameItem(notification)) {
-                    existing.keyMap[key] = notification
-                }
+//                if (sameGroup || notification.template.contains("InboxStyle") || notification.tag.lowercase(
+//                        Locale.getDefault()
+//                    ).contains("summary")
+//                ) {
+//                    Log.d("TAG", "updateNotificationItem: ")
+//                    updateNotificationItem(notification, existingIndex)
+//                } else if (!isSameItem(notification)) {
+//                    Log.d("TAG", "-1: ")
+//                    existing.keyMap[key] = notification
+//                }
+                updateNotificationItem(notification, existingIndex)
             } else {
                 listSmallDynamicIsland.add(0, notification)
             }
         } else {
+            Log.d("TAG", "clear: ")
             for (i in 0 until listSmallDynamicIsland.size) {
                 val n = listSmallDynamicIsland[i]
                 if (n.key == key) {
@@ -578,28 +578,34 @@ class ViewManager(
                     break
                 }
             }
+
         }
         if (!isFilterPkgFound(packageName)) {
             if (notification == null || notification.category != (NotificationCompat.CATEGORY_CALL)) {
                 showSmallIslandNotification()
-                Log.d("TAG", "updateNotificationList: 1")
+                Log.d("TAG", "1: ")
+            } else if (notification.isOngoing) {
+                closeHeadsUpNotification(notification)
+                Log.d("TAG", "2: ")
+
             } else if (!notification.isOngoing || notification.actions == null || notification.actions.size != 2) {
                 this.currentIndex = this.listSmallDynamicIsland.size - 1
                 closeFullNotificationIsland()
-                Log.d("TAG", "updateNotificationList: 2")
+                Log.d("TAG", "3: ")
+
 
             } else {
-                Log.d("TAG", "updateNotificationList: 3")
-
                 showFullIslandNotification(notification)
+                Log.d("TAG", "4: ")
+
             }
         }
         binding.rvIslandSmall.setNotification(listSmallDynamicIsland)
 
+
     }
 
     fun updateLayout() {
-        Log.d("TAG", "updateLayout: ")
         layoutParams?.apply {
             height = context.config.dynamicHeight
             width = context.config.dynamicWidth
@@ -629,11 +635,10 @@ class ViewManager(
             binding.rvIslandSmall.visibility = View.GONE
             if (isShowingFullIsland()) {
                 listBigDynamicIsland.clear()
-                listBigDynamicIsland.add(notification)
+                listBigDynamicIsland.add(0, notification)
                 binding.rvIslandBig.setNotification(listBigDynamicIsland)
                 return
             }
-            Log.d("TAG", "showFullIslandNotification: " + notification.template)
 
             if (notification.template.contains("MediaStyle")) {
                 setMediaUpdateHandler()
@@ -652,7 +657,7 @@ class ViewManager(
             binding.islandParentLayout.layoutParams = layoutParams1
             binding.rvIslandBig.show()
             listBigDynamicIsland.clear()
-            listBigDynamicIsland.add(notification)
+            listBigDynamicIsland.add(0, notification)
             binding.rvIslandBig.setNotification(listBigDynamicIsland)
 
         }
@@ -664,33 +669,39 @@ class ViewManager(
 
 
     fun closeHeadsUpNotification(notification: Notification?) {
-        Handler(Looper.getMainLooper()).postDelayed({
-            val displayMetrics = context.resources.displayMetrics
-            val screenHeight = displayMetrics.heightPixels.toDouble()
-            val screenWidth = displayMetrics.widthPixels.toFloat()
-
-            val startX = screenWidth * 0.75f  // 3/4 of screen width
-            val startY = (screenHeight * 0.1).toFloat()
-            val endY = (screenHeight * 0.01).toFloat()
-
-            val path = Path().apply {
-                moveTo(startX, startY)
-                lineTo(startX, endY)
-            }
-
-            val gesture = GestureDescription.Builder()
-                .addStroke(GestureDescription.StrokeDescription(path, 100, 50)).build()
-
-            context.dispatchGesture(
-                gesture, object : AccessibilityService.GestureResultCallback() {
-                    override fun onCompleted(gestureDescription: GestureDescription) {
-                        super.onCompleted(gestureDescription)
-                        notification?.let { showFullIslandNotification(it) }
-                    }
-                }, null
-            )
-
-        }, 700)
+        notification?.let {
+            showFullIslandNotification(it)
+        }
+//        Handler(Looper.getMainLooper()).postDelayed({
+//            val displayMetrics = context.resources.displayMetrics
+//            val screenHeight = displayMetrics.heightPixels.toDouble()
+//            val screenWidth = displayMetrics.widthPixels.toFloat()
+//
+//            val startX = screenWidth * 0.75f  // 3/4 of screen width
+//            val startY = (screenHeight * 0.1).toFloat()
+//            val endY = (screenHeight * 0.01).toFloat()
+//
+//            val path = Path().apply {
+//                moveTo(startX, startY)
+//                lineTo(startX, endY)
+//            }
+//
+//            val gesture = GestureDescription.Builder()
+//                .addStroke(GestureDescription.StrokeDescription(path, 100, 50)).build()
+//            Log.d("TAG", "closeHeadsUpNotification: ")
+//            context.dispatchGesture(
+//                gesture, object : AccessibilityService.GestureResultCallback() {
+//                    override fun onCompleted(gestureDescription: GestureDescription) {
+//                        super.onCompleted(gestureDescription)
+//                        notification?.let{
+//                        Log.d("TAG", "onCompleted: ")
+//                            showFullIslandNotification(it)
+//                        }
+//                    }
+//                }, null
+//            )
+//
+//        }, 700)
     }
 
     fun isShowingFullIsland(): Boolean {
@@ -725,6 +736,7 @@ class ViewManager(
         listSmallDynamicIsland[i].bigText = notification2.bigText
         listSmallDynamicIsland[i].app_name = notification2.app_name
         listSmallDynamicIsland[i].isClearable = notification2.isClearable
+        listSmallDynamicIsland[i].extraTitle = notification2.extraTitle
         listSmallDynamicIsland[i].color = notification2.color
         listSmallDynamicIsland[i].picture = notification2.picture
         listSmallDynamicIsland[i].template = notification2.template

@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.SystemClock
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -64,6 +65,14 @@ class ViewDynamicIslandSmall @JvmOverloads constructor(
         }
         binding.textLeft.text = ""
         binding.textRight.text = ""
+        binding.root.setOnClickListener {
+
+        }
+
+        binding.root.setOnLongClickListener {
+            listener?.onLongClick(null)
+            return@setOnLongClickListener false
+        }
     }
 
     fun assign(notification: Notification) {
@@ -225,5 +234,5 @@ class ViewDynamicIslandSmall @JvmOverloads constructor(
 
 interface IClickListener {
     fun onClick(notification: Notification, position: Int? = null)
-    fun onLongClick(notification: Notification, position: Int? = null)
+    fun onLongClick(notification: Notification?, position: Int? = null)
 }

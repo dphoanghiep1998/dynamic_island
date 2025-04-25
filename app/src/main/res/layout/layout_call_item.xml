@@ -26,7 +26,6 @@
         android:maxLength="20"
         android:maxLines="1"
         android:singleLine="true"
-        android:text="wqeqweqwe"
         android:textColor="#A4A4A9"
         android:textSize="15sp" />
 
@@ -43,7 +42,6 @@
         android:maxLength="20"
         android:maxLines="1"
         android:singleLine="true"
-        android:text="12312312321"
         android:textColor="@color/white"
         android:textSize="14sp" />
 

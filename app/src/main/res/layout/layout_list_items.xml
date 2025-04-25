@@ -73,7 +73,6 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/_6sdp"
         android:fontFamily="@font/f400"
-        android:maxLines="1"
         android:layout_marginTop="@dimen/_6sdp"
         android:textColor="@color/on_text"
         android:textSize="14dp"

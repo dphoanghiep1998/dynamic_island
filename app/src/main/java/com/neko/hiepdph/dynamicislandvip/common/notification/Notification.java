@@ -55,8 +55,9 @@ public class Notification {
     public boolean isLocal;
     public boolean isChronometerRunning;
     public boolean showChronometer;
-    public boolean useIphoneCallDesign;
     public CharSequence extraTitle;
+
+    public PendingIntent contentIntent;
 
     // Misc
     public int count;
@@ -69,8 +70,7 @@ public class Notification {
 
     public HashMap<String, Notification> keyMap = new HashMap<>();
 
-    // Full constructor
-    public Notification(Bitmap icon, Bitmap senderIcon, CharSequence title, CharSequence text, int count,String pack, long postTime, PendingIntent pendingIntent, ArrayList<ActionParsable> actions, CharSequence bigText, String app_name, boolean isClearAble, int color, Bitmap picture, String groupKey, String key, boolean isGroupConversation, boolean isAppGroup, boolean isGroup, boolean isOngoing, String tag, int uId, String template, CharSequence substName, CharSequence subText, CharSequence titleBig, CharSequence info_text, int progressMax, int progress, boolean progressIndeterminate, CharSequence summaryText, boolean showChronometer, String category, String extraTitle) {
+    public Notification(Bitmap icon, Bitmap senderIcon, CharSequence title, CharSequence text, int count,String pack, long postTime, PendingIntent pendingIntent, ArrayList<ActionParsable> actions, CharSequence bigText, String app_name, boolean isClearAble, int color, Bitmap picture, String groupKey, String key, boolean isGroupConversation, boolean isAppGroup, boolean isGroup, boolean isOngoing, String tag, int uId, String template, CharSequence substName, CharSequence subText, CharSequence titleBig, CharSequence info_text, int progressMax, int progress, boolean progressIndeterminate, CharSequence summaryText, boolean showChronometer, String category, String extraTitle,PendingIntent contentIntent) {
         this.icon = icon;
         this.senderIcon = senderIcon;
         this.title = title;
@@ -105,11 +105,11 @@ public class Notification {
         this.category = category;
         this.type = "";
         this.isLocal = false;
-        this.useIphoneCallDesign = false;
         this.isChronometerRunning = false;
         this.keyMap = new HashMap<>();
         this.extraTitle = extraTitle;
         this.key = key;
+        this.contentIntent = contentIntent;
     }
 
     // Local notification constructor
@@ -118,7 +118,6 @@ public class Notification {
         this.local_left_icon = localLeftIcon;
         this.local_right_icon = localRightIcon;
         this.isLocal = true;
-        this.useIphoneCallDesign = false;
         this.isChronometerRunning = false;
         this.keyMap = new HashMap<>();
     }
