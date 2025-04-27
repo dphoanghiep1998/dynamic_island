@@ -46,7 +46,6 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
     private val callBinding: LayoutCallItemBinding
     private val itemBinding: LayoutListItemsBinding
     private var currentNotification: Notification? = null
-    private var listNotification: MutableList<Notification> = mutableListOf()
     private var acceptIndex: Int = 1
     private var declineIndex: Int = 0
     private var listener: IClickFullListener? = null
@@ -61,15 +60,11 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
         this.accessService = accessService
     }
 
-    fun setNotification(lst: ArrayList<Notification>) {
-        listNotification.clear()
-        listNotification.addAll(lst)
+    fun setNotification(lst: Notification?) {
+        currentNotification = lst
 
-        if (listNotification.isNotEmpty()) {
-            currentNotification = listNotification[0]
+        if (currentNotification != null) {
             currentNotification?.let {
-                Log.d("TAG", "setNotification: "+it.category)
-                Log.d("TAG", "setNotification: "+it.isOngoing)
                 if (it.category != NotificationCompat.CATEGORY_CALL || !it.isOngoing) {
                     removeAllViews()
                     addView(itemBinding.root)
@@ -95,7 +90,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
     }
 
     fun reset() {
-
+        closeFull(null,null)
     }
 
     fun assign(notification: Notification) {
@@ -112,7 +107,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
                     listener?.onClick(notification, null)
                 }
                 if (notification.isClearable) {
-                    listNotification.remove(currentNotification)
+                    currentNotification = null
                 }
                 accessService?.closeFullIsLandNotification()
             } catch (e: Exception) {
@@ -400,7 +395,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
         }
     }
 
-    fun closeFull(notification: Notification, view: View?) {
+    fun closeFull(notification: Notification?, view: View?) {
         accessService?.closeFullIsLandNotification()
         NotificationListener.instance.cancelNotificationById("")
     }

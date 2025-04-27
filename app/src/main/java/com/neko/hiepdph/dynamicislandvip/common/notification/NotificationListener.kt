@@ -61,9 +61,9 @@ class NotificationListener : NotificationListenerService() {
 
     override fun onNotificationPosted(sbn: StatusBarNotification?, rankingMap: RankingMap?) {
         super.onNotificationPosted(sbn, rankingMap)
-        handler?.postDelayed({
-            sbn?.let { sendNotification(it, true) }
-        }, 100)
+//        handler?.postDelayed({
+//            sbn?.let { sendNotification(it, true) }
+//        }, 100)
     }
 
 

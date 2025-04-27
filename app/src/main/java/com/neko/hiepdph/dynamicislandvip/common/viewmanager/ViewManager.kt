@@ -50,7 +50,6 @@ class ViewManager(
     private var actionListener: BroadcastReceiver? = null
     private var notificationListener: BroadcastReceiver? = null
     private var listSmallDynamicIsland: ArrayList<Notification> = arrayListOf()
-    private var listBigDynamicIsland: ArrayList<Notification> = arrayListOf()
     private var currentIndex: Int = 0
     private var filterPKG = arrayListOf<AppDetail>()
     private lateinit var binding: LayoutViewDynamicIslandBinding
@@ -342,38 +341,38 @@ class ViewManager(
         mediaHandler.removeCallbacks(mediaUpdateRunnable)
         setFullIslandMargin(false)
         setKeyboardFlag(false)
-        layoutParams?.height = (context.resources.displayMetrics.scaledDensity * 170f).toInt()
+        layoutParams?.height = (context.config.dynamicHeight).toInt()
         windowManager?.updateViewLayout(binding.root, layoutParams)
         val layoutParamsParent = binding.islandParentLayout.layoutParams
-        layoutParamsParent.width = (context.resources.displayMetrics.scaledDensity * 0.0f).toInt()
+        layoutParamsParent.width = (context.config.dynamicWidth).toInt()
         layoutParamsParent.height =
-            ((30.toFloat()) * context.resources.displayMetrics.scaledDensity).toInt()
+            (context.config.dynamicHeight).toInt()
         binding.islandParentLayout.setLayoutParams(layoutParamsParent)
         binding.rvIslandSmall.visibility = View.VISIBLE
         binding.rvIslandBig.visibility = View.GONE
-        Handler().postDelayed(object : Runnable {
-            override fun run() {
-                if (listSmallDynamicIsland.size == 0) {
-//                    closeSmallIslandNotification()
-//                    return
-                }
-                layoutParams?.x = context.config.dynamicMarginHorizontal
-                layoutParams?.height = context.config.dynamicHeight
-                layoutParams?.width = context.config.dynamicWidth
-                windowManager?.updateViewLayout(
-                    binding.root, layoutParams
-                )
-                Handler().postDelayed(
-                    {
-                        val layoutParams1 =
-                            binding.islandParentLayout.layoutParams as LinearLayout.LayoutParams
-                        layoutParams1.width = -1
-                        layoutParams1.height = -1
-                        binding.islandParentLayout.setLayoutParams(layoutParams1)
-                    }, 100
-                )
-            }
-        }, 500)
+//        Handler().postDelayed(object : Runnable {
+//            override fun run() {
+//                if (listSmallDynamicIsland.size == 0) {
+////                    closeSmallIslandNotification()
+////                    return
+//                }
+//                layoutParams?.x = context.config.dynamicMarginHorizontal
+//                layoutParams?.height = context.config.dynamicHeight
+//                layoutParams?.width = context.config.dynamicWidth
+//                windowManager?.updateViewLayout(
+//                    binding.root, layoutParams
+//                )
+//                Handler().postDelayed(
+//                    {
+//                        val layoutParams1 =
+//                            binding.islandParentLayout.layoutParams as LinearLayout.LayoutParams
+//                        layoutParams1.width = -1
+//                        layoutParams1.height = -1
+//                        binding.islandParentLayout.setLayoutParams(layoutParams1)
+//                    }, 100
+//                )
+//            }
+//        }, 500)
     }
 
     fun showSmallIslandNotification() {
@@ -498,6 +497,7 @@ class ViewManager(
         } catch (unused: java.lang.Exception) {
             null
         }
+        Log.d("TAG", "closeFullNotification: " + isAdded)
 
         if (isAdded) {
             notification = Notification(
@@ -555,16 +555,6 @@ class ViewManager(
                 existing.progressMax = progressMax
                 existing.progressIndeterminate = progressIndeterminate
 
-//                if (sameGroup || notification.template.contains("InboxStyle") || notification.tag.lowercase(
-//                        Locale.getDefault()
-//                    ).contains("summary")
-//                ) {
-//                    Log.d("TAG", "updateNotificationItem: ")
-//                    updateNotificationItem(notification, existingIndex)
-//                } else if (!isSameItem(notification)) {
-//                    Log.d("TAG", "-1: ")
-//                    existing.keyMap[key] = notification
-//                }
                 updateNotificationItem(notification, existingIndex)
             } else {
                 listSmallDynamicIsland.add(0, notification)
@@ -578,6 +568,9 @@ class ViewManager(
                     break
                 }
             }
+            if (isShowingFullIsland()) {
+                closeFullNotificationIsland()
+            }
 
         }
         if (!isFilterPkgFound(packageName)) {
@@ -585,7 +578,7 @@ class ViewManager(
                 showSmallIslandNotification()
                 Log.d("TAG", "1: ")
             } else if (notification.isOngoing) {
-                closeHeadsUpNotification(notification)
+                showFullIslandNotification(notification)
                 Log.d("TAG", "2: ")
 
             } else if (!notification.isOngoing || notification.actions == null || notification.actions.size != 2) {
@@ -634,9 +627,8 @@ class ViewManager(
             binding.islandTopLayout.show()
             binding.rvIslandSmall.visibility = View.GONE
             if (isShowingFullIsland()) {
-                listBigDynamicIsland.clear()
-                listBigDynamicIsland.add(0, notification)
-                binding.rvIslandBig.setNotification(listBigDynamicIsland)
+
+                binding.rvIslandBig.setNotification(notification)
                 return
             }
 
@@ -656,9 +648,7 @@ class ViewManager(
 
             binding.islandParentLayout.layoutParams = layoutParams1
             binding.rvIslandBig.show()
-            listBigDynamicIsland.clear()
-            listBigDynamicIsland.add(0, notification)
-            binding.rvIslandBig.setNotification(listBigDynamicIsland)
+            binding.rvIslandBig.setNotification(notification)
 
         }
     }
