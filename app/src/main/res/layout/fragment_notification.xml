@@ -13,7 +13,6 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_12sdp"
         android:fontFamily="@font/f500"
         android:text="@string/notifications"
         android:textColor="@color/b200"

@@ -11,8 +11,12 @@ import android.content.IntentFilter
 import android.graphics.PixelFormat
 import android.media.session.MediaSessionManager
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Handler
 import android.os.Parcelable
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyCallback
+import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -22,12 +26,15 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.Constant
 import com.neko.hiepdph.dynamicislandvip.common.Utils
 import com.neko.hiepdph.dynamicislandvip.common.Utils.convertDpToPixel
+import com.neko.hiepdph.dynamicislandvip.common.buildMinVersion31
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersionP
 import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
 import com.neko.hiepdph.dynamicislandvip.common.config
@@ -158,7 +165,9 @@ class ViewManager(
         })
     }
 
+
     private fun initActionListener() {
+
         actionListener = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent?) {
                 if (intent != null) {
@@ -187,6 +196,8 @@ class ViewManager(
                                 } else {
                                     context.getString(R.string.battery_full)
                                 }
+                                Log.d("TAG", "battery: ")
+
 
                             } else {
                                 val iterator = listSmallDynamicIsland.iterator()
@@ -198,6 +209,7 @@ class ViewManager(
                                     }
                                 }
                             }
+                            binding.rvIslandSmall.setNotification(listSmallDynamicIsland)
                         }
 
                         "android.media.RINGER_MODE_CHANGED" -> {
@@ -315,7 +327,12 @@ class ViewManager(
         intentFilter.addAction("android.bluetooth.device.action.ACL_CONNECTED")
         intentFilter.addAction("android.bluetooth.device.action.ACL_DISCONNECT_REQUESTED")
         intentFilter.addAction("android.bluetooth.device.action.ACL_DISCONNECTED")
-        context.registerReceiver(actionListener, intentFilter)
+        intentFilter.addAction("android.bluetooth.device.action.PHONE_STATE")
+        ContextCompat.registerReceiver(
+            context,
+            actionListener,
+            intentFilter,
+            ContextCompat.RECEIVER_EXPORTED)
     }
 
     private fun initNotificationListener() {
@@ -341,13 +358,15 @@ class ViewManager(
         mediaHandler.removeCallbacks(mediaUpdateRunnable)
         setFullIslandMargin(false)
         setKeyboardFlag(false)
-        layoutParams?.height = (context.config.dynamicHeight).toInt()
-        windowManager?.updateViewLayout(binding.root, layoutParams)
         val layoutParamsParent = binding.islandParentLayout.layoutParams
-        layoutParamsParent.width = (context.config.dynamicWidth).toInt()
-        layoutParamsParent.height =
-            (context.config.dynamicHeight).toInt()
+        layoutParamsParent.width = (context.config.dynamicWidth)
+        layoutParamsParent.height = (context.config.dynamicHeight)
         binding.islandParentLayout.setLayoutParams(layoutParamsParent)
+        layoutParams?.height = (context.config.dynamicHeight)
+        Handler().postDelayed({
+            windowManager?.updateViewLayout(binding.root, layoutParams)
+        }, 300)
+
         binding.rvIslandSmall.visibility = View.VISIBLE
         binding.rvIslandBig.visibility = View.GONE
 //        Handler().postDelayed(object : Runnable {
@@ -605,6 +624,10 @@ class ViewManager(
             y = context.config.dynamicMarginVertical
             x = context.config.dynamicMarginHorizontal
         }
+        val layoutParams1 = binding.islandParentLayout.layoutParams
+        layoutParams1.width = context.config.dynamicWidth
+        layoutParams1.height = context.config.dynamicHeight
+        binding.islandParentLayout.layoutParams = layoutParams1
         windowManager?.updateViewLayout(binding.root, layoutParams)
 
     }
@@ -623,16 +646,16 @@ class ViewManager(
 
     fun showFullIslandNotification(notification: Notification) {
         currentNotification = notification
-        if (!notification.isLocal) {
+        Log.d("TAG", "showFullIslandNotification: "+notification.isLocal)
+//        if (!notification.isLocal) {
             binding.islandTopLayout.show()
             binding.rvIslandSmall.visibility = View.GONE
             if (isShowingFullIsland()) {
-
                 binding.rvIslandBig.setNotification(notification)
                 return
             }
 
-            if (notification.template.contains("MediaStyle")) {
+            if (notification.template != null && notification.template.contains("MediaStyle")) {
                 setMediaUpdateHandler()
             }
             setFullIslandMargin(true)
@@ -650,7 +673,7 @@ class ViewManager(
             binding.rvIslandBig.show()
             binding.rvIslandBig.setNotification(notification)
 
-        }
+//        }
     }
 
     fun hideSmallNotificationIsland() {

@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.SystemClock
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -25,15 +24,18 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.neko.hiepdph.dynamicislandvip.R
+import com.neko.hiepdph.dynamicislandvip.common.Constant
 import com.neko.hiepdph.dynamicislandvip.common.Utils
 import com.neko.hiepdph.dynamicislandvip.common.Utils.convertDpToPixel
 import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
 import com.neko.hiepdph.dynamicislandvip.common.config
 import com.neko.hiepdph.dynamicislandvip.common.getFormattedTime
+import com.neko.hiepdph.dynamicislandvip.common.hide
 import com.neko.hiepdph.dynamicislandvip.common.notification.ActionParsable
 import com.neko.hiepdph.dynamicislandvip.common.notification.Notification
 import com.neko.hiepdph.dynamicislandvip.common.notification.NotificationListener
 import com.neko.hiepdph.dynamicislandvip.databinding.LayoutCallItemBinding
+import com.neko.hiepdph.dynamicislandvip.databinding.LayoutChargeBatteryBinding
 import com.neko.hiepdph.dynamicislandvip.databinding.LayoutListItemsBinding
 import com.neko.hiepdph.dynamicislandvip.service.MyAccessService
 import de.hdodenhof.circleimageview.CircleImageView
@@ -89,8 +91,10 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
         listener = mListener
     }
 
+
+
     fun reset() {
-        closeFull(null,null)
+        closeFull(null)
     }
 
     fun assign(notification: Notification) {
@@ -149,7 +153,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
                         binding.actionCancel.visibility = View.VISIBLE
                         binding.actionCancel.clickWithDebounce {
                             startActionDeclinePendingIntent(
-                                notification, null
+                                notification
                             )
                         }
                         isCancelVisible = true
@@ -158,7 +162,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
                         binding.actionAccept.visibility = View.VISIBLE
                         binding.actionAccept.clickWithDebounce {
                             startActionAcceptPendingIntent(
-                                notification, null
+                                notification
                             )
                         }
                         isAcceptVisible = true
@@ -172,7 +176,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
             if (notification.actions.size == 1) {
                 binding.actionCancel.visibility = View.VISIBLE
                 binding.actionCancel.clickWithDebounce {
-                    startActionFirstPendingIntent(notification, null)
+                    startActionFirstPendingIntent(notification)
                 }
             } else {
                 shouldShowCancel = isCancelVisible
@@ -248,21 +252,11 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
                         notification
                     )
                 }
-                if (notification.isClearable) {
-//                        arrayList.remove(this@ViewHolder.holder.getAbsoluteAdapterPosition())
-
-                }
                 accessService?.closeFullIsLandNotification()
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
             }
-//                binding.arrowIv.setImageResource(R.drawable.arrow_down)
             itemBinding.notificationActionContainer.visibility = View.GONE
-        }
-        if ((notification.keyMap.size > 0) || ((notification.bigText.toString()
-                .isNotEmpty() && (notification.bigText.toString() != notification.text.toString())) || (notification.actions != null))
-        ) {
-
         }
         if (notification.actions == null || notification.actions.size <= 0) {
             itemBinding.mediaDurationText.visibility = View.GONE
@@ -386,7 +380,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
                     setPadding(50, 5, 5, 5)
                     setOnClickListener {
                         closeFull(
-                            notification, null
+                            notification
                         )
                     }
                 }
@@ -395,9 +389,9 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
         }
     }
 
-    fun closeFull(notification: Notification?, view: View?) {
+    private fun closeFull(notification: Notification?) {
         accessService?.closeFullIsLandNotification()
-        NotificationListener.instance.cancelNotificationById("")
+        NotificationListener.instance.cancelNotificationById(notification?.key)
     }
 
     fun addSubItemsToGroupContainer(notification: Notification, linearLayout: LinearLayout) {
@@ -516,7 +510,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
         }
     }
 
-    fun addTitleAndTextSubItems(notification: Notification, linearLayout: LinearLayout) {
+    private fun addTitleAndTextSubItems(notification: Notification, linearLayout: LinearLayout) {
         for (str in notification.keyMap.keys) {
             val notification2 = notification.keyMap[str]
             if (notification.keyMap.size != 1) {
@@ -566,7 +560,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
         return linearLayout
     }
 
-    fun startActionFirstPendingIntent(notification: Notification, view: View?) {
+    private fun startActionFirstPendingIntent(notification: Notification) {
         if (notification.actions[0].pendingIntent != null) {
             try {
                 notification.actions[0].pendingIntent.send()
@@ -577,7 +571,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
         accessService?.closeFullIsLandNotification()
     }
 
-    fun startActionDeclinePendingIntent(notification: Notification, view: View?) {
+    private fun startActionDeclinePendingIntent(notification: Notification) {
         if (notification.actions[declineIndex].pendingIntent != null) {
             try {
                 notification.actions[declineIndex].pendingIntent.send()
@@ -588,7 +582,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
         accessService?.closeFullIsLandNotification()
     }
 
-    fun startActionAcceptPendingIntent(notification: Notification, view: View?) {
+    private fun startActionAcceptPendingIntent(notification: Notification) {
         if (notification.actions[acceptIndex].pendingIntent != null) {
             try {
                 notification.actions[acceptIndex].pendingIntent.send()
@@ -599,7 +593,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
         accessService?.closeFullIsLandNotification()
     }
 
-    fun m86x9ccd14b3(notification: Notification, i: Int, linearLayout: LinearLayout) {
+    private fun m86x9ccd14b3(notification: Notification, i: Int, linearLayout: LinearLayout) {
         if (notification.actions[i].remoteInputs != null) {
             showReplyBox(linearLayout, notification.actions, i)
             return
@@ -661,7 +655,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
         }
     }
 
-    fun sendRemoteInput(
+    private fun sendRemoteInput(
         pendingIntent: PendingIntent,
         remoteInputArr: Array<RemoteInput?>?,
         remoteInput: RemoteInput,
@@ -688,7 +682,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
     fun updateMediaProgress(notification: Notification) {
         val formattedTime = getFormattedTime(notification.duration)
         val formattedTime2 = getFormattedTime(notification.position)
-        itemBinding?.apply {
+        itemBinding.apply {
             mediaDurationText.text = formattedTime
             mediaPosText.text = formattedTime2
             subProgressbar.progress = notification.progress

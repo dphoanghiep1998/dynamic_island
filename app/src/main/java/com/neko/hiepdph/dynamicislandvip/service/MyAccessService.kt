@@ -1,10 +1,16 @@
 package com.neko.hiepdph.dynamicislandvip.service
 
 import android.accessibilityservice.AccessibilityService
+import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import androidx.annotation.RequiresApi
 import com.neko.hiepdph.dynamicislandvip.common.Constant
+import com.neko.hiepdph.dynamicislandvip.common.buildMinVersion31
 import com.neko.hiepdph.dynamicislandvip.common.viewmanager.ViewManager
 import com.neko.hiepdph.dynamicislandvip.data.model.AppDetail
 
@@ -25,6 +31,7 @@ class MyAccessService : AccessibilityService() {
         return super.onStartCommand(intent, flags, startId)
 
     }
+
 
     override fun onInterrupt() {
     }

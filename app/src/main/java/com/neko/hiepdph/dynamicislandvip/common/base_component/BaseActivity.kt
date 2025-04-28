@@ -12,18 +12,25 @@ package com.neko.hiepdph.mypiano.common.base_component
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.IdRes
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.updateLayoutParams
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navOptions
@@ -40,11 +47,11 @@ abstract class BaseActivity<VB : ViewBinding>() : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (true) {
-            supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN
-            )
+//            supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
+//            window.setFlags(
+//                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+//            )
         }
         super.onCreate(savedInstanceState)
 
@@ -54,6 +61,18 @@ abstract class BaseActivity<VB : ViewBinding>() : AppCompatActivity() {
         initView()
         initButton()
         setupObserver()
+        enableEdgeToEdge()
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(
+                insets.left,
+                insets.top,
+                insets.right,
+                insets.bottom
+            )
+            WindowInsetsCompat.CONSUMED
+        }
+
 //        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 //        receiver = object : BroadcastReceiver() {
 //            override fun onReceive(p0: Context?, mItent: Intent?) {

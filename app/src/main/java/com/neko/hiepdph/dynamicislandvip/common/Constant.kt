@@ -53,9 +53,9 @@ object Constant {
 
     const val TYPE_AIRBUDS: String = "TYPE_AIRBUDS"
 
-    const val TYPE_CHARGING: String = "CAT_CHARGING"
+    const val TYPE_CHARGING: String = "cat_charging"
 
-    const val TYPE_SILENT: String = "CAT_SILENT"
+    const val TYPE_SILENT: String = "cat_silent"
 
     const val USE_MATERIAL_COLOR: String = "USE_MATERIAL_COLOR"
 

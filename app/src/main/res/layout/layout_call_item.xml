@@ -1,59 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="90dp"
-    android:background="#000"
+    android:layout_height="wrap_content"
     android:padding="10dp">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iconSender"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_centerVertical="true"
         android:padding="@dimen/_5sdp"
-        android:src="@drawable/ic_apply_off" />
+        android:src="@drawable/ic_apply_off"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvAppTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/iconSender"
-        android:layout_margin="@dimen/_5sdp"
-        android:layout_toEndOf="@+id/iconSender"
-        android:layout_toRightOf="@+id/iconSender"
         android:fontFamily="@font/f400"
+        android:layout_marginHorizontal="@dimen/_6sdp"
         android:gravity="center_vertical"
-        android:maxLength="20"
-        android:maxLines="1"
-        android:singleLine="true"
         android:textColor="#A4A4A9"
-        android:textSize="15sp" />
+        android:textSize="@dimen/_15sdp"
+        app:layout_constraintBottom_toTopOf="@id/tvText"
+        app:layout_constraintEnd_toStartOf="@id/notification_action_container2"
+        app:layout_constraintStart_toEndOf="@id/iconSender"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvAppTitle"
-        android:layout_marginStart="@dimen/_5sdp"
-        android:layout_marginEnd="@dimen/_5sdp"
-        android:layout_marginBottom="@dimen/_5sdp"
-        android:layout_toRightOf="@+id/iconSender"
-        android:fontFamily="@font/f500"
-        android:maxLength="20"
-        android:maxLines="1"
-        android:singleLine="true"
+        android:layout_marginHorizontal="@dimen/_6sdp"
+        android:fontFamily="@font/f400"
         android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:textSize="@dimen/_14sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/notification_action_container2"
+        app:layout_constraintStart_toEndOf="@id/iconSender"
+        app:layout_constraintTop_toBottomOf="@id/tvAppTitle" />
 
     <LinearLayout
         android:id="@+id/notification_action_container2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:gravity="right|center_vertical|center_horizontal|center|end"
         android:orientation="horizontal"
         android:paddingTop="10dp"
-        android:paddingBottom="5dp">
+        android:paddingBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/actionCancel"
@@ -69,4 +68,4 @@
             android:layout_marginEnd="10dp"
             android:src="@drawable/ic_phone_circle_green" />
     </LinearLayout>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
