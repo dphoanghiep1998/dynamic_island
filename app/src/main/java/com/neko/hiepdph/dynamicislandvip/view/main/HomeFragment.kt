@@ -223,10 +223,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             binding.btnTickDynamicIsland.setImageResource(R.drawable.ic_tick_active)
             binding.btnTickNotch.setImageResource(R.drawable.ic_tick_inactive)
             binding.btnDynamicIsland.setImageResource(R.drawable.ic_dynamic_active)
-            binding.btnNotch.setImageResource(R.drawable.ic_dynamic_inactive)
+            binding.btnNotch.setImageResource(R.drawable.ic_notch_inactive)
         } else {
             binding.btnDynamicIsland.setImageResource(R.drawable.ic_dynamic_inactive)
-            binding.btnNotch.setImageResource(R.drawable.ic_dynamic_active)
+            binding.btnNotch.setImageResource(R.drawable.ic_notch_active)
             binding.btnTickDynamicIsland.setImageResource(R.drawable.ic_tick_inactive)
             binding.btnTickNotch.setImageResource(R.drawable.ic_tick_active)
         }

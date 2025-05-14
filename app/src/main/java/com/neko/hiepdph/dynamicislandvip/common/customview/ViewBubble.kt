@@ -124,7 +124,7 @@ class ViewDynamicIslandSmall @JvmOverloads constructor(
             }
 
             Constant.TYPE_CHARGING.lowercase() -> {
-                binding.iconLeft.visibility = View.GONE
+                binding.iconLeft.visibility = GONE
 
                 binding.textRight.apply {
                     setTextColor(notification.color)
@@ -139,7 +139,7 @@ class ViewDynamicIslandSmall @JvmOverloads constructor(
                     text = notification.title
                 }
 
-                binding.iconRight.visibility = View.VISIBLE
+                binding.iconRight.visibility = VISIBLE
                 binding.iconRight.setImageResource(
                     Utils.getBatteryImage(context)
                 )
@@ -160,7 +160,7 @@ class ViewDynamicIslandSmall @JvmOverloads constructor(
                 }
 
                 binding.iconRight.setImageResource(0)
-                binding.iconRight.visibility = View.GONE
+                binding.iconRight.visibility = GONE
                 useDefaultLayout = false
             }
         }
@@ -170,7 +170,7 @@ class ViewDynamicIslandSmall @JvmOverloads constructor(
                 binding.iconLeft.setImageBitmap(it)
 
                 if (notification.showChronometer) {
-                    binding.chronometer.visibility = View.VISIBLE
+                    binding.chronometer.visibility = VISIBLE
                     binding.chronometer.start()
                     notification.isChronometerRunning = true
 
@@ -185,38 +185,38 @@ class ViewDynamicIslandSmall @JvmOverloads constructor(
 
             if (notification.senderIcon == null) {
                 binding.iconRight.setImageResource(0)
-                binding.iconRight.visibility = View.GONE
+                binding.iconRight.visibility = GONE
 
                 if (notification.title.isNullOrEmpty()) {
-                    binding.textRight.visibility = View.GONE
+                    binding.textRight.visibility = GONE
                 } else {
-                    binding.textRight.visibility = View.VISIBLE
+                    binding.textRight.visibility = VISIBLE
                     binding.textRight.text = notification.title.split(" ").firstOrNull().orEmpty()
                 }
             } else if (notification.showChronometer && notification.category.equals(
                     NotificationCompat.CATEGORY_CALL, ignoreCase = true
                 ) && notification.isOngoing
             ) {
-                binding.textRight.visibility = View.GONE
-                binding.iconRight.visibility = View.GONE
+                binding.textRight.visibility = GONE
+                binding.iconRight.visibility = GONE
                 binding.textRight.text = ""
 
                 binding.rightLottie.setAnimation(R.raw.wave_call01)
-                binding.rightLottie.visibility = View.VISIBLE
+                binding.rightLottie.visibility = VISIBLE
                 if (!binding.rightLottie.isAnimating) {
                     binding.rightLottie.playAnimation()
                 }
             } else if (!notification.template.contains("MediaStyle") || notification.isClearable) {
-                binding.textRight.visibility = View.GONE
+                binding.textRight.visibility = GONE
                 binding.iconRight.setImageBitmap(notification.senderIcon)
             } else {
                 binding.rightLottie.setAnimation(R.raw.music_wave)
-                binding.rightLottie.visibility = View.VISIBLE
+                binding.rightLottie.visibility = VISIBLE
                 if (!binding.rightLottie.isAnimating) {
                     binding.rightLottie.playAnimation()
                 }
-                binding.textRight.visibility = View.GONE
-                binding.iconRight.visibility = View.GONE
+                binding.textRight.visibility = GONE
+                binding.iconRight.visibility = GONE
             }
 
             binding.root.setOnClickListener {
