@@ -47,6 +47,10 @@ class MyAccessService : AccessibilityService() {
             Constant.UPDATE_LAYOUT_SIZE -> {
                 viewManager?.updateLayout()
             }
+
+            Constant.UPDATE_BUBBLE -> {
+                viewManager?.updateLayoutBubble()
+            }
         }
         return super.onStartCommand(intent, flags, startId)
 

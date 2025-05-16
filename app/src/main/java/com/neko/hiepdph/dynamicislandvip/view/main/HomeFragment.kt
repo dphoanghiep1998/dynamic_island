@@ -14,6 +14,7 @@ import com.neko.hiepdph.dynamicislandvip.common.config
 import com.neko.hiepdph.dynamicislandvip.common.customview.tickseekbar.OnSeekChangeListener
 import com.neko.hiepdph.dynamicislandvip.common.customview.tickseekbar.SeekParams
 import com.neko.hiepdph.dynamicislandvip.common.customview.tickseekbar.TickSeekBar
+import com.neko.hiepdph.dynamicislandvip.common.toPx
 import com.neko.hiepdph.dynamicislandvip.databinding.FragmentHomeBinding
 import com.neko.hiepdph.dynamicislandvip.service.MyAccessService
 import com.neko.hiepdph.dynamicislandvip.view.setting.SettingsActivity
@@ -91,8 +92,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         binding.tvHorizontalValue.text = requireActivity().config.dynamicMarginHorizontal.toString()
 
         binding.seekbarWidth.apply {
-            max =
-                requireActivity().resources.displayMetrics.widthPixels.toFloat() / requireActivity().resources.displayMetrics.scaledDensity
+            max = requireActivity().toPx(200)
+            min = requireActivity().toPx(90)
             setProgress(requireActivity().config.dynamicWidth.toFloat())
             onSeekChangeListener = object : OnSeekChangeListener {
                 override fun onSeeking(seekParams: SeekParams?) {
@@ -116,8 +117,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         binding.tvWidthValue.text = requireActivity().config.dynamicWidth.toString()
 
         binding.seekbarHeight.apply {
-            max = 160f
-            min = 50f
+            max = requireActivity().toPx(40)
+            min = requireActivity().toPx(10)
             setProgress(requireActivity().config.dynamicHeight.toFloat())
             onSeekChangeListener = object : OnSeekChangeListener {
                 override fun onSeeking(seekParams: SeekParams?) {

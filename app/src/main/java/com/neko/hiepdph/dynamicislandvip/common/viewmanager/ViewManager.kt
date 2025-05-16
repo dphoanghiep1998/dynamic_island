@@ -1,6 +1,7 @@
 package com.neko.hiepdph.dynamicislandvip.common.viewmanager
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.graphics.PixelFormat
@@ -13,14 +14,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import com.neko.hiepdph.dynamicislandvip.common.Utils.convertDpToPixel
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersionP
 import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
 import com.neko.hiepdph.dynamicislandvip.common.config
+import com.neko.hiepdph.dynamicislandvip.common.customview.IClickBubbleListener
 import com.neko.hiepdph.dynamicislandvip.common.customview.IClickListener
+import com.neko.hiepdph.dynamicislandvip.common.customview.ViewBubble
 import com.neko.hiepdph.dynamicislandvip.common.hide
 import com.neko.hiepdph.dynamicislandvip.common.notification.Notification
 import com.neko.hiepdph.dynamicislandvip.common.notification.NotificationListener
@@ -46,6 +50,9 @@ class ViewManager(
     var flagNormal: Int = 8913704
     var mediaHandler: Handler = Handler()
     var currentNotification: Notification? = null
+    var viewBubble: ViewBubble? = null
+
+    var isBubbleEnabled = true
 
     var mediaUpdateRunnable: Runnable = object : Runnable {
         override fun run() {
@@ -74,6 +81,7 @@ class ViewManager(
     }
 
 
+    @SuppressLint("WrongConstant")
     private fun addDynamicView() {
         binding = LayoutViewDynamicIslandBinding.inflate(LayoutInflater.from(context), null, false)
         binding.statusbarParent.clickWithDebounce {
@@ -86,10 +94,10 @@ class ViewManager(
         windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         setFullIslandMargin(false)
         setKeyboardFlag(false)
-        val layoutParamsParent = binding.islandParentLayout.layoutParams
-        layoutParamsParent.width = (context.config.dynamicWidth)
-        layoutParamsParent.height = (context.config.dynamicHeight)
-        binding.islandParentLayout.setLayoutParams(layoutParamsParent)
+//        val layoutParamsParent = binding.islandParentLayout.layoutParams
+//        layoutParamsParent.width = (context.config.dynamicWidth)
+//        layoutParamsParent.height = (context.config.dynamicHeight)
+//        binding.islandParentLayout.setLayoutParams(layoutParamsParent)
         layoutParams = WindowManager.LayoutParams().apply {
             type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
             flags = 8913704
@@ -104,6 +112,12 @@ class ViewManager(
                 layoutInDisplayCutoutMode =
                     WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
             }
+        }
+        if (context.config.showBubble) {
+            isBubbleEnabled = true
+            showBubble()
+        } else {
+            isBubbleEnabled = false
         }
 
         try {
@@ -135,6 +149,25 @@ class ViewManager(
 
     fun setNotification(lst: ArrayDeque<Notification>) {
         binding.rvIslandSmall.setNotification(lst)
+        val listTemplate = lst.map { it.template }
+        var isChecked = false
+        for (i in listTemplate) {
+            if (i.contains("MediaStyle")) {
+                val index = listTemplate.indexOf(i)
+                val itemNotification = lst.elementAt(index)
+                Log.d("TAG", "setNotification: " + index)
+                if (context.config.showBubble) {
+                    if (isBubbleEnabled) {
+                        viewBubble?.setNotification(itemNotification)
+                    }
+                }
+                 isChecked = true
+            }
+
+        }
+        if(!isChecked){
+            viewBubble?.setNotification(null)
+        }
     }
 
 
@@ -142,14 +175,50 @@ class ViewManager(
         mediaHandler.removeCallbacks(mediaUpdateRunnable)
         setFullIslandMargin(false)
         setKeyboardFlag(false)
-        val layoutParamsParent = binding.islandParentLayout.layoutParams
-        layoutParamsParent.width = (context.config.dynamicWidth)
-        layoutParamsParent.height = (context.config.dynamicHeight)
-        binding.islandParentLayout.setLayoutParams(layoutParamsParent)
         layoutParams?.height = (context.config.dynamicHeight)
-        Handler().postDelayed({
-            windowManager?.updateViewLayout(binding.root, layoutParams)
-        }, 300)
+        layoutParams?.width = (context.config.dynamicWidth)
+        layoutParams?.x = (context.config.dynamicMarginHorizontal)
+
+//        val layoutParamsParent = binding.islandParentLayout.layoutParams
+//        layoutParamsParent.width =  (context.config.dynamicWidth)
+//        binding.islandParentLayout.setLayoutParams(layoutParamsParent)
+
+//        Handler().postDelayed({
+        val layoutParamsParent = binding.islandParentLayout.layoutParams
+        layoutParamsParent.width = 0
+        layoutParamsParent.height = -1
+        binding.islandParentLayout.setLayoutParams(layoutParamsParent)
+        if (context.config.bubbleFrequency == 0) {
+
+        } else {
+            if (context.config.bubbleLocation == 0) {
+                binding.bubblePositionLeft.show()
+                binding.bubblePositionRight.hide()
+
+            } else {
+                binding.bubblePositionLeft.hide()
+                binding.bubblePositionRight.show()
+            }
+        }
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(binding.islandTopLayout) // your ConstraintLayout instance
+
+        constraintSet.connect(
+            binding.islandParentLayout.id, // ID of the view you're positioning
+            ConstraintSet.START,
+            binding.bubblePositionLeft.id, // ID of the target view (or ConstraintSet.PARENT_ID)
+            ConstraintSet.END
+        )
+        constraintSet.connect(
+            binding.islandParentLayout.id, // ID of the view you're positioning
+            ConstraintSet.END,
+            binding.bubblePositionRight.id, // ID of the target view (or ConstraintSet.PARENT_ID)
+            ConstraintSet.START
+        )
+        constraintSet.applyTo(binding.islandTopLayout)
+        windowManager?.updateViewLayout(binding.root, layoutParams)
+
+//        }, 300)
 
         binding.rvIslandSmall.visibility = View.VISIBLE
         binding.rvIslandBig.visibility = View.GONE
@@ -158,7 +227,6 @@ class ViewManager(
     fun showSmallIslandNotification() {
         Handler().postDelayed({
             if (isShowingFullIsland()) {
-                Log.d("TAG", "showSmallIslandNotification: ")
                 closeFullNotificationIsland()
             }
 //                if (isShowingSmall()) {
@@ -229,13 +297,95 @@ class ViewManager(
             y = context.config.dynamicMarginVertical
             x = context.config.dynamicMarginHorizontal
         }
-        val layoutParams1 = binding.islandParentLayout.layoutParams
-        layoutParams1.width = context.config.dynamicWidth
-        layoutParams1.height = context.config.dynamicHeight
-        binding.islandParentLayout.layoutParams = layoutParams1
+//        val layoutParams1 = binding.islandParentLayout.layoutParams
+//        layoutParams1.width = context.config.dynamicWidth
+//        layoutParams1.height = context.config.dynamicHeight
+//        binding.islandParentLayout.layoutParams = layoutParams1
         windowManager?.updateViewLayout(binding.root, layoutParams)
 
     }
+
+    fun updateLayoutBubble() {
+        if (isBubbleEnabled && !context.config.showBubble) {
+            hideBubble()
+            isBubbleEnabled = false
+        }
+        if (context.config.showBubble) {
+            showBubble()
+            isBubbleEnabled = true
+        }
+
+        viewBubble?.updateBackgroundForBubble()
+
+
+    }
+
+    fun showBubble() {
+        viewBubble = ViewBubble(context)
+        viewBubble?.setListener(object : IClickBubbleListener{
+            override fun onClick(
+                notification: Notification?,
+                position: Int?
+            ) {
+                Log.d("TAG", "onClick: ")
+                if (context.config.notificationDisplay) {
+                    notification?.let { showFullIslandNotification(it) }
+                }
+            }
+
+            override fun onLongClick(
+                notification: Notification?,
+                position: Int?
+            ) {
+            }
+
+        })
+
+        if (context.config.bubbleLocation == 0) {
+            binding.bubblePositionLeft.show()
+            binding.bubblePositionRight.hide()
+
+            binding.bubblePositionLeft.translationX = 300f
+            binding.bubblePositionLeft.alpha = 0f
+            binding.bubblePositionLeft.animate().alpha(1f).translationX(0f)
+                .setDuration(400) // 300ms animation
+                .start()
+            binding.bubblePositionLeft.addView(
+                viewBubble, ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+                )
+            )
+
+        } else {
+            binding.bubblePositionLeft.hide()
+            binding.bubblePositionRight.show()
+            binding.bubblePositionRight.translationX = -300f
+            binding.bubblePositionRight.alpha = 0f
+            binding.bubblePositionRight.animate().alpha(1f).translationX(0f)
+                .setDuration(400) // 300ms animation
+                .start()
+            binding.bubblePositionRight.addView(
+                viewBubble, ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+                )
+            )
+        }
+
+        viewBubble?.updateBackgroundForBubble()
+
+    }
+
+    fun hideBubble() {
+        if (context.config.bubbleLocation == 0) {
+            binding.bubblePositionLeft.hide()
+            binding.bubblePositionLeft.removeAllViews()
+
+        } else {
+            binding.bubblePositionRight.hide()
+            binding.bubblePositionRight.removeAllViews()
+        }
+    }
+
 
     fun getMediaPosition(): Long {
         return try {
@@ -254,6 +404,8 @@ class ViewManager(
     }
 
     fun showFullIslandNotification(notification: Notification) {
+        binding.bubblePositionLeft.hide()
+        binding.bubblePositionRight.hide()
         currentNotification = notification
         Log.d("TAG", "showFullIslandNotification: " + notification.isLocal)
 //        if (!notification.isLocal) {
@@ -274,7 +426,7 @@ class ViewManager(
         layoutParams?.width = -1
         layoutParams?.x = 0
         windowManager?.updateViewLayout(binding.root, layoutParams)
-        val layoutParams1 = binding.islandParentLayout.layoutParams as LinearLayout.LayoutParams
+        val layoutParams1 = binding.islandParentLayout.layoutParams as ConstraintLayout.LayoutParams
         layoutParams1.width = ViewGroup.LayoutParams.MATCH_PARENT
         layoutParams1.height = -2
 

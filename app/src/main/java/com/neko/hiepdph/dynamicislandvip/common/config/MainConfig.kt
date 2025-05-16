@@ -194,12 +194,12 @@ class MainConfig(private val context: Context) {
 
     var bubbleBackgroundBorder: String
         get() = AppSharePreference.getInstance(context)
-            .getString(Constant.KEY_BUBBLE_BACKGROUND_COLOR, "#000000")
-        set(bubbleBackgroundColor) = AppSharePreference.getInstance(context)
-            .saveString(Constant.KEY_BUBBLE_BACKGROUND_COLOR, bubbleBackgroundColor)
+            .getString(Constant.KEY_BUBBLE_BACKGROUND_BORDER_COLOR, "#000000")
+        set(bubbleBackgroundBorder) = AppSharePreference.getInstance(context)
+            .saveString(Constant.KEY_BUBBLE_BACKGROUND_BORDER_COLOR, bubbleBackgroundBorder)
 
     var sizeBorder: Int
-        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_SIZE_BORDER, 0)
+        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_SIZE_BORDER, 5)
         set(sizeBorder) = AppSharePreference.getInstance(context)
             .saveInt(Constant.KEY_SIZE_BORDER, sizeBorder)
 

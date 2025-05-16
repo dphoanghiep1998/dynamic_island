@@ -11,7 +11,7 @@ import androidx.core.app.NotificationCompat
 import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.Constant
 import com.neko.hiepdph.dynamicislandvip.common.Utils
-import com.neko.hiepdph.dynamicislandvip.common.convertDpToPixel
+import com.neko.hiepdph.dynamicislandvip.common.config
 import com.neko.hiepdph.dynamicislandvip.common.hide
 import com.neko.hiepdph.dynamicislandvip.common.notification.Notification
 import com.neko.hiepdph.dynamicislandvip.common.show
@@ -75,7 +75,11 @@ class ViewDynamicIslandSmall @JvmOverloads constructor(
     }
 
     fun assign(notification: Notification) {
+        if (notification.template.contains("MediaStyle") && context.config.showBubble) {
+            return
+        }
         binding.chronometer.hide()
+
         if (!notification.isChronometerRunning) {
             binding.chronometer.base = SystemClock.elapsedRealtime()
             binding.chronometer.stop()

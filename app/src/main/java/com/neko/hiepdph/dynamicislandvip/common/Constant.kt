@@ -3,6 +3,7 @@ package com.neko.hiepdph.dynamicislandvip.common
 import com.neko.hiepdph.dynamicislandvip.BuildConfig
 
 object Constant {
+    const val UPDATE_BUBBLE = "UPDATE_BUBBLE"
     const val UPDATE_LAYOUT_SIZE = "UPDATE_LAYOUT_SIZE"
     const val KEY_MARGIN_HORIZONTAL = "KEY_MARGIN_HORIZONTAL"
     const val KEY_MARGIN_VERTICAL = "KEY_MARGIN_VERTICAL"
@@ -11,6 +12,7 @@ object Constant {
     const val KEY_HEIGHT = "KEY_HEIGHT"
     const val APP_DB = "APP_DB_DYNAMIC"
     const val KEY_BACKGROUND_DYNAMIC_ALPHA = "KEY_BACKGROUND_DYNAMIC_ALPHA"
+    const val KEY_BUBBLE_BACKGROUND_BORDER_COLOR = "KEY_BUBBLE_BACKGROUND_BORDER_COLOR"
     const val KEY_BACKGROUND_DYNAMIC_COLOR = "KEY_BACKGROUND_DYNAMIC_COLOR"
     const val KEY_SIZE_BORDER = "KEY_SIZE_BORDER"
     const val KEY_BUBBLE_BACKGROUND_COLOR = "KEY_BUBBLE_BACKGROUND_COLOR"

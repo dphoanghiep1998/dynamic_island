@@ -1,27 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.neko.hiepdph.dynamicislandvip.common.customview.StatusBarParentView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/statusbar_parent"
     android:layout_width="match_parent"
     android:layout_height="40dp"
     android:layout_gravity="center_horizontal"
     android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/island_top_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <FrameLayout
+            android:id="@+id/bubblePositionLeft"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_goneMarginEnd="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <LinearLayout
             android:id="@+id/island_parent_layout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/_4sdp"
             android:animateLayoutChanges="true"
             android:background="@drawable/rounded_rectangle_notification"
-            android:layout_marginHorizontal="@dimen/_12sdp"
             android:clipToPadding="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@id/bubblePositionRight"
+            app:layout_constraintStart_toEndOf="@id/bubblePositionLeft">
 
             <com.neko.hiepdph.dynamicislandvip.common.customview.ViewDynamicIslandSmall
                 android:id="@+id/rv_island_small"
@@ -35,5 +48,15 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="true" />
         </LinearLayout>
-    </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/bubblePositionRight"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_goneMarginStart="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.neko.hiepdph.dynamicislandvip.common.customview.StatusBarParentView>

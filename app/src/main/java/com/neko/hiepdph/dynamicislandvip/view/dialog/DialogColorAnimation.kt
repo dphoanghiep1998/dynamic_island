@@ -2,6 +2,7 @@ package com.neko.hiepdph.dynamicislandvip.view.dialog
 
 import android.content.Context
 import android.graphics.Color
+import androidx.core.graphics.toColorInt
 import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
 import com.neko.hiepdph.dynamicislandvip.databinding.DialogColorAnimationBinding
@@ -38,8 +39,13 @@ class DialogColorAnimation(
         adapterColors?.setData(mutableListOf("#EF4444", "#FACC15", "#4ADE80", "#4ADE80", "#4B44BF"))
         binding.colorPickerView.alphaSliderView = binding.colorAlphaSlider
         binding.colorPickerView.hueSliderView = binding.hueSlider
+        binding.colorPickerView.setOnColorChangeEndListener {
+            currentColor = String.format("#%06X", 0xFFFFFF and it)
+            currentAlpha = binding.colorAlphaSlider.alphaValue
 
-        binding.colorPickerView.color
+        }
+
+        binding.colorPickerView.color = currentColor.toColorInt()
 
         binding.btnOk.clickWithDebounce {
             onClickGrant.invoke(currentColor)
@@ -53,7 +59,7 @@ class DialogColorAnimation(
     }
 
     private fun setColorForView() {
-        binding.colorPickerView.color = Color.parseColor(currentColor)
+        binding.colorPickerView.color = currentColor.toColorInt()
         binding.colorAlphaSlider.alphaValue = currentAlpha
     }
 }

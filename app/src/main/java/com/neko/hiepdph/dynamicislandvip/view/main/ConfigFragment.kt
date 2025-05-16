@@ -3,6 +3,7 @@ package com.neko.hiepdph.dynamicislandvip.view.main
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.graphics.toColorInt
 import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.config
 import com.neko.hiepdph.dynamicislandvip.databinding.FragmentConfigBinding
@@ -28,6 +29,8 @@ class ConfigFragment : BaseFragment<FragmentConfigBinding>() {
     }
 
     private fun setupView() {
+        binding.containerColor.setColor(requireActivity().config.animColor.toColorInt())
+
         binding.containerNotificationAnimation.setContent(
             when (requireActivity().config.notificationAnimation) {
                 0 -> requireActivity().getString(R.string.neon)
@@ -88,7 +91,10 @@ class ConfigFragment : BaseFragment<FragmentConfigBinding>() {
         }
 
         binding.containerColor.setListener {
-            val dialogColorAnimation = DialogColorAnimation(requireContext(),requireActivity().config.animColor,requireActivity().config.alphaValueAnim, onClickGrant = {}, onClickCancel = {})
+            val dialogColorAnimation = DialogColorAnimation(requireContext(),requireActivity().config.animColor,requireActivity().config.alphaValueAnim, onClickGrant = {color ->
+                requireActivity().config.animColor = color
+                binding.containerColor.setColor(color.toColorInt())
+            }, onClickCancel = {})
             dialogColorAnimation.show()
         }
 

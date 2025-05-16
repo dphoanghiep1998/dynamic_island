@@ -1,6 +1,7 @@
 package com.neko.hiepdph.dynamicislandvip.common.customview.itemmodule
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -44,6 +45,10 @@ class ItemConfig2 @JvmOverloads constructor(
 
         addView(binding.root)
         typedArray.recycle()
+    }
+
+    fun setColor(color: Int) {
+        binding.viewColor.backgroundTintList = ColorStateList.valueOf(color)
     }
 
     fun setListener(action:()->Unit){
