@@ -3,7 +3,9 @@ package com.neko.hiepdph.dynamicislandvip.view.selectapp
 import android.content.Context
 import android.content.Intent
 import android.content.pm.LauncherApps
+import android.graphics.drawable.Drawable
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -12,33 +14,23 @@ import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
 import com.neko.hiepdph.dynamicislandvip.common.hide
 import com.neko.hiepdph.dynamicislandvip.common.show
-import com.neko.hiepdph.dynamicislandvip.data.model.AppModel
+import com.neko.hiepdph.dynamicislandvip.data.model.AppDetail
 import com.neko.hiepdph.dynamicislandvip.databinding.LayoutItemSelectAppBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SelectAppAdapter(
-    val onClickAll: (List<AppModel>) -> Unit, val onClickItem: (List<AppModel>) -> Unit
+    val onClickAll: (List<AppDetail>) -> Unit, val onClickItem: (List<AppDetail>) -> Unit
 ) : RecyclerView.Adapter<SelectAppAdapter.SelectAppViewHolder>() {
-    private val listApp = mutableListOf<AppModel>()
-    private val listAppSelected = mutableListOf<AppModel>()
+    private val listApp = mutableListOf<AppDetail>()
+    private val listAppSelected = mutableListOf<AppDetail>()
 
-    fun setData(appList: List<AppModel>?, selectedList: List<AppModel>) {
-        if(appList != null){
-            listApp.clear()
-            listApp.addAll(appList)
-        }
-
-
+    fun setData(appList: List<AppDetail>, selectedList: List<AppDetail>) {
+        listApp.clear()
+        listApp.addAll(appList)
         listAppSelected.clear()
         listAppSelected.addAll(selectedList)
-        notifyDataSetChanged()
-    }
-
-    fun setItemSelected(item: AppModel) {
-        if (listAppSelected.contains(item)) {
-            listAppSelected.remove(item)
-        } else {
-            listAppSelected.add(item)
-        }
         notifyDataSetChanged()
     }
 
@@ -59,6 +51,59 @@ class SelectAppAdapter(
         return position
     }
 
+    override fun onBindViewHolder(
+        holder: SelectAppViewHolder, position: Int, payloads: List<Any?>
+    ) {
+        val item = listApp[position]
+
+        if (payloads.isNotEmpty()) {
+            payloads.forEach {
+                if (it == "reload") {
+                    with(holder) {
+                        if (position == 0) {
+                            if (listAppSelected.isNotEmpty()) {
+                                binding.icTick.setImageResource(R.drawable.ic_check_inactive_app)
+                            } else {
+                                binding.icTick.setImageResource(R.drawable.ic_check_active_app)
+                            }
+                        } else {
+                            binding.tvApp.isSelected = true
+
+                            if (item.pkg !in listAppSelected.map { it.pkg }) {
+                                binding.icTick.setImageResource(R.drawable.ic_check_active_app)
+                            } else {
+                                binding.icTick.setImageResource(R.drawable.ic_check_inactive_app)
+                            }
+
+                        }
+                    }
+                }
+            }
+
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+            with(holder) {
+                if (position == 0) {
+                    if (listAppSelected.isNotEmpty()) {
+                        binding.icTick.setImageResource(R.drawable.ic_check_inactive_app)
+                    } else {
+                        binding.icTick.setImageResource(R.drawable.ic_check_active_app)
+                    }
+
+                } else {
+                    binding.tvApp.isSelected = true
+                    Log.d("TAG", "onBindViewHolder: " + listAppSelected.map { it.pkg })
+                    if (item.pkg !in listAppSelected.map { it.pkg }) {
+                        binding.icTick.setImageResource(R.drawable.ic_check_active_app)
+                    } else {
+                        binding.icTick.setImageResource(R.drawable.ic_check_inactive_app)
+                    }
+
+                }
+            }
+        }
+    }
+
     override fun onBindViewHolder(holder: SelectAppViewHolder, position: Int) {
         val item = listApp[position]
         with(holder) {
@@ -67,47 +112,58 @@ class SelectAppAdapter(
                 binding.tvApp.hide()
                 binding.iconApp.hide()
                 binding.icTick.show()
-                if(listApp.size == listAppSelected.size){
-                    binding.icTick.setImageResource(R.drawable.ic_check_active_app)
-                }else{
+
+                if (listAppSelected.isNotEmpty()) {
                     binding.icTick.setImageResource(R.drawable.ic_check_inactive_app)
+                } else {
+                    binding.icTick.setImageResource(R.drawable.ic_check_active_app)
                 }
+
                 binding.root.clickWithDebounce {
-                    if(listApp.size == listAppSelected.size){
+                    if (listAppSelected.isNotEmpty()) {
                         listAppSelected.clear()
                         onClickAll.invoke(listAppSelected)
-                    }else{
+                    } else {
                         listAppSelected.clear()
                         listAppSelected.addAll(listApp)
                         onClickAll.invoke(listAppSelected)
                     }
-                    notifyDataSetChanged()
+                    notifyItemRangeChanged(0, listApp.size, "reload")
                 }
             } else {
                 binding.icTick.show()
                 binding.tvSelectAll.hide()
                 binding.tvApp.show()
                 binding.iconApp.show()
-                binding.tvApp.text = item.className
+                binding.tvApp.text = item.label
+                CoroutineScope(Dispatchers.IO).launch {
+                    val newItem = getAppByPkg(
+                        itemView.context,
+                        item.pkg?.substringBefore("/").toString(),
+                        item.activityInfoName.toString(),
+                        item
+                    )
+                    launch(Dispatchers.Main) {
+                        Glide.with(itemView.context).load(newItem)
+                            .placeholder(R.drawable.ic_config_inactive)
+                            .error(R.drawable.ic_config_inactive).into(binding.iconApp)
+                    }
 
-                val newItem = getAppByPkg(
-                    itemView.context, item.pkg.substringBefore("/"), item.className, item
-                )
-                Glide.with(itemView.context).load(newItem?.icon)
-                    .placeholder(R.drawable.ic_config_inactive).error(R.drawable.ic_config_inactive)
-                    .into(binding.iconApp)
+                }
+
                 binding.root.clickWithDebounce {
-                    if (item.id in listAppSelected.map { it.id }) {
-                        listAppSelected.removeIf { it.id == item.id }
-
+                    if (item.pkg in listAppSelected.map { it.pkg }) {
+                        listAppSelected.removeIf { it.pkg == item.pkg }
                     } else {
                         listAppSelected.add(item)
                     }
-                    notifyItemChanged(position)
+                    notifyItemChanged(position, "reload")
+                    notifyItemChanged(0, "reload")
                     onClickItem.invoke(listAppSelected)
                 }
+                binding.tvApp.isSelected = true
 
-                if (item.id in listAppSelected.map { it.id }) {
+                if (item.pkg !in listAppSelected.map { it.pkg }) {
                     binding.icTick.setImageResource(R.drawable.ic_check_active_app)
                 } else {
                     binding.icTick.setImageResource(R.drawable.ic_check_inactive_app)
@@ -118,41 +174,40 @@ class SelectAppAdapter(
 
     }
 
-    private fun getAppByPkg(context: Context, pkg: String, cln: String, item: AppModel): AppModel? {
-        if (Build.VERSION.SDK_INT >= 26) {
-            val launcherApps =
-                context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
-            var id = 0L
-            for (userHandle in launcherApps.profiles) {
-                for (launcherActivityInfo in launcherApps.getActivityList(null, userHandle)) {
-                    val packageName = launcherActivityInfo.componentName.packageName
-                    val name = launcherActivityInfo.name
-                    if (packageName == pkg) {
-                        val newAppModel = AppModel(
-                            item.id, pkg, name
-                        )
-                        newAppModel.icon = launcherActivityInfo.getIcon(0)
-                        return newAppModel
+    private fun getAppByPkg(
+        context: Context, pkg: String, cln: String, item: AppDetail
+    ): Drawable? {
+        return try {
+            if (Build.VERSION.SDK_INT >= 26) {
+                val launcherApps = context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+                for (userHandle in launcherApps.profiles) {
+                    try {
+                        val activities = launcherApps.getActivityList(pkg, userHandle) // Optimized
+                        for (info in activities) {
+                            if (info.componentName.packageName == pkg) {
+                                return info.getIcon(0)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
-                id++
-            }
-        } else {
-            val intent = Intent("android.intent.action.MAIN")
-            intent.addCategory("android.intent.category.LAUNCHER")
-            for (resolveInfo in context.packageManager.queryIntentActivities(intent, 0)) {
-                val str3 = resolveInfo.activityInfo.packageName
-                val str4 = resolveInfo.activityInfo.name
-                if (str3 == pkg && cln == str4) {
-                    val newItem = AppModel(
-                        item.id, cln, pkg
-                    )
-                    newItem.icon = resolveInfo.loadIcon(context.packageManager)
-                    return newItem
-
+            } else {
+                val intent = Intent(Intent.ACTION_MAIN).apply {
+                    addCategory(Intent.CATEGORY_LAUNCHER)
+                }
+                val pm = context.packageManager
+                val activities = pm.queryIntentActivities(intent, 0)
+                for (resolveInfo in activities) {
+                    if (resolveInfo.activityInfo.packageName == pkg && resolveInfo.activityInfo.name == cln) {
+                        return resolveInfo.loadIcon(pm)
+                    }
                 }
             }
+            null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
-        return null
     }
 }

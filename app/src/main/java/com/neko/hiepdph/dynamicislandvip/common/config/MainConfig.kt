@@ -4,6 +4,8 @@ import android.content.Context
 import com.neko.hiepdph.dynamicislandvip.common.AppSharePreference
 import com.neko.hiepdph.dynamicislandvip.common.Constant
 import com.neko.hiepdph.dynamicislandvip.common.config
+import com.neko.hiepdph.dynamicislandvip.common.toPx
+import com.neko.hiepdph.dynamicislandvip.data.model.AppDetail
 import java.util.Locale
 
 class MainConfig(private val context: Context) {
@@ -16,6 +18,20 @@ class MainConfig(private val context: Context) {
         get() = AppSharePreference.getInstance(context).getBoolean(Constant.KEY_USER_RATED, false)
         set(isUserRated) = AppSharePreference.getInstance(context)
             .saveBoolean(Constant.KEY_USER_RATED, isUserRated)
+
+    var isPassLang: Boolean
+        get() = AppSharePreference.getInstance(context).getBoolean(Constant.KEY_PASS_LANG, false)
+        set(isPassLang) = AppSharePreference.getInstance(context)
+            .saveBoolean(Constant.KEY_PASS_LANG, isPassLang)
+
+    var controlEnable: Boolean
+        get() = AppSharePreference.getInstance(context).getBoolean(Constant.KEY_ENABLED, false)
+        set(controlEnable) = AppSharePreference.getInstance(context)
+            .saveBoolean(Constant.KEY_ENABLED, controlEnable)
+    var vibration: Boolean
+        get() = AppSharePreference.getInstance(context).getBoolean(Constant.KEY_VIBRATION, false)
+        set(vibration) = AppSharePreference.getInstance(context)
+            .saveBoolean(Constant.KEY_VIBRATION, vibration)
 
     var timeShowRate: Long
         get() = AppSharePreference.getInstance(context).getLong(Constant.TIME_SHOW_RATE, 0)
@@ -169,10 +185,13 @@ class MainConfig(private val context: Context) {
             .saveFloat(Constant.KEY_ALPHA_VAL_BACKGROUND, alphaValueBubbleBackground)
 
     var alphaValueBubbleBorder: Float
-        get() = AppSharePreference.getInstance(context)
-            .getFloat(Constant.KEY_ALPHA_VAL_BORDER, 1f)
+        get() = AppSharePreference.getInstance(context).getFloat(Constant.KEY_ALPHA_VAL_BORDER, 1f)
         set(alphaValueBubbleBorder) = AppSharePreference.getInstance(context)
             .saveFloat(Constant.KEY_ALPHA_VAL_BORDER, alphaValueBubbleBorder)
+    var adjustVolume: Boolean
+        get() = AppSharePreference.getInstance(context).getBoolean(Constant.KEY_ADJUST_VOLUME, true)
+        set(adjustVolume) = AppSharePreference.getInstance(context)
+            .saveBoolean(Constant.KEY_ADJUST_VOLUME, adjustVolume)
 
     var bubbleBackgroundColor: String
         get() = AppSharePreference.getInstance(context)
@@ -204,12 +223,15 @@ class MainConfig(private val context: Context) {
             .saveInt(Constant.KEY_SIZE_BORDER, sizeBorder)
 
     var dynamicHeight: Int
-        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_HEIGHT, 80)
+        get() = AppSharePreference.getInstance(context)
+            .getInt(Constant.KEY_HEIGHT, context.toPx(20).toInt())
         set(dynamicHeight) = AppSharePreference.getInstance(context)
             .saveInt(Constant.KEY_HEIGHT, dynamicHeight)
 
     var dynamicWidth: Int
-        get() = AppSharePreference.getInstance(context).getInt(Constant.KEY_WIDTH, 100)
+        get() = AppSharePreference.getInstance(context).getInt(
+            Constant.KEY_WIDTH, context.toPx(120).toInt()
+        )
         set(dynamicWidth) = AppSharePreference.getInstance(context)
             .saveInt(Constant.KEY_WIDTH, dynamicWidth)
 
@@ -230,5 +252,43 @@ class MainConfig(private val context: Context) {
         )
         set(dynamicMarginHorizontal) = AppSharePreference.getInstance(context)
             .saveInt(Constant.KEY_MARGIN_HORIZONTAL, dynamicMarginHorizontal)
+
+    var listPackageFilter: List<AppDetail>
+        get() = AppSharePreference.getInstance(context)
+            .getObjectFromSharePreference(Constant.KEY_LIST_PACKAGE_FILTER, mutableListOf())
+        set(listPackageFilter) = AppSharePreference.getInstance(context)
+            .saveObjectToSharePreference(Constant.KEY_LIST_PACKAGE_FILTER, listPackageFilter)
+
+    var listBackgroundColor: List<String>
+        get() = AppSharePreference.getInstance(context).getObjectFromSharePreference(
+                Constant.KEY_BACKGROUND_COLOR,
+                mutableListOf("#000000", "#EF4444", "#FACC15", "#4ADE80", "#4ADE80", "#4B44BF")
+            )
+        set(listBackgroundColor) = AppSharePreference.getInstance(context)
+            .saveObjectToSharePreference(Constant.KEY_BACKGROUND_COLOR, listBackgroundColor)
+
+    var listAnimColor: List<String>
+        get() = AppSharePreference.getInstance(context).getObjectFromSharePreference(
+                Constant.KEY_ANIM_COLOR,
+                mutableListOf("#000000", "#EF4444", "#FACC15", "#4ADE80", "#4ADE80", "#4B44BF")
+            )
+        set(listAnimColor) = AppSharePreference.getInstance(context)
+            .saveObjectToSharePreference(Constant.KEY_ANIM_COLOR, listAnimColor)
+
+    var listBubbleColor: List<String>
+        get() = AppSharePreference.getInstance(context).getObjectFromSharePreference(
+                Constant.KEY_BUBBLE_COLOR,
+                mutableListOf("#000000", "#EF4444", "#FACC15", "#4ADE80", "#4ADE80", "#4B44BF")
+            )
+        set(listBubbleColor) = AppSharePreference.getInstance(context)
+            .saveObjectToSharePreference(Constant.KEY_BUBBLE_COLOR, listBubbleColor)
+
+    var listBubbleColorBorder: List<String>
+        get() = AppSharePreference.getInstance(context).getObjectFromSharePreference(
+                Constant.KEY_BUBBLE_COLOR_BORDER,
+                mutableListOf("#000000", "#EF4444", "#FACC15", "#4ADE80", "#4ADE80", "#4B44BF")
+            )
+        set(listBubbleColorBorder) = AppSharePreference.getInstance(context)
+            .saveObjectToSharePreference(Constant.KEY_BUBBLE_COLOR_BORDER, listBubbleColorBorder)
 
 }

@@ -5,6 +5,7 @@ import com.neko.hiepdph.dynamicislandvip.common.Constant
 import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
 import com.neko.hiepdph.dynamicislandvip.common.openLink
 import com.neko.hiepdph.dynamicislandvip.databinding.ActivitySettingsBinding
+import com.neko.hiepdph.dynamicislandvip.view.dialog.DialogFeedBack
 import com.neko.hiepdph.dynamicislandvip.view.dialog.DialogRateUs
 import com.neko.hiepdph.dynamicislandvip.view.language.LanguageActivity
 import com.neko.hiepdph.mypiano.common.base_component.BaseActivity
@@ -49,7 +50,8 @@ class SettingsActivity : BaseActivity<ActivitySettingsBinding>() {
         }
 
         binding.containerFeedBack.clickWithDebounce {
-
+            val dialogFeedBack = DialogFeedBack(this)
+            dialogFeedBack.show()
         }
     }
 

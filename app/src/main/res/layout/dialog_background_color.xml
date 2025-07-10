@@ -52,10 +52,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_20sdp"
                         android:fontFamily="@font/f400"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_12sdp"
                         android:format12Hour="hh:mm"
                         android:format24Hour="hh:mm"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_12sdp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -180,13 +180,24 @@
                 android:id="@+id/rcvColor"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="@id/btnScrollBackColor"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btnAdd"
                 app:layout_constraintStart_toEndOf="@id/btnScrollBackColor"
                 app:layout_constraintTop_toTopOf="@id/btnScrollBackColor"
                 app:spanCount="5" />
+            <ImageView
+                android:id="@+id/btnAdd"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:src="@drawable/ic_add_color"
+                app:cardCornerRadius="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_12sdp"
+                android:foreground="@drawable/fg_ripple_effect_round"
+                app:layout_constraintBottom_toBottomOf="@id/btnScrollBackColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btnScrollBackColor" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 

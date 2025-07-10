@@ -1,3 +1,7 @@
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+import java.text.SimpleDateFormat
+import java.util.Calendar
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -16,9 +20,23 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        val date = Calendar.getInstance().time
+        val formattedDate = SimpleDateFormat("dd-MM").format(date)
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        applicationVariants.all {
+            val outputFileName =
+                "DynamicIsland" + "_verCode ${versionCode}" + "_${hour}h${minute}_$formattedDate.apk"
+            outputs.all {
+                val output = this as? BaseVariantOutputImpl
+                output?.outputFileName = outputFileName
+            }
+        }
     }
 
     buildTypes {
@@ -86,4 +104,7 @@ dependencies {
     implementation("com.airbnb.android:lottie:6.6.4")
     //circleView
     implementation("de.hdodenhof:circleimageview:3.1.0")
+    //dot
+    implementation("com.tbuonomo:dotsindicator:5.1.0")
+    implementation("com.github.smarteist:autoimageslider:1.3.9")
 }

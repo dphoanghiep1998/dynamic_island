@@ -2,16 +2,16 @@ package com.neko.hiepdph.dynamicislandvip.view.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.neko.hiepdph.dynamicislandvip.R
+import com.neko.hiepdph.dynamicislandvip.common.base_component.BaseFragment
 import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
 import com.neko.hiepdph.dynamicislandvip.common.config
 import com.neko.hiepdph.dynamicislandvip.databinding.FragmentModulesBinding
-import com.neko.hiepdph.dynamicislandvip.common.base_component.BaseFragment
 
 class ModulesFragment : BaseFragment<FragmentModulesBinding>() {
     override fun getViewBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
+        inflater: LayoutInflater, container: ViewGroup?
     ): FragmentModulesBinding {
         return FragmentModulesBinding.inflate(inflater, container, false)
     }
@@ -22,11 +22,15 @@ class ModulesFragment : BaseFragment<FragmentModulesBinding>() {
     }
 
     private fun setupView() {
-        binding.containerMusic.setStatusSwitch(requireActivity().config.musicEnable)
-        binding.containerEarphone.setStatusSwitch(requireActivity().config.earphonesEnable)
-        binding.containerBattery.setStatusSwitch(requireActivity().config.batteryChargeEnable)
-        binding.containerRinging.setStatusSwitch(requireActivity().config.ringingStateEnable)
-        binding.containerDirect.setStatusSwitch(requireActivity().config.directEnable)
+        lifecycleScope.launchWhenResumed {
+            binding.containerMusic.setStatusSwitch(requireActivity().config.musicEnable)
+            binding.containerEarphone.setStatusSwitch(requireActivity().config.earphonesEnable)
+            binding.containerBattery.setStatusSwitch(requireActivity().config.batteryChargeEnable)
+            binding.containerRinging.setStatusSwitch(requireActivity().config.ringingStateEnable)
+            binding.containerDirect.setStatusSwitch(requireActivity().config.directEnable)
+            binding.containerCall.setStatusSwitch(requireActivity().config.incomingCall)
+        }
+
     }
 
     private fun initButton() {
@@ -57,11 +61,13 @@ class ModulesFragment : BaseFragment<FragmentModulesBinding>() {
         }
         binding.containerBattery.setListener {
             binding.containerBattery.setStatusSwitch(!requireActivity().config.batteryChargeEnable)
-            requireActivity().config.batteryChargeEnable = !requireActivity().config.batteryChargeEnable
+            requireActivity().config.batteryChargeEnable =
+                !requireActivity().config.batteryChargeEnable
         }
         binding.containerRinging.setListener {
             binding.containerRinging.setStatusSwitch(!requireActivity().config.ringingStateEnable)
-            requireActivity().config.ringingStateEnable = !requireActivity().config.ringingStateEnable
+            requireActivity().config.ringingStateEnable =
+                !requireActivity().config.ringingStateEnable
         }
         binding.containerDirect.setListener {
             binding.containerDirect.setStatusSwitch(!requireActivity().config.directEnable)
@@ -69,12 +75,19 @@ class ModulesFragment : BaseFragment<FragmentModulesBinding>() {
         }
 
         binding.containerNotification.setListener {
-            ( requireActivity() as MainActivity).pushTo(R.id.actionNotification)
+            (requireActivity() as MainActivity).pushTo(R.id.actionNotification)
         }
 
-        binding.containerCall.clickWithDebounce {
-            ( requireActivity() as MainActivity).pushTo(R.id.actionCall)
+        binding.containerCall.setListener {
+//            ( requireActivity() as MainActivity).pushTo(R.id.actionCall)
+            requireActivity().config.incomingCall = !requireActivity().config.incomingCall
+            binding.containerCall.setStatusSwitch(requireActivity().config.incomingCall)
         }
+
+        binding.containerCall.setChangeSwitchListener {
+            requireActivity().config.incomingCall = it
+        }
+
     }
 
 }

@@ -46,11 +46,16 @@ class AdapterColors(val onClickColor: (String) -> Unit, val onClickAdd: () -> Un
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position == listColors.size - 1) {
-            return 999
-        } else {
+//        if (position == listColors.size - 1) {
+//            return 999
+//        } else {
             return position
-        }
+//        }
+    }
+
+    fun setSelectedIndex(index: Int) {
+        selectedIndex = index
+        notifyDataSetChanged()
     }
 
 
@@ -61,13 +66,16 @@ class AdapterColors(val onClickColor: (String) -> Unit, val onClickAdd: () -> Un
                 binding.imageColor.setBackgroundColor(Color.parseColor(color))
                 if (adapterPosition == selectedIndex) {
                     binding.cardView.setCardBackgroundColor(Color.parseColor(color))
+                }else{
+                    binding.cardView.setCardBackgroundColor(Color.TRANSPARENT)
+
                 }
 
                 binding.root.clickWithDebounce {
-                    notifyItemChanged(selectedIndex)
                     selectedIndex = adapterPosition
                     onClickColor(color)
-                    notifyItemChanged(position)
+                    notifyDataSetChanged()
+
                 }
             }
         } else {

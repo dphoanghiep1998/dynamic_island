@@ -6,7 +6,7 @@ import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
 import com.neko.hiepdph.dynamicislandvip.common.hide
 import com.neko.hiepdph.dynamicislandvip.common.show
 import com.neko.hiepdph.dynamicislandvip.databinding.DialogDisplayModeBinding
-import com.neko.hiepdph.mypiano.common.base_component.BaseDialog
+import com.neko.hiepdph.dynamicislandvip.common.base_component.BaseDialog
 
 class DialogDisplayMode(
     context: Context, private val index: Int, private val onClickGrant: (Int) -> Unit

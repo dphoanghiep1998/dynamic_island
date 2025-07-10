@@ -1,4 +1,4 @@
-package com.neko.hiepdph.mypiano.common.base_component
+package com.neko.hiepdph.dynamicislandvip.common.base_component
 
 import android.app.Dialog
 import android.content.Context

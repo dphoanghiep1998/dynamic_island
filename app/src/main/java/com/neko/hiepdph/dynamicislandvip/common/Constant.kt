@@ -1,11 +1,39 @@
 package com.neko.hiepdph.dynamicislandvip.common
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.util.DisplayMetrics
+import android.view.WindowManager
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
 import com.neko.hiepdph.dynamicislandvip.BuildConfig
 
 object Constant {
+    const val URL_POLICY = "https://sites.google.com/view/nekosoft-ios-policy/home"
+    const val MAIL_TO = "nekosoft.feedback.app@gmail.com"
+
     const val UPDATE_BUBBLE = "UPDATE_BUBBLE"
+    const val UPDATE_ANIMATION = "UPDATE_ANIMATION"
+    const val UPDATE_DISPLAY_MODE = "UPDATE_DISPLAY_MODE"
+    const val KEY_PASS_LANG = "KEY_PASS_LANG"
+    const val KEY_VIBRATION = "KEY_VIBRATION"
+    const val KEY_ENABLED = "KEY_ENABLED"
+    const val TOGGLE_CONTROL = "TOGGLE_CONTROL"
+    const val UPDATE_LANG = "UPDATE_LANG"
+    const val UPDATE_ADJUST_VOLUME = "UPDATE_ADJUST_VOLUME"
+    const val UPDATE_ADJUST_VIBRATION = "UPDATE_ADJUST_VIBRATION"
+    const val KEY_ADJUST_VOLUME = "KEY_ADJUST_VOLUME"
+    const val UPDATE_BACKGROUND_COLOR = "UPDATE_BACKGROUND_COLOR"
+    const val UPDATE_NOTCH_STYLE = "UPDATE_NOTCH_STYLE"
+    const val KEY_LIST_PACKAGE_FILTER = "KEY_LIST_PACKAGE_FILTER"
+    const val KEY_BACKGROUND_COLOR = "KEY_BACKGROUND_COLOR"
+    const val KEY_ANIM_COLOR = "KEY_ANIM_COLOR"
+    const val KEY_BUBBLE_COLOR = "KEY_BUBBLE_COLOR"
     const val UPDATE_LAYOUT_SIZE = "UPDATE_LAYOUT_SIZE"
     const val KEY_MARGIN_HORIZONTAL = "KEY_MARGIN_HORIZONTAL"
+    const val KEY_BUBBLE_COLOR_BORDER = "KEY_BUBBLE_COLOR_BORDER"
     const val KEY_MARGIN_VERTICAL = "KEY_MARGIN_VERTICAL"
     const val KEY_NOTCH_STYLE = "KEY_NOTCH_STYLE"
     const val KEY_WIDTH = "KEY_WIDTH"
@@ -64,5 +92,6 @@ object Constant {
     const val WALLPAPER_COLOR: String = "WALLPAPER_COLOR"
 
     const val WALLPAPER_UPDATED: String = "WALLPAPER_UPDATED"
+
 
 }

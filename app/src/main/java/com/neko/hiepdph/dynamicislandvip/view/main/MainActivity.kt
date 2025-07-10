@@ -1,31 +1,37 @@
 package com.neko.hiepdph.dynamicislandvip.view.main
 
-import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.navigation.findNavController
+import android.app.Dialog
 import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
 import com.neko.hiepdph.dynamicislandvip.common.hide
 import com.neko.hiepdph.dynamicislandvip.common.show
 import com.neko.hiepdph.dynamicislandvip.databinding.ActivityMainBinding
 import com.neko.hiepdph.dynamicislandvip.view.dialog.DialogExit
+import com.neko.hiepdph.dynamicislandvip.view.dialog.DialogShowExitConfirm
 import com.neko.hiepdph.mypiano.common.base_component.BaseActivity
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
+    private var dialogShowExitConfirm: Dialog? = null
+
     override fun getViewBinding(): ActivityMainBinding {
         return ActivityMainBinding.inflate(layoutInflater)
     }
 
+    companion object {
+        var isRunning = false
+    }
+
     override fun initView() {
+        dialogShowExitConfirm = DialogShowExitConfirm(onPositive = {
+            finishAffinity()
+        }, onNegative = {}).onCreateDialog(this)
+        isRunning = true
         changeBackPressCallBack {
-            val dialogExit = DialogExit(this, {
-            }, {
-                finish()
-            })
-            dialogExit.show()
+            if (dialogShowExitConfirm?.isShowing == false) {
+                dialogShowExitConfirm?.show()
+            } else {
+                dialogShowExitConfirm?.dismiss()
+            }
         }
     }
 
@@ -70,5 +76,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isRunning = false
+    }
 
 }

@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">Dynamic Island</string>
+    <string name="app_name_service" translatable="false">Dynamic Island &#128072;</string>
 
     <string name="ENGLISH" translatable="false">English</string>
     <string name="JAPANESE" translatable="false">日本</string>
@@ -126,4 +127,35 @@
     <string name="silent_txt">Silent</string>
     <string name="vibrate">Vibrate</string>
     <string name="ring">Ring</string>
+    <string name="grant_per">Grant Permission</string>
+    <string name="access_per_1">Please grant <b>Accessibility</b> permission to set up and display the Dynamic Island</string>
+    <string name="access_per_2">This app requires Accessibility services to set up and display the Dynamic Island, display and show more information alarm, weather, music notification view control...</string>
+    <string name="access_per_3">1. Our application will not use this permission for any other use such as accumulating, disclosing information or reading the content of your screen.</string>
+    <string name="access_per_4">2. This application does not store user data in this permission</string>
+    <string name="authorization_instructions">Authorization Instructions</string>
+    <string name="term1">I agree to the</string>
+    <string name="term2">terms of service &amp; privacy policy</string>
+    <string name="next">Next</string>
+    <string name="let_start">Let\'s Started</string>
+    <string name="intro_title_1">Dynamic Island</string>
+    <string name="intro_title_2">Notification</string>
+    <string name="intro_title_3">Display</string>
+    <string name="intro_content_1">Experience Dynamic Island IOS 16 On Android</string>
+    <string name="intro_content_2">Intuitive Notifications, Quickly Displayed On The Notch</string>
+    <string name="intro_content_3">Easy Installation, Friendly Interface Button Next, Let\'s Start</string>
+    <string name="agreement"><![CDATA[You must agree our term of service & privacy policy]]></string>
+    <string name="dynamic_island">Dynamic Island</string>
+    <string name="get_started_2">Wishing you a great application experience</string>
+    <string name="get_started">Get Started</string>
+    <string name="continue_custom">Continue</string>
+    <string name="title_feedback">"If you have any problem, please tell us\nDo not rush to rate low on CH play.\nWe will record and update as soon as possible. \nThank You!"</string>
+    <string name="no_sender_found">No provider found !</string>
+    <string name="send">Send</string>
+    <string name="empty_feedback">Please write your feedback !</string>
+    <string name="notification_per">Please grant <b>Notification</b> permission to ensure that Dynamic Island can work always and show quick notification</string>
+    <string name="pin_per">Please grant <b>Ignore Battery Optimization</b> to prevent Dynamic Island from being killed accidentally by the system</string>
+    <string name="include_ads">(This action can contain ads)</string>
+    <string name="exit">Exit</string>
+    <string name="exit_c">Do you want to exit ?</string>
+    <string name="stay_c">Stay</string>
 </resources>

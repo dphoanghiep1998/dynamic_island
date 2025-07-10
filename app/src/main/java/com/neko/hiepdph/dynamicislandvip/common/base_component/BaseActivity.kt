@@ -36,6 +36,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navOptions
 import androidx.viewbinding.ViewBinding
 import com.neko.hiepdph.dynamicislandvip.R
+import com.neko.hiepdph.dynamicislandvip.common.buildMinVersion30
 import com.neko.hiepdph.dynamicislandvip.common.config
 import com.neko.hiepdph.dynamicislandvip.common.createContext
 import java.util.Locale
@@ -54,7 +55,9 @@ abstract class BaseActivity<VB : ViewBinding>() : AppCompatActivity() {
 //            )
         }
         super.onCreate(savedInstanceState)
-
+        if (buildMinVersion30()) {
+            window.setDecorFitsSystemWindows(false)
+        }
         binding = getViewBinding()
         setContentView(binding.root)
         hideNavigationBar()

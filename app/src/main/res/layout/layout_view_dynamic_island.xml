@@ -17,13 +17,13 @@
             android:id="@+id/bubblePositionLeft"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_goneMarginEnd="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginEnd="0dp" />
 
-        <LinearLayout
+        <com.neko.hiepdph.dynamicislandvip.common.customview.NeonRunnerView
             android:id="@+id/island_parent_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -42,21 +42,23 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="true" />
 
+
+
             <com.neko.hiepdph.dynamicislandvip.common.customview.ViewDynamicIslandBig
                 android:id="@+id/rv_island_big"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="true" />
-        </LinearLayout>
+        </com.neko.hiepdph.dynamicislandvip.common.customview.NeonRunnerView>
 
         <FrameLayout
             android:id="@+id/bubblePositionRight"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_goneMarginStart="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginStart="0dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.neko.hiepdph.dynamicislandvip.common.customview.StatusBarParentView>

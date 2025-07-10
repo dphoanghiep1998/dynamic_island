@@ -53,8 +53,8 @@
                 android:layout_marginHorizontal="@dimen/_12sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 app:imageRes="@drawable/ic_module_call"
-                app:isShowArrow="true"
-                app:isShowSwitch="false"
+                app:isShowArrow="false"
+                app:isShowSwitch="true"
                 app:layout_constraintTop_toBottomOf="@id/containerNotification"
                 app:titleItem="@string/calls" />
 

@@ -40,7 +40,7 @@ class ShowBubblesActivity : BaseActivity<ActivityShowBubblesBinding>() {
         }
 
 
-        if (config.bubbleLocation == 0) {
+        if (config.bubbleLocation == 1) {
             binding.tickOnTheRight.setImageResource(R.drawable.ic_tick_active)
             binding.tickOnTheLeft.setImageResource(R.drawable.ic_tick_inactive)
         } else {

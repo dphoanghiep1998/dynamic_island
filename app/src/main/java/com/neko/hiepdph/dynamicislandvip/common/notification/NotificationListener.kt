@@ -20,6 +20,8 @@ import android.util.Log
 import android.view.WindowManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.buildMinVersion24
@@ -31,6 +33,7 @@ import java.io.ByteArrayOutputStream
 
 class NotificationListener : NotificationListenerService() {
     private var handler: Handler? = null
+    private var isAdded = true
 
     companion object {
         lateinit var instance: NotificationListener
@@ -40,6 +43,11 @@ class NotificationListener : NotificationListenerService() {
         super.onCreate()
         handler = Handler()
         instance = this
+        NotificationQueueManager.processNotification = { sbn ->
+            handler?.postDelayed({
+                sbn?.let { sendNotification(it, isAdded) }
+            }, 100)
+        }
     }
 
     fun cancelNotificationById(str: String?) {
@@ -53,25 +61,29 @@ class NotificationListener : NotificationListenerService() {
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         super.onNotificationPosted(sbn)
-
-        handler?.postDelayed({
-            sbn?.let { sendNotification(it, true) }
-        }, 100)
+        isAdded = true
+        NotificationQueueManager.addNotification(sbn) { notification ->
+            NotificationQueueManager.processNotification(notification)
+        }
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?, rankingMap: RankingMap?) {
         super.onNotificationPosted(sbn, rankingMap)
-//        handler?.postDelayed({
-//            sbn?.let { sendNotification(it, true) }
-//        }, 100)
+        isAdded = true
+
+        NotificationQueueManager.addNotification(sbn) { notification ->
+            NotificationQueueManager.processNotification(notification)
+        }
     }
 
 
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
         super.onNotificationRemoved(sbn)
-        handler?.postDelayed({
-            sbn?.let { sendNotification(it, false) }
-        }, 100)
+        isAdded = false
+
+        NotificationQueueManager.addNotification(sbn) { notification ->
+            NotificationQueueManager.processNotification(notification)
+        }
     }
 
     override fun onListenerDisconnected() {
@@ -115,24 +127,38 @@ class NotificationListener : NotificationListenerService() {
             appName = ""
         }
 
+        Log.d("TAG", "sendNotification: "+appName)
+
 
         if (sbn.notification != null) {
-
             val packageName = sbn.packageName
-            if(packageName == "com.android.systemui") {
+            category = sbn.notification.category ?: ""
+            if (!config.notificationEnable) {
                 return
             }
-            category = if ((sbn.notification.category != null)) sbn.notification.category else ""
-            if (!config.directEnable && category == "navigation") {
-                return
+            if (isNotificationAdded) {
+                if (packageName == "com.android.systemui" || packageName == "android") {
+                    return
+                }
+                if (packageName in config.listPackageFilter.map { it.pkg }) {
+                    return
+                }
+
+                if (!config.directEnable && category == "navigation") {
+                    return
+                }
+                if (!config.incomingCall && category.contains(NotificationCompat.CATEGORY_CALL)) {
+                    return
+                }
             }
+
             tickerText =
                 if ((sbn.notification.tickerText != null)) sbn.notification.tickerText.toString() else null
             val drawableToBmp: Bitmap? = if ((sbn.notification.getLargeIcon() == null)) null
             else drawableToBmp(
                 applicationContext,
                 sbn.notification.getLargeIcon().loadDrawable(applicationContext),
-                50
+                60
             )
 
 
@@ -168,9 +194,9 @@ class NotificationListener : NotificationListenerService() {
                     NotificationCompat.EXTRA_TITLE, ""
                 ).toString()
                 // Set group conversation details if SDK version supports it
-                appName = "$appName . " + extras.getCharSequence(
-                    NotificationCompat.EXTRA_CONVERSATION_TITLE, ""
-                )
+//                appName = "$appName . " + extras.getCharSequence(
+//                    NotificationCompat.EXTRA_CONVERSATION_TITLE, ""
+//                )
                 extraImageBitmap =
                     extras.getParcelable<Parcelable>(NotificationCompat.EXTRA_PICTURE) as Bitmap?
 
@@ -226,66 +252,102 @@ class NotificationListener : NotificationListenerService() {
                 notificationIntent.putExtra("picture", getByteArrayFromBitmap2(extraImageBitmap))
                 notificationIntent.putExtra("extraTitle", extraTitle)
 
+                Log.d("TAG", "sendNotification: " + isNotificationAdded)
+
                 var bitmap2: Bitmap? = null
-                try {
-                    var drawable: Drawable? = null
-                    if (Build.VERSION.SDK_INT >= 26) {
-                        val launcherApps =
-                            applicationContext.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
-                        for (userHandle in launcherApps.profiles) {
-                            for (launcherActivityInfo in launcherApps.getActivityList(
-                                null, userHandle
+                if (config.notificationIcon == 0) {
+                    try {
+                        var drawable: Drawable? = null
+                        if (Build.VERSION.SDK_INT >= 26) {
+                            val launcherApps =
+                                applicationContext.getSystemService(LAUNCHER_APPS_SERVICE) as LauncherApps
+                            for (userHandle in launcherApps.profiles) {
+                                for (launcherActivityInfo in launcherApps.getActivityList(
+                                    null, userHandle
+                                )) {
+                                    val pkg = launcherActivityInfo.componentName.packageName
+                                    if (pkg == packageName) {
+                                        drawable = launcherActivityInfo.getIcon(0)
+                                    }
+                                }
+                            }
+                        } else {
+                            val intent = Intent("android.intent.action.MAIN")
+                            intent.addCategory("android.intent.category.LAUNCHER")
+                            for (resolveInfo in applicationContext.packageManager.queryIntentActivities(
+                                intent, 0
                             )) {
-                                val pkg = launcherActivityInfo.componentName.packageName
-                                if (pkg == packageName) {
-                                    drawable = launcherActivityInfo.getIcon(0)
+                                val str3 = resolveInfo.activityInfo.packageName
+                                if (str3 == packageName) {
+                                    drawable =
+                                        resolveInfo.loadIcon(applicationContext.packageManager)
                                 }
                             }
                         }
-                    } else {
-                        val intent = Intent("android.intent.action.MAIN")
-                        intent.addCategory("android.intent.category.LAUNCHER")
-                        for (resolveInfo in applicationContext.packageManager.queryIntentActivities(
-                            intent, 0
-                        )) {
-                            val str3 = resolveInfo.activityInfo.packageName
-                            if (str3 == packageName) {
-                                drawable = resolveInfo.loadIcon(applicationContext.packageManager)
+
+                        if (drawable != null) {
+                            try {
+                                bitmap2 = drawableToBmp(applicationContext, drawable, 20);
+                            } catch (e: Exception) {
+
                             }
                         }
-                    }
 
-                    if (drawable != null) {
-                        try {
-                            bitmap2 = drawableToBmp(applicationContext, drawable, 20);
-                        } catch (e: Exception) {
-
-                        }
-                    }
-
-                    if (bitmap2 == null) {
-                        notificationIntent.putExtra(
-                            "icon", getByteArrayFromBitmap(
-                                drawableToBmp(
-                                    null as Context?, ContextCompat.getDrawable(
-                                        applicationContext, R.drawable.android_icon
-                                    ), 20
+                        if (bitmap2 == null) {
+                            notificationIntent.putExtra(
+                                "icon", getByteArrayFromBitmap(
+                                    drawableToBmp(
+                                        null as Context?, ContextCompat.getDrawable(
+                                            applicationContext, R.drawable.android_icon
+                                        ), 20
+                                    )
                                 )
                             )
-                        )
-                    } else {
-                        notificationIntent.putExtra("icon", getByteArrayFromBitmap(bitmap2))
-                    }
+                        } else {
+                            notificationIntent.putExtra("icon", getByteArrayFromBitmap(bitmap2))
+                        }
 
-                    // Add image data (large icon or extra picture)
-                    if (drawableToBmp != null) {
-                        notificationIntent.putExtra(
-                            "largeIcon", getByteArrayFromBitmap(drawableToBmp)
-                        )
+
+                        // Add image data (large icon or extra picture)
+                        if (drawableToBmp != null) {
+                            notificationIntent.putExtra(
+                                "largeIcon", getByteArrayFromBitmap(drawableToBmp)
+                            )
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                } else {
+                    try {
+                        val drawable = sbn.notification.smallIcon.loadDrawable(applicationContext)
+                        if (drawable != null) {
+                            try {
+                                bitmap2 = drawableToBmp(applicationContext, drawable, 60)
+                                notificationIntent.putExtra("icon", getByteArrayFromBitmap(bitmap2))
+                            } catch (e: Exception) {
+                                notificationIntent.putExtra(
+                                    "icon", getByteArrayFromBitmap(
+                                        drawableToBmp(
+                                            applicationContext, ContextCompat.getDrawable(
+                                                applicationContext, R.drawable.android_icon
+                                            ), 60
+                                        )
+                                    )
+                                )
+                                e.printStackTrace()
+
+                            }
+                        }
+                        if (drawableToBmp != null) {
+                            notificationIntent.putExtra(
+                                "largeIcon", getByteArrayFromBitmap(drawableToBmp)
+                            )
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
+
 
 
                 if (sbn.notification.actions != null && sbn.notification.actions.isNotEmpty()) {
@@ -294,7 +356,7 @@ class NotificationListener : NotificationListenerService() {
                     )
                 }
 //                Log.d("TAG1", "appName: $appName")
-//                Log.d("TAG1", "getPackageName: " + sbn.getPackageName())
+                Log.d("TAG1", "getPackageName: " + sbn.getPackageName())
 //                Log.d("TAG1", "title: " + title)
 //                Log.d("TAG1", "titleBig: " + titleBig)
 //                Log.d("TAG1", "text: " + text)
@@ -308,7 +370,7 @@ class NotificationListener : NotificationListenerService() {
 //                Log.d("TAG1", "progress: " + currentProgress)
 //                Log.d("TAG1", "action: " + currentProgress)
 //                Log.d("TAG1", "extraTitle: " + extraTitle)
-                Log.d("TAG1", "template: " + template)
+//                Log.d("TAG1", "template: " + template)
 
                 // Send the intent as a broadcast
                 LocalBroadcastManager.getInstance(applicationContext)
@@ -340,7 +402,7 @@ class NotificationListener : NotificationListenerService() {
 
         val bitmap: Bitmap = when {
             drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0 -> {
-                Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) // ARGB_8888 for better quality
+                createBitmap(1, 1) // ARGB_8888 for better quality
             }
 
             sizeDp <= 0 -> {
@@ -349,7 +411,7 @@ class NotificationListener : NotificationListenerService() {
 
             else -> {
                 val sizePx = convertDpToPixel(sizeDp.toFloat(), context)
-                Bitmap.createBitmap(sizePx.toInt(), sizePx.toInt(), Bitmap.Config.ARGB_8888)
+                createBitmap(sizePx.toInt(), sizePx.toInt())
             }
         }
 
@@ -374,11 +436,7 @@ class NotificationListener : NotificationListenerService() {
             val screenHeight = displayMetrics.heightPixels
 
             // Create bitmap from drawable
-            val bitmap = Bitmap.createBitmap(
-                drawable.intrinsicWidth,
-                drawable.intrinsicHeight,
-                Bitmap.Config.ARGB_8888 // ARGB_8888 is preferable for quality
-            )
+            val bitmap = createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight)
 
             // Draw the drawable onto the canvas
             val canvas = Canvas(bitmap)
@@ -424,7 +482,7 @@ class NotificationListener : NotificationListenerService() {
                 }
             }
 
-            Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, true)
+            bitmap.scale(scaledWidth, scaledHeight)
         } catch (e: OutOfMemoryError) {
             e.printStackTrace()
             null
@@ -462,20 +520,16 @@ class NotificationListener : NotificationListenerService() {
 
             when {
                 croppedBitmap.width <= targetWidth -> {
-                    Bitmap.createScaledBitmap(
-                        croppedBitmap,
+                    croppedBitmap.scale(
                         targetWidth,
-                        (croppedBitmap.height.toFloat() / croppedBitmap.width.toFloat() * targetWidth).toInt(),
-                        true
+                        (croppedBitmap.height.toFloat() / croppedBitmap.width.toFloat() * targetWidth).toInt()
                     )
                 }
 
                 croppedBitmap.height < targetHeight -> {
-                    Bitmap.createScaledBitmap(
-                        croppedBitmap,
+                    croppedBitmap.scale(
                         (croppedBitmap.width.toFloat() / croppedBitmap.height.toFloat() * targetHeight).toInt(),
-                        targetHeight,
-                        true
+                        targetHeight
                     )
                 }
 

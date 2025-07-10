@@ -211,13 +211,10 @@ abstract class KavehColorSlider(context: Context, attributeSet: AttributeSet?) :
 
         drawingStart = heightHalf + paddingStart
         drawingTop = heightHalf + paddingTop
-        Log.d("TAG", "drawingTopF: "+drawingTop)
 
         if (isWrapContent) {
 //            drawingTop += defaultPaddingVertical
         }
-        Log.d("TAG", "drawingTop: "+drawingTop)
-        Log.d("TAG", "he: "+heightF)
 
         // If it's first layout pass then set indicator to be at top-end of the color picker amd sliders.
         if (isFirstTimeLaying) {

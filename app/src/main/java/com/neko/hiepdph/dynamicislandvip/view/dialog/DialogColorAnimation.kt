@@ -1,12 +1,12 @@
 package com.neko.hiepdph.dynamicislandvip.view.dialog
 
 import android.content.Context
-import android.graphics.Color
 import androidx.core.graphics.toColorInt
 import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
+import com.neko.hiepdph.dynamicislandvip.common.config
 import com.neko.hiepdph.dynamicislandvip.databinding.DialogColorAnimationBinding
-import com.neko.hiepdph.mypiano.common.base_component.BaseDialog
+import com.neko.hiepdph.dynamicislandvip.common.base_component.BaseDialog
 
 class DialogColorAnimation(
     context: Context,
@@ -18,6 +18,7 @@ class DialogColorAnimation(
     private var currentColor: String = "#000000"
     private var currentAlpha: Float = 1f
     private var adapterColors: AdapterColors? = null
+    private var listColors = mutableListOf<String>()
     override fun getViewBinding(): DialogColorAnimationBinding {
         return DialogColorAnimationBinding.inflate(layoutInflater)
     }
@@ -27,6 +28,7 @@ class DialogColorAnimation(
     }
 
     override fun initView() {
+        listColors = context.config.listAnimColor.toMutableList()
         currentColor = initColor
         currentAlpha = initAlpha
         setColorForView()
@@ -36,7 +38,7 @@ class DialogColorAnimation(
 
         })
         binding.rcvColor.adapter = adapterColors
-        adapterColors?.setData(mutableListOf("#EF4444", "#FACC15", "#4ADE80", "#4ADE80", "#4B44BF"))
+        adapterColors?.setData(listColors)
         binding.colorPickerView.alphaSliderView = binding.colorAlphaSlider
         binding.colorPickerView.hueSliderView = binding.hueSlider
         binding.colorPickerView.setOnColorChangeEndListener {
@@ -44,17 +46,27 @@ class DialogColorAnimation(
             currentAlpha = binding.colorAlphaSlider.alphaValue
 
         }
-
+        val index = listColors.indexOfFirst { it == currentColor }
+        adapterColors?.setSelectedIndex(index)
         binding.colorPickerView.color = currentColor.toColorInt()
 
         binding.btnOk.clickWithDebounce {
             onClickGrant.invoke(currentColor)
+            context.config.listAnimColor = listColors
             dismiss()
         }
 
         binding.btnCancel.clickWithDebounce {
             onClickCancel.invoke()
             dismiss()
+        }
+        binding.btnAdd.clickWithDebounce {
+            listColors.add(listColors.size, currentColor)
+            adapterColors?.setData(listColors)
+            binding.rcvColor.post {
+                adapterColors?.setSelectedIndex(listColors.size-1)
+                binding.rcvColor.scrollToPosition(listColors.size-1)
+            }
         }
     }
 

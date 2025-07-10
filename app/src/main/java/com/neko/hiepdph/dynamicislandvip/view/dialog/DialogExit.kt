@@ -4,7 +4,7 @@ import android.content.Context
 import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
 import com.neko.hiepdph.dynamicislandvip.databinding.DialogExitBinding
-import com.neko.hiepdph.mypiano.common.base_component.BaseDialog
+import com.neko.hiepdph.dynamicislandvip.common.base_component.BaseDialog
 
 class DialogExit(
     context: Context, private val onCancel: () -> Unit, private val onAccept: () -> Unit

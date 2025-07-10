@@ -1,5 +1,7 @@
 package com.neko.hiepdph.dynamicislandvip.common
 
+import android.app.ActivityManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -8,6 +10,8 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.SystemClock
+import android.provider.Settings
+import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
 import androidx.lifecycle.Lifecycle
@@ -29,6 +33,16 @@ fun Context.createContext(newLocale: Locale): Context = if (buildMaxVersionN()) 
 } else {
 
     createContextLegacy(newLocale)
+}
+fun Context.getLocalizedContext(): Context {
+
+
+    val config = Configuration(resources.configuration)
+    val locale = Locale(this.config.savedLanguage)
+    Locale.setDefault(locale)
+    config.setLocale(locale)
+
+    return createConfigurationContext(config)
 }
 
 fun String.getFileNameFromUrl(): String {
@@ -128,7 +142,23 @@ fun LifecycleOwner.launchWhenResumed(block: suspend CoroutineScope.() -> Unit) {
     }
 }
 
+fun <T> Context.isAccessibilityServiceRunning(service: Class<T>): Boolean {
+    val expectedComponentName = ComponentName(this, service)
+    val enabledServicesSetting = Settings.Secure.getString(
+        contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+    ) ?: return false
 
+    val colonSplitter = TextUtils.SimpleStringSplitter(':')
+    colonSplitter.setString(enabledServicesSetting)
+    while (colonSplitter.hasNext()) {
+        val componentName = ComponentName.unflattenFromString(colonSplitter.next())
+        if (componentName == expectedComponentName) {
+            return true
+        }
+    }
+
+    return false
+}
 
 
 

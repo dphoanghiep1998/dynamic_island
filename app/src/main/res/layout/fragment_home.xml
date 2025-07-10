@@ -45,6 +45,7 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
+                android:foreground="@drawable/fg_ripple_effect_12"
                 android:id="@+id/containerEnableDynamicIsland"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -130,6 +131,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_16sdp"
+                    android:foreground="@drawable/fg_ripple_effect_round"
                     android:src="@drawable/ic_tick_active"
                     app:layout_constraintEnd_toEndOf="@id/btnDynamicIsland"
                     app:layout_constraintStart_toStartOf="@id/btnDynamicIsland"
@@ -153,6 +155,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_16sdp"
                     android:src="@drawable/ic_tick_inactive"
+                    android:foreground="@drawable/fg_ripple_effect_round"
                     app:layout_constraintEnd_toEndOf="@id/btnNotch"
                     app:layout_constraintStart_toStartOf="@id/btnNotch"
                     app:layout_constraintTop_toBottomOf="@id/btnNotch" />

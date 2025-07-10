@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.SystemClock
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -24,18 +25,15 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.neko.hiepdph.dynamicislandvip.R
-import com.neko.hiepdph.dynamicislandvip.common.Constant
 import com.neko.hiepdph.dynamicislandvip.common.Utils
 import com.neko.hiepdph.dynamicislandvip.common.Utils.convertDpToPixel
 import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
 import com.neko.hiepdph.dynamicislandvip.common.config
 import com.neko.hiepdph.dynamicislandvip.common.getFormattedTime
-import com.neko.hiepdph.dynamicislandvip.common.hide
 import com.neko.hiepdph.dynamicislandvip.common.notification.ActionParsable
 import com.neko.hiepdph.dynamicislandvip.common.notification.Notification
 import com.neko.hiepdph.dynamicislandvip.common.notification.NotificationListener
 import com.neko.hiepdph.dynamicislandvip.databinding.LayoutCallItemBinding
-import com.neko.hiepdph.dynamicislandvip.databinding.LayoutChargeBatteryBinding
 import com.neko.hiepdph.dynamicislandvip.databinding.LayoutListItemsBinding
 import com.neko.hiepdph.dynamicislandvip.service.MyAccessService
 import de.hdodenhof.circleimageview.CircleImageView
@@ -56,6 +54,10 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
     init {
         itemBinding = LayoutListItemsBinding.inflate(LayoutInflater.from(context), this, false)
         callBinding = LayoutCallItemBinding.inflate(LayoutInflater.from(context), this, false)
+    }
+
+    fun getNotificationKey(): String? {
+        return currentNotification?.key
     }
 
     fun setAccessService(accessService: MyAccessService) {
@@ -92,7 +94,6 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
     }
 
 
-
     fun reset() {
         closeFull(null)
     }
@@ -102,6 +103,8 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
         callBinding.tvText.text = notification.text
         if (notification.senderIcon != null) {
             callBinding.iconSender.setImageBitmap(notification.senderIcon)
+        } else {
+            callBinding.iconSender.setBackgroundResource(R.drawable.ic_avatar)
         }
 
         callBinding.root.clickWithDebounce {
@@ -201,6 +204,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
             itemBinding.notificationPicture.setImageBitmap(notification.picture)
         }
         itemBinding.tvAppTitle.text = notification.app_name
+        Log.d("TAG", "bind: "+notification.app_name)
         itemBinding.tvAppTitle.tag = java.lang.Boolean.valueOf(notification.isClearable)
         itemBinding.tvText.text = notification.extraTitle
         itemBinding.subTvText.text = notification.text.toString()
@@ -620,6 +624,7 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
         if (childAt != null) {
             childAt.visibility = View.VISIBLE
             childAt.findViewById<View>(R.id.iv_send_reply).visibility = View.VISIBLE
+            (childAt.findViewById<View>(R.id.ed_reply) as EditText).setText("")
             childAt.findViewById<View>(R.id.iv_send_reply).setOnClickListener { view ->
                 sendRemoteInput(
                     arrayList[i].pendingIntent,
@@ -630,8 +635,8 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
                 (childAt.findViewById<View>(R.id.ed_reply) as EditText).setText(
                     ""
                 )
-                childAt.visibility = View.GONE
-                view.visibility = View.GONE
+                childAt.visibility = GONE
+                view.visibility = GONE
             }
             val arrayList2 = arrayList
             val i2 = i
@@ -648,8 +653,8 @@ class ViewDynamicIslandBig @JvmOverloads constructor(
                         (childAt.findViewById<View>(R.id.ed_reply) as EditText).text.toString()
                     )
                     (childAt.findViewById<View>(R.id.ed_reply) as EditText).setText("")
-                    childAt.visibility = View.GONE
-                    view2.visibility = View.GONE
+                    childAt.visibility = GONE
+                    view2.visibility = GONE
                     true
                 })
         }

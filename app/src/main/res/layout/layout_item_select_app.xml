@@ -3,18 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/_12sdp"
-    android:foreground="@drawable/fg_ripple_effect">
+    android:foreground="@drawable/fg_ripple_effect"
+    android:paddingHorizontal="@dimen/_12sdp">
+
     <TextView
         android:id="@+id/tvApp"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_12sdp"
-        android:fontFamily="@font/f400"
-        android:textColor="@color/b100"
         android:layout_marginVertical="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_6sdp"
+        android:ellipsize="marquee"
+        android:lines="1"
+        android:fontFamily="@font/f400"
+        android:marqueeRepeatLimit="-1"
+        android:textColor="@color/b100"
         android:textSize="@dimen/_14sdp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/icTick"
         app:layout_constraintStart_toEndOf="@id/iconApp"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,9 +28,9 @@
         android:id="@+id/tvSelectAll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/_20sdp"
         android:fontFamily="@font/f500"
         android:text="@string/select_all"
-        android:layout_marginVertical="@dimen/_20sdp"
         android:textColor="@color/p300"
         android:textSize="@dimen/_14sdp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -49,11 +55,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/line"
-        android:background="#E5E5EA"
         android:layout_width="match_parent"
-        android:layout_height="1dp"/>
+        android:layout_height="1dp"
+        android:background="#E5E5EA"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

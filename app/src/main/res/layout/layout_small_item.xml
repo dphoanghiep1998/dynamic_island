@@ -10,10 +10,22 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_centerVertical="true"
+        android:layout_marginVertical="@dimen/_1sdp"
         android:padding="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintHeight_max="@dimen/_22sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/iconLeftSpecial"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerVertical="true"
+        android:layout_marginVertical="@dimen/_1sdp"
+        android:padding="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,6 +45,22 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/textLeftSpecial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginVertical="@dimen/_4sdp"
+        android:layout_marginStart="@dimen/_4sdp"
+        android:fontFamily="@font/f500"
+        android:gravity="center_vertical"
+        android:includeFontPadding="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iconLeftSpecial"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/textCenter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,8 +72,8 @@
         android:textColor="@color/white"
         android:textSize="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@id/iconLeft"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/iconLeft"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Chronometer
@@ -86,13 +114,29 @@
             android:id="@+id/textRight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_8sdp"
             android:includeFontPadding="false"
             android:maxLength="8"
             android:textColor="@color/green"
-            android:textSize="12sp"
+            android:textSize="@dimen/_12sdp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/iconRight"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textRightSpecial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:includeFontPadding="false"
+            android:maxLength="8"
+            android:fontFamily="@font/f500"
+            android:textSize="@dimen/_14sdp"
+            android:visibility="visible"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iconRightSpecial"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -104,6 +148,18 @@
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_max="@dimen/_18sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/roundedImageViewRounded" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iconRightSpecial"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="2dp"
+            android:layout_marginVertical="@dimen/_4sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/roundedImageViewRounded" />
 

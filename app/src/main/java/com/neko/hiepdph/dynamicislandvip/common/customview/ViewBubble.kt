@@ -35,6 +35,7 @@ class ViewBubble @JvmOverloads constructor(
         if (currentNotification != null) {
             currentNotification?.let { assign(it) }
         } else {
+//            Log.d("TAG", "reset: ")
             reset()
         }
     }
@@ -51,10 +52,10 @@ class ViewBubble @JvmOverloads constructor(
     }
 
     fun assign(notification: Notification) {
+        Log.d("TAG", "assign: "+notification.senderIcon)
         binding.bubbleInner.setImageBitmap(notification.senderIcon)
         val animation = AnimationUtils.loadAnimation(context, R.anim.rotate)
         binding.bubbleInner.startAnimation(animation)
-        Log.d("TAG", "assign: ")
         binding.root.setOnClickListener {
             listener?.onClick(currentNotification)
         }
@@ -66,6 +67,7 @@ class ViewBubble @JvmOverloads constructor(
     }
 
     fun updateBackgroundForBubble() {
+
         val colorBubbleBackground = if (context.config.showBubbleColor) {
             context.config.bubbleBackgroundColor.toColorInt()
         } else {
@@ -75,7 +77,11 @@ class ViewBubble @JvmOverloads constructor(
         val colorBubbleBorder = if (context.config.showBubbleBorder) {
             context.config.bubbleBackgroundBorder.toColorInt()
         } else {
-            "#000000".toColorInt()
+            if(context.config.showBubbleColor){
+                context.config.bubbleBackgroundColor.toColorInt()
+            }else{
+                "#000000".toColorInt()
+            }
         }
 
         val gradientDrawable = GradientDrawable(
@@ -89,7 +95,9 @@ class ViewBubble @JvmOverloads constructor(
                 colorBubbleBorder,
             )
         }
-        binding.bubbleInner.setImageBitmap(null)
+        if(currentNotification == null){
+            binding.bubbleInner.setImageBitmap(null)
+        }
         binding.bubbleOuter.background = gradientDrawable
     }
 

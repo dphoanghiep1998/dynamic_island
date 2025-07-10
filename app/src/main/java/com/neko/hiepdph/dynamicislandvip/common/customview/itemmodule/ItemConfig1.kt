@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import com.neko.hiepdph.dynamicislandvip.R
+import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
 import com.neko.hiepdph.dynamicislandvip.common.hide
 import com.neko.hiepdph.dynamicislandvip.common.show
 import com.neko.hiepdph.dynamicislandvip.databinding.LayoutItemConfig1Binding
@@ -27,5 +28,19 @@ class ItemConfig1 @JvmOverloads constructor(
 
         addView(binding.root)
         typedArray.recycle()
+    }
+    fun setStatusSwitch(isChecked:Boolean){
+        binding.switchChange.isChecked = isChecked
+    }
+
+    fun setChangeSwitchListener(action:(Boolean)->Unit){
+        binding.switchChange.clickWithDebounce {
+            action.invoke( binding.switchChange.isChecked)
+        }
+    }
+    fun setListener(action:()->Unit){
+        binding.root.setOnClickListener {
+            action.invoke()
+        }
     }
 }

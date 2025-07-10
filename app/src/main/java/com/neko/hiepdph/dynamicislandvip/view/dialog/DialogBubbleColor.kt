@@ -1,12 +1,14 @@
 package com.neko.hiepdph.dynamicislandvip.view.dialog
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
+import androidx.core.graphics.toColorInt
 import com.neko.hiepdph.dynamicislandvip.R
 import com.neko.hiepdph.dynamicislandvip.common.clickWithDebounce
+import com.neko.hiepdph.dynamicislandvip.common.config
 import com.neko.hiepdph.dynamicislandvip.databinding.DialogBubbleColorBinding
-import com.neko.hiepdph.dynamicislandvip.databinding.DialogColorAnimationBinding
-import com.neko.hiepdph.mypiano.common.base_component.BaseDialog
+import com.neko.hiepdph.dynamicislandvip.common.base_component.BaseDialog
 
 class DialogBubbleColor(
     context: Context,
@@ -18,6 +20,8 @@ class DialogBubbleColor(
     private var currentColor: String = "#000000"
     private var currentAlpha: Float = 1f
     private var adapterColors: AdapterColors? = null
+    private var listColors = mutableListOf<String>()
+
     override fun getViewBinding(): DialogBubbleColorBinding {
         return DialogBubbleColorBinding.inflate(layoutInflater)
     }
@@ -27,33 +31,50 @@ class DialogBubbleColor(
     }
 
     override fun initView() {
+        listColors = context.config.listBubbleColor.toMutableList()
+        binding.dot.backgroundTintList = ColorStateList.valueOf(context.config.bubbleBackgroundBorder.toColorInt())
+        binding.cameraLens.backgroundTintList = ColorStateList.valueOf(initColor.toColorInt())
+
         currentColor = initColor
         currentAlpha = initAlpha
         setColorForView()
         adapterColors = AdapterColors(onClickColor = {
             currentColor = it
+            binding.cameraLens.backgroundTintList = ColorStateList.valueOf(currentColor.toColorInt())
+
         }, onClickAdd = {
 
         })
+
         binding.rcvColor.adapter = adapterColors
-        adapterColors?.setData(mutableListOf("#EF4444", "#FACC15", "#4ADE80", "#4ADE80", "#4B44BF"))
+        adapterColors?.setData(listColors)
+        val index = listColors.indexOfFirst { it == currentColor }
+        adapterColors?.setSelectedIndex(index)
         binding.colorPickerView.alphaSliderView = binding.colorAlphaSlider
         binding.colorPickerView.hueSliderView = binding.hueSlider
         binding.colorPickerView.setOnColorChangeEndListener {
             currentColor = String.format("#%06X", 0xFFFFFF and it)
             currentAlpha = binding.colorAlphaSlider.alphaValue
-
+            binding.cameraLens.backgroundTintList = ColorStateList.valueOf(currentColor.toColorInt())
         }
-        binding.colorPickerView.color
 
         binding.btnOk.clickWithDebounce {
             onClickGrant.invoke(currentColor)
+            context.config.listBubbleColor = listColors
             dismiss()
         }
 
         binding.btnCancel.clickWithDebounce {
             onClickCancel.invoke()
             dismiss()
+        }
+        binding.btnAdd.clickWithDebounce {
+            listColors.add(listColors.size, currentColor)
+            adapterColors?.setData(listColors)
+            binding.rcvColor.post {
+                adapterColors?.setSelectedIndex(listColors.size-1)
+                binding.rcvColor.scrollToPosition(listColors.size-1)
+            }
         }
     }
 

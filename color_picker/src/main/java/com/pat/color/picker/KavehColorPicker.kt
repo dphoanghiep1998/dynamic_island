@@ -214,7 +214,6 @@ class KavehColorPicker(context: Context, attributeSet: AttributeSet?) :
 
         colorWithFullAlpha = Color.HSVToColor(hsvArray)
         colorWithFullAlpha1 = Color.HSVToColor(alphaValue, hsvArray)
-        Log.d("TAG", "calculateColor: ")
 
         alphaSliderView?.selectedColor = colorWithFullAlpha
 
