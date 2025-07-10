@@ -1,6 +1,8 @@
 package com.neko.hiepdph.dynamicislandvip.common.viewmanager
 
 import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
@@ -102,7 +104,7 @@ class ViewManager(
 
         layoutParams = WindowManager.LayoutParams().apply {
             type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-            flags = 8913704
+            flags = flagNormal
             format = PixelFormat.TRANSLUCENT
             gravity = Gravity.TOP or Gravity.START
             height = context.config.dynamicHeight
@@ -118,7 +120,7 @@ class ViewManager(
 
         layoutParamsSpecialView = WindowManager.LayoutParams().apply {
             type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-            flags = 8913704
+            flags = flagNormal
             format = PixelFormat.TRANSLUCENT
             gravity = Gravity.TOP or Gravity.START
             val yM =
@@ -141,11 +143,11 @@ class ViewManager(
 
         layoutParamsFull = WindowManager.LayoutParams().apply {
             type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
-            flags = 8913704
+            flags = flagKeyBoard
             format = PixelFormat.TRANSLUCENT
             gravity = Gravity.TOP or Gravity.START
-            height = -1
-            width = -1
+            height = context.toPx(150).toInt()
+            width = point!!.x
             x = 0
             val yM =
                 if (context.toPx(150).toInt() + context.config.dynamicMarginVertical > point!!.y) {
@@ -269,7 +271,6 @@ class ViewManager(
 
     @SuppressLint("WrongConstant")
     private fun addDynamicView() {
-        setFullIslandMargin(false)
         setKeyboardFlag(false)
         try {
             windowManager?.addView(binding.root, layoutParams)
@@ -335,8 +336,8 @@ class ViewManager(
     private fun initAction() {
         binding.rvIslandSmall.setListener(object : IClickListener {
             override fun onClick(notification: Notification, position: Int?) {
-                Log.d("TAG", "onClick: ")
                 if (context.config.clickMode == 0) {
+                    Log.d("TAG", "onClick: ")
                     showFullIslandNotification(notification)
                 } else {
                     notification.contentIntent?.send()
@@ -381,6 +382,7 @@ class ViewManager(
         }
         if (lst.isNotEmpty()) {
             runnableClear = Runnable {
+                Log.d("TAG", "setNotasdasdasdasification: ")
                 if (!isBubbleShowing && isBubbleEnabled) {
                     showBubble()
                 }
@@ -514,8 +516,8 @@ class ViewManager(
 
 
     fun closeFullNotificationIsland() {
+        Log.d("TAG", "closeFullNotificationIsland: ")
         mediaHandler.removeCallbacks(mediaUpdateRunnable)
-        setFullIslandMargin(false)
         setKeyboardFlag(false)
 
         val layoutParamsParent = binding.islandParentLayout.layoutParams
@@ -604,16 +606,6 @@ class ViewManager(
         }, 300)
     }
 
-    private fun setFullIslandMargin(z: Boolean) {
-        if (z) {
-            this.tempMargin = this.margin
-            this.margin = (context.resources.displayMetrics.scaledDensity * 25.0f).toInt()
-        } else {
-            this.margin = this.tempMargin
-        }
-        val layoutParams = binding.islandTopLayout.layoutParams as FrameLayout.LayoutParams
-        binding.islandTopLayout.setLayoutParams(layoutParams)
-    }
 
 
     fun updateLayout() {
@@ -782,11 +774,8 @@ class ViewManager(
 
     fun hideBubble() {
         isBubbleShowing = false
-        if (context.config.bubbleLocation == 0) {
-            binding.bubblePositionLeft.hide()
-        } else {
-            binding.bubblePositionRight.hide()
-        }
+        binding.bubblePositionLeft.hide()
+        binding.bubblePositionRight.hide()
     }
 
 
@@ -807,34 +796,59 @@ class ViewManager(
     }
 
     fun showFullIslandNotification(notification: Notification) {
-        binding.bubblePositionLeft.hide()
-        binding.bubblePositionRight.hide()
+        hideBubble()
         currentNotification = notification
         binding.islandTopLayout.show()
         setBackgroundNotificationColor()
         binding.rvIslandSmall.visibility = View.GONE
-        if (isShowingFullIsland()) {
-            binding.rvIslandBig.setNotification(notification)
-            return
-        }
-
+//        if (isShowingFullIsland()) {
+//            binding.rvIslandBig.setNotification(notification)
+//            return
+//        }
         if (notification.template != null && notification.template.contains("MediaStyle")) {
             setMediaUpdateHandler()
         }
-        setFullIslandMargin(true)
-        setKeyboardFlag(true)
         windowManager?.updateViewLayout(binding.root, layoutParamsFull)
-        val layoutParams1 = binding.islandParentLayout.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams1.width = ViewGroup.LayoutParams.MATCH_PARENT
-        layoutParams1.height = -2
-
-        binding.islandParentLayout.layoutParams = layoutParams1
-        binding.rvIslandBig.show()
-        binding.rvIslandBig.setNotification(notification)
+//        val layoutParams1 = binding.islandParentLayout.layoutParams as ConstraintLayout.LayoutParams
+//        animateSize(
+//            binding.islandParentLayout,
+//            layoutParams1.width,
+//            layoutParamsFull!!.width,
+//            context.config.dynamicHeight,
+//            layoutParamsFull!!.height,
+//            300L
+//        )
+//        binding.rvIslandBig.show()
+//        binding.rvIslandBig.setNotification(notification)
 
 //        }
     }
 
+    fun animateSize(
+        view: View,
+        fromWidth: Int,
+        toWidth: Int,
+        fromHeight: Int,
+        toHeight: Int,
+        duration: Long = 300L
+    ) {
+        val widthHolder = PropertyValuesHolder.ofInt("width", fromWidth, toWidth)
+        val heightHolder = PropertyValuesHolder.ofInt("height", fromHeight, toHeight)
+
+        val animator = ValueAnimator.ofPropertyValuesHolder(widthHolder, heightHolder)
+        animator.duration = duration
+
+        animator.addUpdateListener { animation ->
+            val newWidth = animation.getAnimatedValue("width") as Int
+            val newHeight = animation.getAnimatedValue("height") as Int
+            val layoutParams = view.layoutParams
+            layoutParams.width = newWidth
+            layoutParams.height = newHeight
+            view.layoutParams = layoutParams
+        }
+
+        animator.start()
+    }
 
     fun isShowingFullIsland(): Boolean {
         return layoutParams?.height == -1 && binding.rvIslandBig.isVisible
